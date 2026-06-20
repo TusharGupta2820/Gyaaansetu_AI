@@ -1,16 +1,11 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { LiveService } from '@/services/liveService';
+import { offlineInterviewService } from '../services/offlineInterviewService';
 import type { CodeEditorHandle } from '@/components/CodeEditor';
 import type { AvatarInterviewerHandle } from '@/components/AvatarInterviewer';
 import type { ChatMessage, InterviewLanguage, InterviewProblem } from '@/types';
-import {
-  SYSTEM_INSTRUCTION_INTERVIEWER,
-  CODE_DEBOUNCE_MS,
-  VIDEO_FRAME_INTERVAL_MS,
-} from '@/constants';
 
 interface UseLiveInterviewParams {
-  apiKey: string;
+  apiKey?: string; // Kept for API signature compatibility, unused
   currentProblem: InterviewProblem;
   language: InterviewLanguage;
   code: string;
@@ -22,277 +17,396 @@ interface UseLiveInterviewParams {
 }
 
 /**
- * Manages the Gemini Live audio interview session.
+ * Manages the local offline interview session (Whisper STT -> DeepSeek R1 -> Piper TTS).
  */
 export function useLiveInterview({
-  apiKey,
   currentProblem,
   language,
-  code,
-  editorRef,
-  avatarRef,
   setMessages,
-  onUpdateContext,
-  onTypeCode,
 }: UseLiveInterviewParams) {
   const [isLiveConnected, setIsLiveConnected] = useState(false);
   const [isConnectingLive, setIsConnectingLive] = useState(false);
   const [volume, setVolume] = useState(0);
   const [speechLevel, setSpeechLevel] = useState(0);
   const [subtitles, setSubtitles] = useState('');
-  const [isMicMuted, setIsMicMuted] = useState(false);
+  const [isMicMuted, setIsMicMuted] = useState(true);
   const [isCameraEnabled, setIsCameraEnabled] = useState(true);
-  const [sessionTokens, setSessionTokens] = useState({ prompt: 0, candidates: 0, total: 0 });
+  const [sessionTokens] = useState({ prompt: 0, candidates: 0, total: 0 }); // Unused for offline, kept to avoid breaking UI
   const [agentState, setAgentState] = useState<'idle' | 'listening' | 'thinking' | 'speaking'>('idle');
 
-  const liveServiceRef = useRef<LiveService | null>(null);
-  const videoIntervalRef = useRef<number | null>(null);
-  const frameAlternatorRef = useRef(false);
-  const lastSentCodeRef = useRef<string>('');
-  const currentModelTurnIdRef = useRef<string | null>(null);
-  const isCameraEnabledRef = useRef(isCameraEnabled);
-  
-  const lastUserSpeechTime = useRef<number>(0);
-  const lastAISpeechTime = useRef<number>(0);
+  // Refs for audio capturing
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const inputStreamRef = useRef<MediaStream | null>(null);
 
-  // Refs for values read inside async callbacks — avoids stale closures
+  // Refs for audio playing and metering
+  const audioElementRef = useRef<HTMLAudioElement | null>(null);
+  const speechLevelRafRef = useRef<number | null>(null);
+  const volumeMeterRafRef = useRef<number | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+
+  // Refs for current values to avoid stale closures
   const currentProblemRef = useRef(currentProblem);
   const languageRef = useRef(language);
+
   useEffect(() => { currentProblemRef.current = currentProblem; }, [currentProblem]);
   useEffect(() => { languageRef.current = language; }, [language]);
-  useEffect(() => { isCameraEnabledRef.current = isCameraEnabled; }, [isCameraEnabled]);
 
-  // Initialise LiveService once when apiKey is available
-  useEffect(() => {
-    if (apiKey && !liveServiceRef.current) {
-      liveServiceRef.current = new LiveService(apiKey);
-      liveServiceRef.current.onVolumeChange = (vol) => setVolume(vol);
-      liveServiceRef.current.onOutputLevelChange = (level) => setSpeechLevel(level);
-    }
-  }, [apiKey]);
-
-  // Cleanup on unmount — disconnect WebSocket and release microphone
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (liveServiceRef.current) liveServiceRef.current.disconnect();
-      if (videoIntervalRef.current) clearInterval(videoIntervalRef.current);
+      if (audioElementRef.current) {
+        audioElementRef.current.pause();
+      }
+      if (speechLevelRafRef.current) {
+        cancelAnimationFrame(speechLevelRafRef.current);
+      }
+      if (volumeMeterRafRef.current) {
+        cancelAnimationFrame(volumeMeterRafRef.current);
+      }
+      if (audioContextRef.current) {
+        audioContextRef.current.close().catch(() => {});
+      }
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+        mediaRecorderRef.current.stop();
+      }
+      if (inputStreamRef.current) {
+        inputStreamRef.current.getTracks().forEach(track => track.stop());
+      }
     };
   }, []);
 
-  // Debounced code watcher — sends code updates during live sessions
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (isLiveConnected && liveServiceRef.current && code !== lastSentCodeRef.current) {
-        liveServiceRef.current.sendCodeContext(code);
-        lastSentCodeRef.current = code;
+  // Real-time microphone volume metering for visualizer
+  const startVolumeMetering = useCallback((stream: MediaStream) => {
+    try {
+      if (volumeMeterRafRef.current) {
+        cancelAnimationFrame(volumeMeterRafRef.current);
       }
-    }, CODE_DEBOUNCE_MS);
+      if (audioContextRef.current) {
+        audioContextRef.current.close().catch(() => {});
+      }
 
-    return () => clearTimeout(timer);
-  }, [code, isLiveConnected]);
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      audioContextRef.current = audioContext;
+      const source = audioContext.createMediaStreamSource(stream);
+      const analyser = audioContext.createAnalyser();
+      analyser.fftSize = 256;
+      source.connect(analyser);
 
-  // Agent State Machine Tracker
-  useEffect(() => {
-    if (!isLiveConnected) {
-      setAgentState('idle');
-      return;
-    }
+      const bufferLength = analyser.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
 
-    const interval = setInterval(() => {
-      const now = Date.now();
-      
-      if (speechLevel > 0.05) {
-        lastAISpeechTime.current = now;
-        setAgentState('speaking');
-      } else if (volume > 0.02 && !isMicMuted) {
-        lastUserSpeechTime.current = now;
-        setAgentState('listening');
-      } else {
-        // Neither is currently speaking actively.
-        // If the user spoke recently, and the AI hasn't spoken since, the AI is likely "thinking".
-        if (now - lastUserSpeechTime.current < 8000 && lastUserSpeechTime.current > lastAISpeechTime.current) {
-          // Wait 500ms after the user stops speaking before showing 'thinking' to avoid flickering
-          if (now - lastUserSpeechTime.current > 500) {
-            setAgentState('thinking');
-          }
-        } else {
-          // If no one has spoken for a while, go to idle
-          if (now - lastAISpeechTime.current > 1000 && now - lastUserSpeechTime.current > 1000) {
-            setAgentState('idle');
-          }
+      const checkVolume = () => {
+        if (!mediaRecorderRef.current || mediaRecorderRef.current.state !== 'recording') {
+          setVolume(0);
+          return;
         }
-      }
-    }, 150);
+        analyser.getByteFrequencyData(dataArray);
+        let sum = 0;
+        for (let i = 0; i < bufferLength; i++) {
+          sum += dataArray[i];
+        }
+        const avg = sum / bufferLength;
+        const normalized = Math.min(1, avg / 128); // scale to 0-1
+        setVolume(normalized);
+        volumeMeterRafRef.current = requestAnimationFrame(checkVolume);
+      };
 
-    return () => clearInterval(interval);
-  }, [isLiveConnected, volume, speechLevel, isMicMuted]);
-
-  // Log state changes for debugging
-  useEffect(() => {
-    if (isLiveConnected) {
-      console.log(`[Agent State Changed]: ${agentState.toUpperCase()}`);
+      volumeMeterRafRef.current = requestAnimationFrame(checkVolume);
+    } catch (e) {
+      console.warn('Error starting volume metering:', e);
     }
-  }, [agentState, isLiveConnected]);
+  }, []);
+
+  // Helper to start recording user audio
+  const startRecording = useCallback(async () => {
+    try {
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+        return;
+      }
+
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      inputStreamRef.current = stream;
+
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) {
+          audioChunksRef.current.push(e.data);
+        }
+      };
+
+      mediaRecorder.onstop = async () => {
+        // Stop microphone tracks
+        stream.getTracks().forEach(track => track.stop());
+        inputStreamRef.current = null;
+
+        if (audioChunksRef.current.length === 0) {
+          setAgentState('listening');
+          setIsMicMuted(false);
+          startRecording();
+          return;
+        }
+
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
+
+        setAgentState('thinking');
+        setSubtitles('Evaluating answer...');
+
+        try {
+          const response = await offlineInterviewService.sendAnswer(audioBlob);
+
+          // Add user response to chat
+          setMessages(prev => [
+            ...prev,
+            {
+              id: Date.now().toString(),
+              role: 'user',
+              text: response.transcript || '[Voice Response]',
+              timestamp: Date.now()
+            }
+          ]);
+
+          // Add interviewer feedback & next question to chat
+          const feedbackText = response.feedback ? `${response.feedback} ` : '';
+          const fullResponse = `${feedbackText}${response.next_question}`.trim();
+          setMessages(prev => [
+            ...prev,
+            {
+              id: (Date.now() + 1).toString(),
+              role: 'model',
+              text: fullResponse,
+              timestamp: Date.now()
+            }
+          ]);
+
+          // Update subtitles
+          setSubtitles(response.next_question);
+
+          // Play response speech
+          if (response.audioUrl) {
+            playAudio(response.audioUrl);
+          } else {
+            // Fallback if TTS audio is not generated
+            setAgentState('listening');
+            setIsMicMuted(false);
+            startRecording();
+          }
+        } catch (error) {
+          console.error('Offline respond error:', error);
+          setSubtitles('⚠️ Local AI error. Make sure backend and Ollama are active.');
+          setAgentState('idle');
+          setIsMicMuted(true);
+        }
+      };
+
+      mediaRecorder.start();
+      setIsMicMuted(false);
+      setAgentState('listening');
+      startVolumeMetering(stream);
+    } catch (e) {
+      console.error('Microphone error:', e);
+      setSubtitles('⚠️ Microphone access denied.');
+      setAgentState('idle');
+      setIsMicMuted(true);
+    }
+  }, [setMessages, startVolumeMetering]);
+
+  // Helper to play synthesized AI tutor audio and animate lips
+  const playAudio = useCallback((url: string) => {
+    // Clear any playing audio
+    if (audioElementRef.current) {
+      audioElementRef.current.pause();
+      audioElementRef.current = null;
+    }
+    if (speechLevelRafRef.current) {
+      cancelAnimationFrame(speechLevelRafRef.current);
+      speechLevelRafRef.current = null;
+    }
+
+    const audio = new Audio(url);
+    audioElementRef.current = audio;
+    setAgentState('speaking');
+
+    const animateSpeech = () => {
+      if (!audioElementRef.current || audioElementRef.current.paused || audioElementRef.current.ended) {
+        setSpeechLevel(0);
+        return;
+      }
+      // Modulate speechLevel between 0.15 and 0.65 to animate lips
+      setSpeechLevel(Math.random() * 0.5 + 0.15);
+      speechLevelRafRef.current = requestAnimationFrame(animateSpeech);
+    };
+
+    audio.onplay = () => {
+      speechLevelRafRef.current = requestAnimationFrame(animateSpeech);
+    };
+
+    audio.onended = () => {
+      setSpeechLevel(0);
+      if (speechLevelRafRef.current) {
+        cancelAnimationFrame(speechLevelRafRef.current);
+        speechLevelRafRef.current = null;
+      }
+      audioElementRef.current = null;
+      
+      // AI finished speaking, start listening for candidate answer
+      setAgentState('listening');
+      setIsMicMuted(false);
+      startRecording();
+    };
+
+    audio.onerror = () => {
+      setSpeechLevel(0);
+      audioElementRef.current = null;
+      setAgentState('listening');
+      setIsMicMuted(false);
+      startRecording();
+    };
+
+    audio.play().catch(err => {
+      console.warn('Autoplay blocked or audio playback error:', err);
+      setSpeechLevel(0);
+      audioElementRef.current = null;
+      setAgentState('listening');
+      setIsMicMuted(false);
+      startRecording();
+    });
+  }, [startRecording]);
 
   const handleConnectLive = useCallback(async () => {
-    if (!apiKey || !liveServiceRef.current) return;
-
     const problem = currentProblemRef.current;
-    const lang = languageRef.current;
+    const langName = languageRef.current;
 
+    setIsConnectingLive(true);
     try {
-      setIsConnectingLive(true);
-
-      const sessionInstruction = `
-        ${SYSTEM_INSTRUCTION_INTERVIEWER}
-        CONTEXT: We are currently looking at problem: ${problem.title} (Difficulty: ${problem.difficulty}, Lang: ${lang})
-        Description: ${problem.description}
-        NOTE: Operate as an open voice companion. Wait for the user to speak first, or greet them casually.
-      `;
-
-      await liveServiceRef.current.connect({
-        systemInstruction: sessionInstruction,
-        onMessage: (msg) => {
-          if (!currentModelTurnIdRef.current) {
-             currentModelTurnIdRef.current = Date.now().toString();
-             setSubtitles(''); // Clear subtitle at start of new turn
-          }
-
-          const turnId = currentModelTurnIdRef.current;
-
-          // Update Subtitles
-          setSubtitles((prev) => {
-            const newSub = prev + msg.text;
-            return newSub.length > 200 ? "..." + newSub.substring(newSub.length - 197) : newSub;
-          });
-
-          // Append to Chat Messages
-          setMessages((prev) => {
-            const newMessages = [...prev];
-            const lastMsgIndex = newMessages.findIndex(m => m.id === turnId);
-
-            if (lastMsgIndex >= 0) {
-              newMessages[lastMsgIndex] = {
-                ...newMessages[lastMsgIndex],
-                text: newMessages[lastMsgIndex].text + msg.text
-              };
-            } else {
-              newMessages.push({
-                id: turnId,
-                role: 'model',
-                text: msg.text,
-                timestamp: Date.now()
-              });
-            }
-            return newMessages;
-          });
-
-          // If turn is complete, reset the turn ID
-          if (!msg.partial) {
-             currentModelTurnIdRef.current = null;
-          }
-        },
-        onToolCall: (functionCall) => {
-          console.log('[Live] Tool call received:', functionCall);
-          if (functionCall.name === 'update_interview_context') {
-            const args = functionCall.args as any;
-            console.log('[Live] update_interview_context args:', args);
-            
-            const lang = args.language || 'python';
-            const title = args.problemTitle || 'Custom Problem';
-            const desc = args.problemDescription || 'Please solve the problem described by the interviewer.';
-            const code = args.starterCode || '# Your code here';
-
-            if (onUpdateContext) {
-              onUpdateContext(lang, title, desc, code);
-              // PREVENT echoing this new code back immediately!
-              lastSentCodeRef.current = code;
-            }
-            
-            liveServiceRef.current?.sendToolResponse([{
-              id: functionCall.id,
-              name: functionCall.name,
-              response: { result: `Context successfully updated to ${title} in ${lang}.` }
-            }]);
-          } else if (functionCall.name === 'type_code') {
-            const args = functionCall.args as any;
-            const newCode = args.code || '';
-            console.log('[Live] type_code args:', args);
-
-            if (onTypeCode) {
-              onTypeCode(newCode);
-              lastSentCodeRef.current = newCode;
-            }
-
-            liveServiceRef.current?.sendToolResponse([{
-              id: functionCall.id,
-              name: functionCall.name,
-              response: { result: `Code successfully typed into the editor.` }
-            }]);
-          }
-        },
-        onUsageUpdate: (usage) => {
-          setSessionTokens(prev => ({
-            prompt: prev.prompt + (usage.promptTokenCount || 0),
-            candidates: prev.candidates + (usage.candidatesTokenCount || 0),
-            total: prev.total + (usage.totalTokenCount || 0)
-          }));
-        }
-      });
+      const session = await offlineInterviewService.startSession(
+        problem.title,
+        'demo-user-aarav',
+        langName === 'cpp' ? 'C++' : langName === 'python' ? 'Python' : 'JavaScript'
+      );
 
       setIsLiveConnected(true);
+      setSubtitles(session.currentQuestion);
 
-      // Visual confirmation in the transcript
-      setTimeout(() => {
-        setMessages(prev => [
-          ...prev,
-          {
-            id: Date.now().toString(),
-            role: 'user' as const,
-            text: 'Voice Session Connected',
-            timestamp: Date.now(),
-          },
-        ]);
-      }, 1000);
-
-      // Begin periodic video frame capture of the WebCam
-      videoIntervalRef.current = window.setInterval(async () => {
-        if (liveServiceRef.current && avatarRef.current && isCameraEnabledRef.current) {
-          const base64Frame = avatarRef.current.captureWebcamFrame();
-          if (base64Frame) {
-            await liveServiceRef.current.sendVideoFrame(base64Frame);
-          }
+      setMessages(prev => [
+        ...prev,
+        {
+          id: Date.now().toString(),
+          role: 'model',
+          text: session.currentQuestion,
+          timestamp: Date.now()
         }
-      }, VIDEO_FRAME_INTERVAL_MS);
-    } catch {
-      // Connection failed
+      ]);
+
+      if (session.audioUrl) {
+        playAudio(session.audioUrl);
+      } else {
+        // Fallback
+        setAgentState('listening');
+        setIsMicMuted(false);
+        startRecording();
+      }
+    } catch (e) {
+      console.error('Failed to start local session:', e);
+      setSubtitles('⚠️ Error connecting to GyaanSetu local backend.');
     } finally {
       setIsConnectingLive(false);
     }
-  }, [apiKey, editorRef, setMessages]);
+  }, [playAudio, startRecording, setMessages]);
 
   const handleDisconnectLive = useCallback(async () => {
-    if (liveServiceRef.current) await liveServiceRef.current.disconnect();
-    if (videoIntervalRef.current) {
-      clearInterval(videoIntervalRef.current);
-      videoIntervalRef.current = null;
+    // Stop playing audio
+    if (audioElementRef.current) {
+      audioElementRef.current.pause();
+      audioElementRef.current = null;
     }
+    if (speechLevelRafRef.current) {
+      cancelAnimationFrame(speechLevelRafRef.current);
+      speechLevelRafRef.current = null;
+    }
+
+    // Stop recording
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+      mediaRecorderRef.current.onstop = null; // Prevent triggers
+      mediaRecorderRef.current.stop();
+    }
+    if (inputStreamRef.current) {
+      inputStreamRef.current.getTracks().forEach(track => track.stop());
+      inputStreamRef.current = null;
+    }
+
+    // Stop volume metering
+    if (volumeMeterRafRef.current) {
+      cancelAnimationFrame(volumeMeterRafRef.current);
+      volumeMeterRafRef.current = null;
+    }
+    if (audioContextRef.current) {
+      audioContextRef.current.close().catch(() => {});
+      audioContextRef.current = null;
+    }
+
+    setSubtitles('Interview ended. Generating score report...');
+    setAgentState('thinking');
+
+    try {
+      const report = await offlineInterviewService.endSession();
+
+      const reportMessage = `
+🎓 **Interview Completed! Local AI Evaluation Report:**
+
+*   **Overall Score**: ${report.overallScore}/100
+*   **Technical Score**: ${report.technicalScore}/100
+*   **Communication Score**: ${report.communicationScore}/100
+*   **Confidence Score**: ${report.confidenceScore}/100
+*   **Verdict**: **${report.verdict}**
+
+📝 **Summary**:
+${report.summary}
+
+⭐ **Strengths**:
+${report.strengths && report.strengths.length > 0 ? report.strengths.map(s => `\n* ${s}`).join('') : '\n* Demonstrated logical approach'}
+
+💡 **Improvement Areas**:
+${report.improvementAreas && report.improvementAreas.length > 0 ? report.improvementAreas.map(a => `\n* ${a}`).join('') : '\n* Dive deeper into algorithmic complexity'}
+      `;
+
+      setMessages(prev => [
+        ...prev,
+        {
+          id: Date.now().toString(),
+          role: 'model',
+          text: reportMessage,
+          timestamp: Date.now()
+        }
+      ]);
+    } catch (e) {
+      console.error('Failed to end local session:', e);
+    }
+
     setIsLiveConnected(false);
     setVolume(0);
     setSpeechLevel(0);
-  }, []);
+    setIsMicMuted(true);
+    setAgentState('idle');
+  }, [setMessages]);
 
   const toggleMic = useCallback(() => {
-    if (liveServiceRef.current) {
-      const currentMuted = liveServiceRef.current.isMicMuted;
-      liveServiceRef.current.setMicMuted(!currentMuted);
-      setIsMicMuted(!currentMuted);
+    // Mute = Finish speaking and submit answer
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+      setIsMicMuted(true);
+      mediaRecorderRef.current.stop();
     }
   }, []);
 
   const toggleCamera = useCallback(() => {
     setIsCameraEnabled(prev => !prev);
   }, []);
+
+  // Mock ref for UI binding compatibility
+  const liveServiceRef = useRef<any>(null);
 
   return {
     isLiveConnected,
