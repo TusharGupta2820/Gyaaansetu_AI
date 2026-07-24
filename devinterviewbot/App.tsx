@@ -9,6 +9,8 @@ import { useInterviewSession } from '@/hooks/useInterviewSession';
 import { RefreshCw, Terminal } from 'lucide-react';
 import { PROBLEMS } from '@/constants';
 
+const API_KEY = (import.meta as any).env.VITE_API_KEY || '';
+
 /**
  * Root application component.
  * Composes the code editor, chat transcript, and live interview controls
@@ -20,9 +22,10 @@ const App: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
   const [activeTab, setActiveTab] = useState<'workspace' | 'chat'>('workspace');
 
-  const session = useInterviewSession({});
+  const session = useInterviewSession({ apiKey: API_KEY });
 
   const live = useLiveInterview({
+    apiKey: API_KEY,
     currentProblem: session.currentProblem,
     language: session.language,
     code: session.code,
