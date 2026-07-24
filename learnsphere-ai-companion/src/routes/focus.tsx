@@ -32,7 +32,7 @@ const STUDY_MATES = [
 function FocusDashboard() {
   // Mode Tab State
   const [activeTab, setActiveTab] = useState<"study" | "interview">("study");
-  const [botPort, setBotPort] = useState("5180");
+  const [botUrl, setBotUrl] = useState("https://gyaaansetu-ai-interviewbot.vercel.app/");
   const [showPortSettings, setShowPortSettings] = useState(false);
 
   // Timer States
@@ -212,20 +212,17 @@ function FocusDashboard() {
         >
           <h4 className="text-xs font-bold mb-2">DevInterview Bot Connection Address</h4>
           <div className="flex gap-2">
-            <span className="bg-[#050816] px-3 py-2 rounded-xl text-xs font-mono text-slate-400 border border-white/5 flex items-center">
-              http://localhost:
-            </span>
             <input
               type="text"
-              value={botPort}
-              onChange={(e) => setBotPort(e.target.value)}
+              value={botUrl}
+              onChange={(e) => setBotUrl(e.target.value)}
               className="bg-[#050816] border border-white/10 rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-[#3b82f6]/40 flex-1"
-              placeholder="5180"
+              placeholder="https://gyaaansetu-ai-interviewbot.vercel.app/"
             />
             <button
               onClick={() => {
                 setShowPortSettings(false);
-                showToast(`Switched port connection to ${botPort}`, Check);
+                showToast(`Switched target connection to ${botUrl}`, Check);
               }}
               className="bg-[#3b82f6] text-[#050816] rounded-xl px-4 py-2 text-xs font-bold hover:scale-[1.02] transition"
             >
@@ -726,10 +723,10 @@ function FocusDashboard() {
               <div className="flex flex-wrap items-center gap-3">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-mono font-bold bg-[#3b82f6]/10 text-[#3b82f6] border border-[#3b82f6]/20">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  Target: http://localhost:{botPort}
+                  Target: {botUrl}
                 </span>
                 <a
-                  href={`http://localhost:${botPort}`}
+                  href={botUrl}
                   target="_blank"
                   rel="noreferrer"
                   className="bg-white/10 hover:bg-white/15 border border-white/10 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1"
@@ -743,7 +740,7 @@ function FocusDashboard() {
             {/* Iframing the Bot */}
             <div className="w-full rounded-2xl overflow-hidden border border-white/10 bg-[#050816] shadow-inner relative z-10">
               <iframe
-                src={`http://localhost:${botPort}`}
+                src={botUrl}
                 title="DevInterview Bot"
                 className="w-full h-[680px] border-none"
                 allow="microphone; camera; display-capture"
