@@ -223,9 +223,9 @@ function CareerDashboard() {
               initial={{ opacity: 0, y: -50, scale: 0.9 }} 
               animate={{ opacity: 1, y: 0, scale: 1 }} 
               exit={{ opacity: 0, y: -20, scale: 0.9 }} 
-              className="fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border border-[#00F5FF]/30 shadow-2xl flex items-center gap-3 bg-[#0d1322] max-w-sm"
+              className="fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border border-[#3b82f6]/30 shadow-2xl flex items-center gap-3 bg-[#0d1322] max-w-sm"
             >
-              <div className="h-8 w-8 rounded-lg bg-[#00F5FF]/10 text-[#00F5FF] flex items-center justify-center shrink-0">
+              <div className="h-8 w-8 rounded-lg bg-[#3b82f6]/10 text-[#3b82f6] flex items-center justify-center shrink-0">
                 <toast.icon className="h-4.5 w-4.5" />
               </div>
               <div className="text-xs font-semibold text-white">{toast.message}</div>
@@ -244,17 +244,17 @@ function CareerDashboard() {
               <div className="grid lg:grid-cols-[1fr_auto] gap-6 items-center">
                 <div>
                   <div className="inline-flex items-center gap-1.5 glass rounded-full px-3 py-1 text-xs">
-                    <Sparkles className="h-3 w-3 text-[#00F5FF]" />
+                    <Sparkles className="h-3 w-3 text-[#3b82f6]" />
                     Powered by GyaanSetu AI
                   </div>
                   <h1 className="mt-3 text-xl lg:text-2xl font-display font-bold">Design Your Next Career Leap</h1>
                   <p className="mt-2 text-slate-300 max-w-xl text-xs leading-relaxed">
                     Audited daily against hiring indices. Current target path:{" "}
-                    <span className="text-[#00F5FF] font-semibold">{selectedCareer ? selectedCareer.title : selectedRoleOption}</span>.
+                    <span className="text-[#3b82f6] font-semibold">{selectedCareer ? selectedCareer.title : selectedRoleOption}</span>.
                   </p>
                 </div>
                 <div>
-                  <button onClick={handleGenerateRoadmap} disabled={generating} className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#00F5FF] to-[#8B5CF6] px-5 py-3 text-xs font-bold text-[#050816] glow-cyan hover:scale-[1.02] transition-all disabled:opacity-50">
+                  <button onClick={handleGenerateRoadmap} disabled={generating} className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#3b82f6] to-[#6366f1] px-5 py-3 text-xs font-bold text-[#050816] glow-cyan hover:scale-[1.02] transition-all disabled:opacity-50">
                     {generating ? (
                       <>
                         <RefreshCw className="h-4 w-4 animate-spin" /> Compiling Roadmap...
@@ -271,7 +271,7 @@ function CareerDashboard() {
               <div className="border-t border-white/10 pt-4">
                 <div className="flex justify-between items-center mb-3">
                   <div className="flex items-center gap-2">
-                    <Sparkles className="h-3.5 w-3.5 text-[#00f5ff]" />
+                    <Sparkles className="h-3.5 w-3.5 text-[#3b82f6]" />
                     <span className="font-display font-bold text-xs text-white">AI Target Customizer (Optional)</span>
                   </div>
                   <span className="text-[9px] font-mono text-muted-foreground uppercase">Upload Resume or Dictate Goals</span>
@@ -280,10 +280,10 @@ function CareerDashboard() {
                 <div className="grid md:grid-cols-3 gap-3">
                   <button 
                     onClick={() => { setHubMode(hubMode === "voice" ? "none" : "voice"); setVoiceText(""); }} 
-                    className={`flex items-center justify-between p-3 rounded-xl border transition text-left ${hubMode === "voice" ? "bg-[#00f5ff]/10 border-[#00f5ff]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"}`}
+                    className={`flex items-center justify-between p-3 rounded-xl border transition text-left ${hubMode === "voice" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"}`}
                   >
                     <div className="flex items-center gap-2">
-                      <Mic className="h-4 w-4 text-[#00f5ff]" />
+                      <Mic className="h-4 w-4 text-[#3b82f6]" />
                       <span className="text-xs font-semibold">Voice Goal Input</span>
                     </div>
                     <ChevronRight className="h-3.5 w-3.5" />
@@ -291,10 +291,10 @@ function CareerDashboard() {
                   
                   <button 
                     onClick={() => { setHubMode(hubMode === "upload" ? "none" : "upload"); setSelectedFile(null); setRealFile(null); }} 
-                    className={`flex items-center justify-between p-3 rounded-xl border transition text-left ${hubMode === "upload" ? "bg-[#00f5ff]/10 border-[#00f5ff]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"}`}
+                    className={`flex items-center justify-between p-3 rounded-xl border transition text-left ${hubMode === "upload" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"}`}
                   >
                     <div className="flex items-center gap-2">
-                      <Paperclip className="h-4 w-4 text-[#00f5ff]" />
+                      <Paperclip className="h-4 w-4 text-[#3b82f6]" />
                       <span className="text-xs font-semibold">Upload Resume / PDF</span>
                     </div>
                     <ChevronRight className="h-3.5 w-3.5" />
@@ -302,10 +302,10 @@ function CareerDashboard() {
                   
                   <button 
                     onClick={() => { setHubMode(hubMode === "text" ? "none" : "text"); setPastedText(""); }} 
-                    className={`flex items-center justify-between p-3 rounded-xl border transition text-left ${hubMode === "text" ? "bg-[#00f5ff]/10 border-[#00f5ff]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"}`}
+                    className={`flex items-center justify-between p-3 rounded-xl border transition text-left ${hubMode === "text" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"}`}
                   >
                     <div className="flex items-center gap-2">
-                      <FileText className="h-4 w-4 text-[#00f5ff]" />
+                      <FileText className="h-4 w-4 text-[#3b82f6]" />
                       <span className="text-xs font-semibold">Paste Job Description</span>
                     </div>
                     <ChevronRight className="h-3.5 w-3.5" />
@@ -394,7 +394,7 @@ function CareerDashboard() {
                                   setSubmittingHub(false);
                                 }
                               }} 
-                              className="px-4 py-2 rounded-lg bg-[#00F5FF] text-[#050816] text-xs font-bold hover:scale-105 transition ml-auto"
+                              className="px-4 py-2 rounded-lg bg-[#3b82f6] text-[#050816] text-xs font-bold hover:scale-105 transition ml-auto"
                             >
                               {submittingHub ? "Customizing..." : "Submit to AI"}
                             </button>
@@ -406,10 +406,10 @@ function CareerDashboard() {
                     {hubMode === "upload" && (
                       <div className="p-4 bg-[#050816] rounded-xl border border-white/5 space-y-4">
                         <div 
-                          className="border border-dashed border-white/10 rounded-xl p-6 flex flex-col items-center justify-center hover:border-[#00f5ff]/40 transition cursor-pointer" 
+                          className="border border-dashed border-white/10 rounded-xl p-6 flex flex-col items-center justify-center hover:border-[#3b82f6]/40 transition cursor-pointer" 
                           onClick={triggerFileSelect}
                         >
-                          <FileUp className="h-8 w-8 text-[#00f5ff] mb-2" />
+                          <FileUp className="h-8 w-8 text-[#3b82f6] mb-2" />
                           {selectedFile ? (
                             <span className="text-xs text-white font-mono font-bold">{selectedFile}</span>
                           ) : (
@@ -457,7 +457,7 @@ function CareerDashboard() {
                                 setSubmittingHub(false);
                               }
                             }} 
-                            className="w-full py-2 rounded-lg bg-[#00F5FF] text-[#050816] text-xs font-bold hover:scale-[1.01] transition"
+                            className="w-full py-2 rounded-lg bg-[#3b82f6] text-[#050816] text-xs font-bold hover:scale-[1.01] transition"
                           >
                             {submittingHub ? "Analyzing Resume..." : "Submit Resume to AI"}
                           </button>
@@ -471,7 +471,7 @@ function CareerDashboard() {
                           value={pastedText} 
                           onChange={(e) => setPastedText(e.target.value)} 
                           placeholder="Paste job description or custom goals here..." 
-                          className="w-full h-24 bg-black/40 border border-white/10 rounded-lg p-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#00f5ff]/40 font-mono" 
+                          className="w-full h-24 bg-black/40 border border-white/10 rounded-lg p-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]/40 font-mono" 
                         />
                         <div className="flex justify-end">
                           <button 
@@ -514,7 +514,7 @@ function CareerDashboard() {
                               }
                             }} 
                             disabled={!pastedText} 
-                            className="px-4 py-2 rounded-lg bg-[#00F5FF] text-[#050816] text-xs font-bold hover:scale-105 transition disabled:opacity-50"
+                            className="px-4 py-2 rounded-lg bg-[#3b82f6] text-[#050816] text-xs font-bold hover:scale-105 transition disabled:opacity-50"
                           >
                             {submittingHub ? "Analyzing text..." : "Submit to AI"}
                           </button>
@@ -531,14 +531,14 @@ function CareerDashboard() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
           <div className="bg-[#0b1530] border border-blue-500/20 text-white shadow-md p-4 rounded-2xl">
             <div className="text-[10px] text-blue-200/70 uppercase font-mono tracking-wider">Target Match</div>
-            <div className="text-xl font-bold text-[#00F5FF] mt-1 leading-none">{selectedCareer ? selectedCareer.match : "0%"}</div>
+            <div className="text-xl font-bold text-[#3b82f6] mt-1 leading-none">{selectedCareer ? selectedCareer.match : "0%"}</div>
             <div className="text-[9px] text-blue-200/60 mt-2">Personal fit score</div>
           </div>
           
           <div className="bg-[#0b1530] border border-blue-500/20 text-white shadow-md p-4 rounded-2xl">
             <div className="text-[10px] text-blue-200/70 uppercase font-mono tracking-wider">Avg Salary</div>
             <div className="text-xl font-bold text-white mt-1 leading-none">{selectedCareer ? selectedCareer.salary : "₹0 LPA"}</div>
-            <div className="text-[9px] text-[#00F5FF] mt-2 font-semibold font-mono">India junior-to-senior</div>
+            <div className="text-[9px] text-[#3b82f6] mt-2 font-semibold font-mono">India junior-to-senior</div>
           </div>
           
           <button 
@@ -550,11 +550,11 @@ function CareerDashboard() {
                 showLocalToast("Please generate a roadmap first", Info);
               }
             }} 
-            className="bg-[#0b1530] border border-blue-500/20 text-white shadow-md p-4 rounded-2xl text-left hover:border-[#00F5FF]/30 transition hover:scale-[1.02]"
+            className="bg-[#0b1530] border border-blue-500/20 text-white shadow-md p-4 rounded-2xl text-left hover:border-[#3b82f6]/30 transition hover:scale-[1.02]"
           >
             <div className="text-[10px] text-blue-200/70 uppercase font-mono tracking-wider">Skill Gap</div>
             <div className="text-xl font-bold text-amber-400 mt-1 leading-none">{selectedCareer ? selectedCareer.gap : "0 skills"}</div>
-            <div className="text-[9px] text-[#8B5CF6] mt-2 underline font-semibold">Click to analyze gap</div>
+            <div className="text-[9px] text-[#6366f1] mt-2 underline font-semibold">Click to analyze gap</div>
           </button>
           
           <div className="bg-[#0b1530] border border-blue-500/20 text-white shadow-md p-4 rounded-2xl">
@@ -574,17 +574,17 @@ function CareerDashboard() {
                     Sprint roadmap for {selectedCareer ? selectedCareer.title : selectedRoleOption}
                   </p>
                 </div>
-                <span className="text-[9px] font-mono text-[#00F5FF] bg-[#00F5FF]/10 px-2 py-0.5 rounded">Ollama Compiler Ready</span>
+                <span className="text-[9px] font-mono text-[#3b82f6] bg-[#3b82f6]/10 px-2 py-0.5 rounded">Ollama Compiler Ready</span>
               </div>
 
               {generating ? (
                 <div className="flex-1 flex flex-col items-center justify-center space-y-4 py-8">
-                  <RefreshCw className="h-8 w-8 text-[#00F5FF] animate-spin" />
+                  <RefreshCw className="h-8 w-8 text-[#3b82f6] animate-spin" />
                   <div className="text-xs text-muted-foreground font-mono text-center max-w-xs leading-relaxed">
                     {roadmapProgress < 40 ? "analyzing cognitive profile match..." : roadmapProgress < 80 ? "synthesizing skill node milestones..." : "compiling personalized edge modules..."}
                   </div>
                   <div className="w-48 bg-white/5 h-1.5 rounded-full overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-[#00F5FF] to-[#8B5CF6] transition-all duration-300" style={{ width: `${roadmapProgress}%` }} />
+                    <div className="h-full bg-gradient-to-r from-[#3b82f6] to-[#6366f1] transition-all duration-300" style={{ width: `${roadmapProgress}%` }} />
                   </div>
                 </div>
               ) : showRoadmap && selectedCareer ? (
@@ -594,12 +594,12 @@ function CareerDashboard() {
                       <div key={phase.phase_num} className="bg-slate-955/35 rounded-2xl p-4.5 border border-white/5 shadow-inner">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3.5 mb-4 border-b border-white/5 gap-2">
                           <div className="flex items-center gap-2">
-                            <span className="px-2 py-0.5 rounded bg-gradient-to-r from-[#00F5FF] to-[#8B5CF6] text-black font-extrabold text-[9px] tracking-wider uppercase font-mono shadow-md">
+                            <span className="px-2 py-0.5 rounded bg-gradient-to-r from-[#3b82f6] to-[#6366f1] text-black font-extrabold text-[9px] tracking-wider uppercase font-mono shadow-md">
                               Phase {phase.phase_num}
                             </span>
                             <h4 className="font-display font-extrabold text-xs text-[#e9feff]">{phase.phase_title}</h4>
                           </div>
-                          <span className="text-[9px] font-mono font-bold text-[#00F5FF] bg-[#00F5FF]/10 px-2 py-0.5 rounded border border-[#00F5FF]/20 shadow-sm shrink-0 self-start sm:self-auto">
+                          <span className="text-[9px] font-mono font-bold text-[#3b82f6] bg-[#3b82f6]/10 px-2 py-0.5 rounded border border-[#3b82f6]/20 shadow-sm shrink-0 self-start sm:self-auto">
                             {phase.duration_months}
                           </span>
                         </div>
@@ -608,7 +608,7 @@ function CareerDashboard() {
                           {phase.months.map((month: any) => (
                             <div key={month.month_num} className="space-y-3">
                               <div className="text-[11px] font-bold text-slate-300 font-mono tracking-wide flex items-center gap-1.5">
-                                <span className="h-1.5 w-1.5 rounded-full bg-[#00F5FF]" />
+                                <span className="h-1.5 w-1.5 rounded-full bg-[#3b82f6]" />
                                 Month {month.month_num}: {month.month_title}
                               </div>
 
@@ -616,7 +616,7 @@ function CareerDashboard() {
                                 {month.tracks.map((track: any, idx: number) => {
                                   const style = TRACK_STYLES[idx % TRACK_STYLES.length];
                                   return (
-                                    <div key={idx} className={`rounded-xl border ${style.border} ${style.bg} ${style.glow} p-3 flex flex-col justify-between hover:border-[#00F5FF]/30 transition-all duration-300`}>
+                                    <div key={idx} className={`rounded-xl border ${style.border} ${style.bg} ${style.glow} p-3 flex flex-col justify-between hover:border-[#3b82f6]/30 transition-all duration-300`}>
                                       <div>
                                         <div className={`text-[10px] font-extrabold ${style.text} tracking-wide border-b border-white/5 pb-1 mb-2`}>
                                           {track.track_title}
@@ -662,7 +662,7 @@ function CareerDashboard() {
                   </div>
                 ) : (
                   <div className="flex-1 flex flex-col justify-around py-4 relative">
-                    <div className="absolute left-6 inset-y-10 w-0.5 bg-gradient-to-b from-[#00F5FF]/40 via-[#8B5CF6]/40 to-transparent pointer-events-none" />
+                    <div className="absolute left-6 inset-y-10 w-0.5 bg-gradient-to-b from-[#3b82f6]/40 via-[#6366f1]/40 to-transparent pointer-events-none" />
 
                     {selectedCareer.roadmap.map((node: any, i: number) => (
                       <div 
@@ -672,7 +672,7 @@ function CareerDashboard() {
                       >
                         <div className={`h-8.5 w-8.5 rounded-full border flex items-center justify-center shrink-0 transition ${
                           node.status === "completed" ? "bg-[#22C55E]/15 border-[#22C55E]/40 text-[#22C55E]" :
-                          node.status === "in-progress" ? "bg-[#00F5FF]/15 border-[#00F5FF]/40 text-[#00F5FF]" :
+                          node.status === "in-progress" ? "bg-[#3b82f6]/15 border-[#3b82f6]/40 text-[#3b82f6]" :
                           "bg-white/5 border-white/5 text-slate-500"
                         }`}>
                           {node.status === "completed" ? <Check className="h-4.5 w-4.5" /> : 
@@ -681,7 +681,7 @@ function CareerDashboard() {
                         </div>
 
                         <div>
-                          <div className="text-xs font-bold text-[#e9feff] group-hover:text-[#00F5FF] transition flex items-center gap-2">
+                          <div className="text-xs font-bold text-[#e9feff] group-hover:text-[#3b82f6] transition flex items-center gap-2">
                             {node.title} 
                             <span className="text-[8px] font-mono uppercase text-muted-foreground">Milestone {i + 1}</span>
                           </div>
@@ -713,15 +713,15 @@ function CareerDashboard() {
                     <button 
                       key={c.id} 
                       onClick={() => handleCareerChange(c.title)} 
-                      className={`w-full flex items-center justify-between p-3.5 rounded-2xl border transition-all text-left ${selectedRoleOption === c.title ? "bg-[#00F5FF]/10 border-[#00F5FF]/30 text-white font-bold" : "bg-slate-800/40 border-slate-700/30 text-blue-200/70 hover:bg-slate-800/60"}`}
+                      className={`w-full flex items-center justify-between p-3.5 rounded-2xl border transition-all text-left ${selectedRoleOption === c.title ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white font-bold" : "bg-slate-800/40 border-slate-700/30 text-blue-200/70 hover:bg-slate-800/60"}`}
                     >
                       <span className="text-xs font-semibold">{c.title}</span>
-                      <span className="text-[10px] font-mono text-[#00F5FF]">{c.match} fit</span>
+                      <span className="text-[10px] font-mono text-[#3b82f6]">{c.match} fit</span>
                     </button>
                   ))}
                 </div>
               </div>
-              <div className="mt-4 bg-[#8B5CF6]/5 border border-[#8B5CF6]/20 p-3 rounded-xl text-[10px] text-[#8B5CF6] leading-relaxed font-mono">
+              <div className="mt-4 bg-[#6366f1]/5 border border-[#6366f1]/20 p-3 rounded-xl text-[10px] text-[#6366f1] leading-relaxed font-mono">
                 Projections updated based on recent India hiring audits.
               </div>
             </GlassCard>
@@ -737,9 +737,9 @@ function CareerDashboard() {
               onClick={() => { setSelectedSector(s); showLocalToast(`Loaded salary metrics for ${s.title}`, Info); }} 
               className="cursor-pointer"
             >
-              <GlassCard className="h-full bg-[#0b1530] border border-blue-500/20 text-white shadow-lg hover:border-[#00F5FF]/20 transition-all">
+              <GlassCard className="h-full bg-[#0b1530] border border-blue-500/20 text-white shadow-lg hover:border-[#3b82f6]/20 transition-all">
                 <div className="flex items-start justify-between mb-2.5">
-                  <div className="h-8.5 w-8.5 rounded-lg bg-[#00F5FF]/10 text-[#00F5FF] flex items-center justify-center">
+                  <div className="h-8.5 w-8.5 rounded-lg bg-[#3b82f6]/10 text-[#3b82f6] flex items-center justify-center">
                     {idx === 0 && <Laptop className="h-4.5 w-4.5" />}
                     {idx === 1 && <Cpu className="h-4.5 w-4.5" />}
                     {idx === 2 && <Shield className="h-4.5 w-4.5" />}
@@ -764,10 +764,10 @@ function CareerDashboard() {
                 exit={{ scale: 0.95, opacity: 0 }} 
                 className="w-full max-w-sm bg-[#0b1530] border border-blue-500/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden text-white font-sans text-xs"
               >
-                <div className="absolute top-0 right-0 w-32 h-32 bg-[#00f5ff]/5 rounded-full blur-2xl pointer-events-none" />
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#3b82f6]/5 rounded-full blur-2xl pointer-events-none" />
                 <div className="flex items-center justify-between pb-3 border-b border-white/5 mb-4">
                   <h4 className="font-display font-extrabold text-sm text-white flex items-center gap-1.5">
-                    <BookOpen className="h-4.5 w-4.5 text-[#00f5ff]" />
+                    <BookOpen className="h-4.5 w-4.5 text-[#3b82f6]" />
                     Milestone Syllabus
                   </h4>
                   <button onClick={() => setActiveNodeDetail(null)} className="text-muted-foreground hover:text-white transition">
@@ -784,14 +784,14 @@ function CareerDashboard() {
                     <p className="mt-1 leading-relaxed">{activeNodeDetail.desc}</p>
                   </div>
                   <div className="bg-[#050816] p-3 rounded-xl border border-white/5 space-y-1.5 font-mono text-[9px]">
-                    <div className="text-[#00F5FF] uppercase font-bold">Suggested Study Resources:</div>
+                    <div className="text-[#3b82f6] uppercase font-bold">Suggested Study Resources:</div>
                     <div>• MIT 6.S191 deep reinforcement lecture maps</div>
                     <div>• PyTorch distributed inference manuals</div>
                   </div>
                   {activeNodeDetail.status !== "locked" ? (
                     <button 
                       onClick={() => { setActiveNodeDetail(null); showLocalToast("Module Study Session Initiated! +50 XP", Zap); }} 
-                      className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#00F5FF] to-[#8B5CF6] text-xs font-bold text-[#050816] transition hover:shadow-lg"
+                      className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#3b82f6] to-[#6366f1] text-xs font-bold text-[#050816] transition hover:shadow-lg"
                     >
                       Start Study Unit
                     </button>
@@ -814,7 +814,7 @@ function CareerDashboard() {
                 exit={{ scale: 0.95, opacity: 0 }} 
                 className="w-full max-w-sm bg-[#0b1530] border border-blue-500/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden text-white font-sans text-xs"
               >
-                <div className="absolute top-0 right-0 w-32 h-32 bg-[#8b5cf6]/5 rounded-full blur-2xl pointer-events-none" />
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#6366f1]/5 rounded-full blur-2xl pointer-events-none" />
                 <div className="flex items-center justify-between pb-3 border-b border-white/5 mb-4">
                   <h4 className="font-display font-extrabold text-sm text-white flex items-center gap-1.5">
                     <Info className="h-4.5 w-4.5 text-amber-400" />
@@ -836,7 +836,7 @@ function CareerDashboard() {
                   </div>
                   <button 
                     onClick={() => { setViewingSkillGap(false); showLocalToast("Skill gap targets added to study roadmap!", Target); }} 
-                    className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#00F5FF] to-[#8B5CF6] text-xs font-bold text-[#050816] transition hover:shadow-lg"
+                    className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#3b82f6] to-[#6366f1] text-xs font-bold text-[#050816] transition hover:shadow-lg"
                   >
                     Add Skills to Study Path
                   </button>
@@ -854,7 +854,7 @@ function CareerDashboard() {
                 exit={{ scale: 0.95, opacity: 0 }} 
                 className="w-full max-w-sm bg-[#0b1530] border border-blue-500/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden text-white font-sans text-xs"
               >
-                <div className="absolute top-0 right-0 w-32 h-32 bg-[#00f5ff]/5 rounded-full blur-2xl pointer-events-none" />
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#3b82f6]/5 rounded-full blur-2xl pointer-events-none" />
                 <div className="flex items-center justify-between pb-3 border-b border-white/5 mb-4">
                   <h4 className="font-display font-extrabold text-sm text-white">{selectedSector.title} Metrics</h4>
                   <button onClick={() => setSelectedSector(null)} className="text-muted-foreground hover:text-white transition">
@@ -873,16 +873,16 @@ function CareerDashboard() {
                   <div className="grid grid-cols-2 gap-3 bg-[#050816] p-3.5 rounded-xl border border-white/5">
                     <div>
                       <div className="text-[9px] text-slate-400 uppercase font-mono">Avg Salary US</div>
-                      <div className="text-sm font-bold text-[#00f5ff] mt-0.5">{selectedSector.salaryUS}</div>
+                      <div className="text-sm font-bold text-[#3b82f6] mt-0.5">{selectedSector.salaryUS}</div>
                     </div>
                     <div>
                       <div className="text-[9px] text-slate-400 uppercase font-mono">Avg Salary India</div>
-                      <div className="text-sm font-bold text-[#00f5ff] mt-0.5">{selectedSector.salaryIN}</div>
+                      <div className="text-sm font-bold text-[#3b82f6] mt-0.5">{selectedSector.salaryIN}</div>
                     </div>
                   </div>
                   <button 
                     onClick={() => { setSelectedSector(null); handleCareerChange(selectedSector.title); }} 
-                    className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#00F5FF] to-[#8B5CF6] text-xs font-bold text-[#050816] transition hover:shadow-lg"
+                    className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#3b82f6] to-[#6366f1] text-xs font-bold text-[#050816] transition hover:shadow-lg"
                   >
                     Set Target Career in Sector
                   </button>

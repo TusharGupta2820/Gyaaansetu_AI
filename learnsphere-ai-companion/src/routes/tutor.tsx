@@ -10,8 +10,10 @@ import {
 } from "lucide-react";
 import {
   tutorChatStream, tutorVoiceChat, solveImageQuestion,
-  ragIngestFile, ragGetStats, checkBackendHealth, type RagStats
+  ragIngestFile, ragGetStats, checkBackendHealth, type RagStats,
+  API_BASE
 } from "@/lib/api/ai.service";
+import { loadDashboardData, updateUserProfile } from "@/lib/api/dashboard.functions";
 
 export const Route = createFileRoute("/tutor")({
   head: () => ({ meta: [{ title: "AI Tutor — GyaanSetu AI" }] }),
@@ -19,7 +21,7 @@ export const Route = createFileRoute("/tutor")({
 });
 
 const langs = ["English","Hindi","Marathi","Gujarati","Tamil","Telugu","Bengali","Kannada","Malayalam","Punjabi"];
-const modes = ["Explain Like I'm 10","Exam Preparation","Quick Revision","Deep Learning","Competitive Exam Mode","Interview Mode"];
+const modes = ["Explain Like I'm 10","Exam Preparation","Quick Revision","Deep Learning","Competitive Exam Mode","Interview Mode","ATL VTR Mode"];
 
 type Msg = { role: "user" | "ai"; text: string; isStreaming?: boolean; audioUrl?: string; imageUrl?: string };
 
@@ -80,6 +82,16 @@ function Tutor() {
 
     checkBackendHealth().then(setBackendOnline);
     ragGetStats(userId).then(setRagStats).catch(() => {});
+
+    // Load profile context
+    loadDashboardData({ data: { userId } })
+      .then((data) => {
+        if (data.profile) {
+          if (data.profile.explanationStyle) setMode(data.profile.explanationStyle);
+          if (data.profile.preferredLang) setLang(data.profile.preferredLang);
+        }
+      })
+      .catch((err) => console.error("Error loading user context:", err));
 
     try {
       const stored = localStorage.getItem("gyaansetu_tutor_sessions");
@@ -249,8 +261,16 @@ function Tutor() {
     setStreaming(true);
     setMessages(prev => [...prev, { role: "ai", text: "", isStreaming: true }]);
 
+    // Compile recent chat history context to give the model memory (especially for ATL/VTR Mode)
+    const recentHistory = messages
+      .filter(m => m.text && !m.isStreaming)
+      .slice(-8)
+      .map(m => `${m.role === 'user' ? 'Student' : 'AI Tutor'}: ${m.text}`)
+      .join('\n');
+    const promptMessage = recentHistory ? `${recentHistory}\nStudent: ${text}` : text;
+
     await tutorChatStream(
-      { message: text, language: lang, mode, user_id: userId, use_rag: ragEnabled },
+      { message: promptMessage, language: lang, mode, user_id: userId, use_rag: ragEnabled },
       {
         onToken: appendToLastAi,
         onDone: finaliseStream,
@@ -390,7 +410,7 @@ function Tutor() {
         `}>
           <GlassCard className="flex flex-col p-4 overflow-hidden bg-[#0b1530] border border-blue-500/20 text-white shadow-lg h-full w-full rounded-none lg:rounded-2xl">
             <div className="flex items-center justify-between mb-4 pb-2 border-b border-white/5">
-              <span className="text-xs font-bold text-[#00F5FF] tracking-wider flex items-center gap-1.5 uppercase">
+              <span className="text-xs font-bold text-[#3b82f6] tracking-wider flex items-center gap-1.5 uppercase">
                 <MessageSquare className="h-3.5 w-3.5" /> Recent Chats
               </span>
               <button
@@ -411,7 +431,7 @@ function Tutor() {
                     onClick={() => { selectSession(s.id); if (window.innerWidth < 1024) setShowHistory(false); }}
                     className={`group flex items-center justify-between px-2.5 py-2 rounded-lg cursor-pointer transition text-xs ${
                       isActive
-                        ? "bg-gradient-to-r from-[#00F5FF]/10 to-[#8B5CF6]/10 border border-[#00F5FF]/20 text-[#00F5FF] font-medium"
+                        ? "bg-gradient-to-r from-[#3b82f6]/10 to-[#6366f1]/10 border border-[#3b82f6]/20 text-[#3b82f6] font-medium"
                         : "hover:bg-slate-800/40 text-blue-200/80 hover:text-white"
                     }`}
                   >
@@ -441,13 +461,13 @@ function Tutor() {
               <button
                 onClick={() => setShowHistory(h => !h)}
                 className={`p-1.5 rounded-lg border border-slate-700/40 transition hover:bg-slate-800/60 ${
-                  showHistory ? "text-[#00F5FF]" : "text-blue-200"
+                  showHistory ? "text-[#3b82f6]" : "text-blue-200"
                 }`}
                 title={showHistory ? "Hide sidebar" : "Show sidebar"}
               >
                 <Menu className="h-4 w-4" />
               </button>
-              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[#00F5FF] to-[#8B5CF6] flex items-center justify-center glow-cyan">
+              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[#3b82f6] to-[#6366f1] flex items-center justify-center glow-cyan">
                 <Bot className="h-5 w-5 text-[#050816]" />
               </div>
               <div>
@@ -456,7 +476,7 @@ function Tutor() {
                   <span className={`h-1.5 w-1.5 rounded-full ${backendOnline ? "bg-[#22C55E]" : "bg-red-500"}`} />
                   {mode} · {lang}
                   {ragEnabled && ragStats && (
-                    <span className="text-[#00F5FF] text-[9px] font-mono">
+                    <span className="text-[#3b82f6] text-[9px] font-mono">
                       · RAG ({ragStats.chunk_count} chunks)
                     </span>
                   )}
@@ -467,7 +487,7 @@ function Tutor() {
               <button
                 onClick={() => setShowSettings(s => !s)}
                 className={`lg:hidden p-1.5 rounded-lg border border-slate-700/40 transition hover:bg-slate-800/60 ${
-                  showSettings ? "text-[#00F5FF]" : "text-blue-200"
+                  showSettings ? "text-[#3b82f6]" : "text-blue-200"
                 }`}
                 title="Toggle settings"
               >
@@ -477,7 +497,7 @@ function Tutor() {
                 onClick={() => setShowRagPanel(p => !p)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition border ${
                   ragEnabled
-                    ? "bg-[#00F5FF]/10 border-[#00F5FF]/30 text-[#00F5FF]"
+                    ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-[#3b82f6]"
                     : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
                 }`}
               >
@@ -488,7 +508,7 @@ function Tutor() {
                 onClick={startNewChat}
                 className="bg-slate-800/40 border border-slate-700/30 text-blue-200 hover:bg-slate-800/60 rounded-lg px-3 py-1.5 text-xs flex items-center gap-1.5 transition"
               >
-                <Sparkles className="h-3 w-3 text-[#00F5FF]" /> New Chat
+                <Sparkles className="h-3 w-3 text-[#3b82f6]" /> New Chat
               </button>
             </div>
           </div>
@@ -503,7 +523,7 @@ function Tutor() {
                 className="border-b border-white/5 bg-[#050816]/60 p-4 space-y-3 overflow-hidden"
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-[#00F5FF]">📚 Knowledge Base (RAG)</span>
+                  <span className="text-xs font-bold text-[#3b82f6]">📚 Knowledge Base (RAG)</span>
                   {ragStats && (
                     <span className="text-[10px] font-mono text-blue-200/60">
                       {ragStats.chunk_count} chunks stored
@@ -524,7 +544,7 @@ function Tutor() {
                         e.target.value = "";
                       }}
                     />
-                    <div className="w-full py-2 rounded-lg bg-[#00F5FF]/10 border border-[#00F5FF]/20 text-[#00F5FF] text-xs font-bold text-center hover:bg-[#00F5FF]/20 transition flex items-center justify-center gap-1.5">
+                    <div className="w-full py-2 rounded-lg bg-[#3b82f6]/10 border border-[#3b82f6]/20 text-[#3b82f6] text-xs font-bold text-center hover:bg-[#3b82f6]/20 transition flex items-center justify-center gap-1.5">
                       {ingesting ? <Loader2 className="h-3 w-3 animate-spin" /> : <Upload className="h-3 w-3" />}
                       {ingesting ? "Ingesting…" : "Upload to RAG"}
                     </div>
@@ -553,7 +573,7 @@ function Tutor() {
                   className={`flex gap-3 ${m.role === "user" ? "justify-end" : ""}`}
                 >
                   {m.role === "ai" && (
-                    <div className="h-8 w-8 shrink-0 rounded-lg bg-gradient-to-br from-[#00F5FF] to-[#8B5CF6] flex items-center justify-center">
+                    <div className="h-8 w-8 shrink-0 rounded-lg bg-gradient-to-br from-[#3b82f6] to-[#6366f1] flex items-center justify-center">
                       <Bot className="h-4 w-4 text-[#050816]" />
                     </div>
                   )}
@@ -563,16 +583,16 @@ function Tutor() {
                     )}
                     <div className={`rounded-2xl px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
                       m.role === "user"
-                        ? "bg-gradient-to-br from-[#00F5FF] to-[#8B5CF6] text-[#050816] font-medium"
+                        ? "bg-gradient-to-br from-[#3b82f6] to-[#6366f1] text-[#050816] font-medium"
                         : "bg-slate-900/40 border border-white/5 text-blue-100"
                     }`}>
                       {m.text}
                       {m.isStreaming && (
-                        <span className="inline-block w-1.5 h-4 bg-[#00F5FF] ml-1 animate-pulse rounded-sm" />
+                        <span className="inline-block w-1.5 h-4 bg-[#3b82f6] ml-1 animate-pulse rounded-sm" />
                       )}
                     </div>
                     {m.audioUrl && (
-                      <audio controls src={`http://localhost:8000${m.audioUrl}`} className="h-8 w-48 opacity-80" />
+                      <audio controls src={`${API_BASE}${m.audioUrl}`} className="h-8 w-48 opacity-80" />
                     )}
                   </div>
                   {m.role === "user" && (
@@ -630,7 +650,7 @@ function Tutor() {
               <button
                 onClick={() => send()}
                 disabled={streaming || (!input.trim() && !recording)}
-                className="rounded-lg bg-gradient-to-r from-[#00F5FF] to-[#8B5CF6] p-2 text-[#050816] glow-cyan disabled:opacity-40 transition"
+                className="rounded-lg bg-gradient-to-r from-[#3b82f6] to-[#6366f1] p-2 text-[#050816] glow-cyan disabled:opacity-40 transition"
               >
                 {streaming ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
               </button>
@@ -652,7 +672,7 @@ function Tutor() {
         `}>
           {/* Close button for mobile settings */}
           <div className="flex lg:hidden items-center justify-between pb-2 border-b border-white/5">
-            <span className="text-xs font-bold text-[#00F5FF] tracking-wider uppercase flex items-center gap-1.5">
+            <span className="text-xs font-bold text-[#3b82f6] tracking-wider uppercase flex items-center gap-1.5">
               <Globe2 className="h-3.5 w-3.5" /> Settings
             </span>
             <button
@@ -682,9 +702,17 @@ function Tutor() {
             </div>
             <div className="space-y-1.5">
               {modes.map(m => (
-                <button key={m} onClick={() => { setMode(m); if (window.innerWidth < 1024) setShowSettings(false); }}
+                <button key={m} onClick={async () => { 
+                  setMode(m); 
+                  if (window.innerWidth < 1024) setShowSettings(false); 
+                  try {
+                    await updateUserProfile({ data: { userId, explanationStyle: m } });
+                  } catch (e) {
+                    console.error(e);
+                  }
+                }}
                   className={`w-full text-left text-xs rounded-lg px-3 py-2 transition ${
-                    mode === m ? "bg-[#00F5FF]/10 text-[#00F5FF] border border-[#00F5FF]/20 font-semibold" : "hover:bg-slate-800/40 text-blue-200/80"
+                    mode === m ? "bg-[#3b82f6]/10 text-[#3b82f6] border border-[#3b82f6]/20 font-semibold" : "hover:bg-slate-800/40 text-blue-200/80"
                   }`}>
                   {m}
                 </button>
@@ -699,9 +727,17 @@ function Tutor() {
             </div>
             <div className="grid grid-cols-2 gap-1.5">
               {langs.map(l => (
-                <button key={l} onClick={() => { setLang(l); if (window.innerWidth < 1024) setShowSettings(false); }}
+                <button key={l} onClick={async () => { 
+                  setLang(l); 
+                  if (window.innerWidth < 1024) setShowSettings(false); 
+                  try {
+                    await updateUserProfile({ data: { userId, preferredLang: l } });
+                  } catch (e) {
+                    console.error(e);
+                  }
+                }}
                   className={`text-xs rounded-lg px-2 py-1.5 transition ${
-                    lang === l ? "bg-[#00F5FF]/10 text-[#00F5FF] border border-[#00F5FF]/30 font-semibold" : "bg-slate-800/40 border border-slate-700/20 text-blue-200/80 hover:bg-slate-800/60"
+                    lang === l ? "bg-[#3b82f6]/10 text-[#3b82f6] border border-[#3b82f6]/30 font-semibold" : "bg-slate-800/40 border border-slate-700/20 text-blue-200/80 hover:bg-slate-800/60"
                   }`}>
                   {l}
                 </button>

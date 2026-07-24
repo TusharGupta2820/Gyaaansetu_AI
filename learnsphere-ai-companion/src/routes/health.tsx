@@ -23,15 +23,15 @@ export const Route = createFileRoute("/health")({
 
 // App usage database for Screen Time
 const TODAY_APPS = [
-  { name: "VS Code / IDE", hours: 4.2, color: "bg-[#00f5ff]" },
-  { name: "GyaanSetu AI local chat", hours: 1.4, color: "bg-[#8b5cf6]" },
+  { name: "VS Code / IDE", hours: 4.2, color: "bg-[#3b82f6]" },
+  { name: "GyaanSetu AI local chat", hours: 1.4, color: "bg-[#6366f1]" },
   { name: "Browser (Docs)", hours: 1.1, color: "bg-emerald-500" },
   { name: "Social / Media", hours: 0.3, color: "bg-red-500" }
 ];
 
 const YESTERDAY_APPS = [
-  { name: "VS Code / IDE", hours: 5.1, color: "bg-[#00f5ff]" },
-  { name: "GyaanSetu AI local chat", hours: 1.9, color: "bg-[#8b5cf6]" },
+  { name: "VS Code / IDE", hours: 5.1, color: "bg-[#3b82f6]" },
+  { name: "GyaanSetu AI local chat", hours: 1.9, color: "bg-[#6366f1]" },
   { name: "Browser (Docs)", hours: 1.5, color: "bg-emerald-500" },
   { name: "Social / Media", hours: 0.9, color: "bg-red-500" }
 ];
@@ -301,9 +301,9 @@ function HealthDashboard() {
             initial={{ opacity: 0, y: -50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.9 }}
-            className="fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border border-[#00F5FF]/30 shadow-2xl flex items-center gap-3 bg-[#0d1322] max-w-sm"
+            className="fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border border-[#3b82f6]/30 shadow-2xl flex items-center gap-3 bg-[#0d1322] max-w-sm"
           >
-            <div className="h-8 w-8 rounded-lg bg-[#00F5FF]/10 text-[#00F5FF] flex items-center justify-center shrink-0">
+            <div className="h-8 w-8 rounded-lg bg-[#3b82f6]/10 text-[#3b82f6] flex items-center justify-center shrink-0">
               <toast.icon className="h-4.5 w-4.5" />
             </div>
             <div className="text-xs font-semibold text-white">{toast.message}</div>
@@ -325,7 +325,7 @@ function HealthDashboard() {
         <div className="flex flex-col gap-4">
           <div className="flex justify-between items-center pb-2 border-b border-white/5">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-4.5 w-4.5 text-[#00f5ff]" />
+              <Sparkles className="h-4.5 w-4.5 text-[#3b82f6]" />
               <span className="font-display font-bold text-sm text-white">AI Health Sync</span>
             </div>
             <span className="text-[9px] font-mono text-blue-300 uppercase tracking-wider">Upload Wearable Export or Log Mood</span>
@@ -339,11 +339,11 @@ function HealthDashboard() {
                 setVoiceText("");
               }}
               className={`flex items-center justify-between p-3 rounded-xl border transition text-left ${
-                hubMode === "voice" ? "bg-[#00f5ff]/10 border-[#00f5ff]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
+                hubMode === "voice" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
               }`}
             >
               <div className="flex items-center gap-2">
-                <Mic className="h-4 w-4 text-[#00f5ff]" />
+                <Mic className="h-4 w-4 text-[#3b82f6]" />
                 <span className="text-xs font-semibold">Voice Mood Log</span>
               </div>
               <ChevronRight className="h-3.5 w-3.5" />
@@ -356,11 +356,11 @@ function HealthDashboard() {
                 setSelectedFile(null);
               }}
               className={`flex items-center justify-between p-3 rounded-xl border transition text-left ${
-                hubMode === "upload" ? "bg-[#00f5ff]/10 border-[#00f5ff]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
+                hubMode === "upload" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
               }`}
             >
               <div className="flex items-center gap-2">
-                <Paperclip className="h-4 w-4 text-[#00f5ff]" />
+                <Paperclip className="h-4 w-4 text-[#3b82f6]" />
                 <span className="text-xs font-semibold">Upload Wearable Data</span>
               </div>
               <ChevronRight className="h-3.5 w-3.5" />
@@ -373,11 +373,11 @@ function HealthDashboard() {
                 setPastedText("");
               }}
               className={`flex items-center justify-between p-3 rounded-xl border transition text-left ${
-                hubMode === "text" ? "bg-[#00f5ff]/10 border-[#00f5ff]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
+                hubMode === "text" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
               }`}
             >
               <div className="flex items-center gap-2">
-                <FileText className="h-4 w-4 text-[#00f5ff]" />
+                <FileText className="h-4 w-4 text-[#3b82f6]" />
                 <span className="text-xs font-semibold">Paste Symptoms</span>
               </div>
               <ChevronRight className="h-3.5 w-3.5" />
@@ -428,7 +428,7 @@ function HealthDashboard() {
                     <button
                       onClick={handleVoiceSubmit}
                       disabled={submittingHub}
-                      className="px-4 py-2 rounded-lg bg-[#00F5FF] text-[#050816] text-xs font-bold hover:scale-105 transition ml-auto disabled:opacity-50"
+                      className="px-4 py-2 rounded-lg bg-[#3b82f6] text-[#050816] text-xs font-bold hover:scale-105 transition ml-auto disabled:opacity-50"
                     >
                       {submittingHub ? "Syncing..." : "Submit to AI"}
                     </button>
@@ -439,7 +439,7 @@ function HealthDashboard() {
 
             {hubMode === "upload" && (
               <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="p-4 bg-[#050816] rounded-xl border border-white/5 space-y-4">
-                <label className="border border-dashed border-white/10 rounded-xl p-6 flex flex-col items-center justify-center hover:border-[#00f5ff]/40 transition cursor-pointer">
+                <label className="border border-dashed border-white/10 rounded-xl p-6 flex flex-col items-center justify-center hover:border-[#3b82f6]/40 transition cursor-pointer">
                   <input
                     type="file"
                     accept=".csv"
@@ -453,7 +453,7 @@ function HealthDashboard() {
                       }
                     }}
                   />
-                  <FileUp className="h-8 w-8 text-[#00f5ff] mb-2" />
+                  <FileUp className="h-8 w-8 text-[#3b82f6] mb-2" />
                   {selectedFile ? (
                     <span className="text-xs text-white font-mono font-bold">{selectedFile}</span>
                   ) : (
@@ -464,7 +464,7 @@ function HealthDashboard() {
                   <button
                     onClick={handleWearableSubmit}
                     disabled={submittingHub}
-                    className="w-full py-2 rounded-lg bg-[#00F5FF] text-[#050816] text-xs font-bold hover:scale-[1.01] transition disabled:opacity-50"
+                    className="w-full py-2 rounded-lg bg-[#3b82f6] text-[#050816] text-xs font-bold hover:scale-[1.01] transition disabled:opacity-50"
                   >
                     {submittingHub ? "Analyzing wearable logs..." : "Sync Wearable CSV"}
                   </button>
@@ -478,13 +478,13 @@ function HealthDashboard() {
                   value={pastedText}
                   onChange={(e) => setPastedText(e.target.value)}
                   placeholder="Paste symptoms, energy logs, or water tallies..."
-                  className="w-full h-24 bg-black/40 border border-white/10 rounded-lg p-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#00f5ff]/40 font-mono"
+                  className="w-full h-24 bg-black/40 border border-white/10 rounded-lg p-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]/40 font-mono"
                 />
                 <div className="flex justify-end">
                   <button
                     onClick={handleSymptomsSubmit}
                     disabled={!pastedText || submittingHub}
-                    className="px-4 py-2 rounded-lg bg-[#00F5FF] text-[#050816] text-xs font-bold hover:scale-105 transition disabled:opacity-50"
+                    className="px-4 py-2 rounded-lg bg-[#3b82f6] text-[#050816] text-xs font-bold hover:scale-105 transition disabled:opacity-50"
                   >
                     {submittingHub ? "Analyzing..." : "Sync Notes"}
                   </button>
@@ -497,7 +497,7 @@ function HealthDashboard() {
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mt-2 p-4 rounded-xl bg-slate-900/60 border border-[#00f5ff]/20 text-xs space-y-2 relative"
+              className="mt-2 p-4 rounded-xl bg-slate-900/60 border border-[#3b82f6]/20 text-xs space-y-2 relative"
             >
               <button 
                 onClick={() => setAiResponse(null)}
@@ -505,7 +505,7 @@ function HealthDashboard() {
               >
                 <X className="h-4 w-4" />
               </button>
-              <div className="flex items-center gap-1.5 text-[#00f5ff] font-bold">
+              <div className="flex items-center gap-1.5 text-[#3b82f6] font-bold">
                 <Brain className="h-4 w-4" />
                 Asha (AI Wellness Coach):
               </div>
@@ -521,7 +521,7 @@ function HealthDashboard() {
           <div className="grid lg:grid-cols-[1fr_auto] gap-6 items-center">
             <div>
               <div className="inline-flex items-center gap-1.5 glass rounded-full px-3 py-1 text-xs">
-                <Sparkles className="h-3 w-3 text-[#00F5FF]" />
+                <Sparkles className="h-3 w-3 text-[#3b82f6]" />
                 Powered by GyaanSetu AI
               </div>
               <h1 className="mt-3 text-2xl lg:text-3xl font-display font-bold">
@@ -535,7 +535,7 @@ function HealthDashboard() {
               <button 
                 onClick={runWellnessCheck}
                 disabled={checking}
-                className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#00F5FF] to-[#8B5CF6] px-5 py-3 text-xs font-bold text-[#050816] glow-cyan hover:scale-[1.02] transition-all disabled:opacity-50"
+                className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#3b82f6] to-[#6366f1] px-5 py-3 text-xs font-bold text-[#050816] glow-cyan hover:scale-[1.02] transition-all disabled:opacity-50"
               >
                 {checking ? (
                   <>
@@ -556,19 +556,19 @@ function HealthDashboard() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
         <button 
           onClick={() => { setActiveModal("screentime"); showToast("Opening screen time app logs...", Clock); }}
-          className="bg-[#0b1530] border border-blue-500/20 p-4 rounded-2xl text-left hover:border-[#00F5FF]/30 transition hover:scale-[1.02] text-white shadow-lg"
+          className="bg-[#0b1530] border border-blue-500/20 p-4 rounded-2xl text-left hover:border-[#3b82f6]/30 transition hover:scale-[1.02] text-white shadow-lg"
         >
           <div className="text-[10px] text-blue-300 uppercase font-mono tracking-wider">Screen Time</div>
           <div className="text-xl font-bold text-white mt-1 leading-none">{Math.floor(screenHours)}h {Math.round((screenHours % 1) * 60)}m</div>
-          <div className="text-[9px] text-[#00F5FF] mt-2 underline">Click to view app breakdown</div>
+          <div className="text-[9px] text-[#3b82f6] mt-2 underline">Click to view app breakdown</div>
         </button>
         <button 
           onClick={() => { setActiveModal("sleep"); showToast("Opening sleep patterns insights...", Moon); }}
-          className="bg-[#0b1530] border border-blue-500/20 p-4 rounded-2xl text-left hover:border-[#8B5CF6]/30 transition hover:scale-[1.02] text-white shadow-lg"
+          className="bg-[#0b1530] border border-blue-500/20 p-4 rounded-2xl text-left hover:border-[#6366f1]/30 transition hover:scale-[1.02] text-white shadow-lg"
         >
           <div className="text-[10px] text-blue-300 uppercase font-mono tracking-wider">Sleep</div>
           <div className="text-xl font-bold text-white mt-1 leading-none">{sleepScore}h</div>
-          <div className="text-[9px] text-[#8B5CF6] mt-2 underline">Healthy range (7-8h)</div>
+          <div className="text-[9px] text-[#6366f1] mt-2 underline">Healthy range (7-8h)</div>
         </button>
         <button 
           onClick={() => { setActiveModal("breathing"); showToast("Opening breathing stress relief...", Activity); }}
@@ -597,7 +597,7 @@ function HealthDashboard() {
                 <h3 className="font-display font-bold text-base text-white">Water Intake</h3>
                 <p className="text-[11px] text-blue-200/60">Hydration tracker (Daily Target: 2.0L)</p>
               </div>
-              <span className="text-[9px] font-mono text-[#00F5FF] bg-[#00F5FF]/10 px-2 py-0.5 rounded">Goal: 8 cups</span>
+              <span className="text-[9px] font-mono text-[#3b82f6] bg-[#3b82f6]/10 px-2 py-0.5 rounded">Goal: 8 cups</span>
             </div>
 
             {/* Visual Glass cup */}
@@ -606,13 +606,13 @@ function HealthDashboard() {
               <div className="h-44 w-32 border-2 border-white/20 rounded-b-2xl rounded-t-lg relative overflow-hidden flex flex-col justify-end bg-slate-900/40">
                 {/* Water Level */}
                 <motion.div 
-                  className="w-full bg-[#00F5FF] relative shadow-[0_0_15px_rgba(0,245,255,0.4)]"
+                  className="w-full bg-[#3b82f6] relative shadow-[0_0_15px_rgba(59,130,246,0.4)]"
                   initial={{ height: "0%" }}
                   animate={{ height: `${(waterCups / 8) * 100}%` }}
                   transition={{ duration: 0.5, ease: "easeOut" }}
                 >
                   {/* Water waves effect */}
-                  <div className="absolute inset-x-0 -top-1.5 h-1.5 bg-[#00f5ff] opacity-80 animate-pulse" />
+                  <div className="absolute inset-x-0 -top-1.5 h-1.5 bg-[#3b82f6] opacity-80 animate-pulse" />
                 </motion.div>
               </div>
 
@@ -629,7 +629,7 @@ function HealthDashboard() {
 
             <button
               onClick={addWaterCup}
-              className="w-full py-2.5 rounded-xl bg-[#00F5FF] text-[#050816] text-xs font-bold glow-cyan hover:scale-[1.02] transition"
+              className="w-full py-2.5 rounded-xl bg-[#3b82f6] text-[#050816] text-xs font-bold glow-cyan hover:scale-[1.02] transition"
             >
               + Drink Glass (250ml)
             </button>
@@ -684,7 +684,7 @@ function HealthDashboard() {
             </div>
 
             <div className="text-[10px] text-blue-200/60 flex items-center gap-1 bg-slate-900/40 p-3 rounded-lg border border-white/5 mt-4">
-              <Info className="h-3.5 w-3.5 text-[#00f5ff]" /> GyaanSetu suggests taking a 20-second break every 2 hours of IDE focus.
+              <Info className="h-3.5 w-3.5 text-[#3b82f6]" /> GyaanSetu suggests taking a 20-second break every 2 hours of IDE focus.
             </div>
 
           </GlassCard>
@@ -717,11 +717,11 @@ function HealthDashboard() {
           >
             <GlassCard className="h-full bg-[#0b1530] border border-blue-500/20 text-white shadow-lg">
               <div className="flex items-start justify-between mb-3">
-                <div className="h-8.5 w-8.5 rounded-xl bg-gradient-to-br from-[#00F5FF] to-[#8B5CF6] flex items-center justify-center text-[#050816] font-bold text-xs">
+                <div className="h-8.5 w-8.5 rounded-xl bg-gradient-to-br from-[#3b82f6] to-[#6366f1] flex items-center justify-center text-[#050816] font-bold text-xs">
                   {String(i + 1).padStart(2, "0")}
                 </div>
                 {it.tag && (
-                  <span className="text-[8px] font-mono bg-[#00F5FF]/10 px-2 py-0.5 rounded text-[#00F5FF]">{it.tag}</span>
+                  <span className="text-[8px] font-mono bg-[#3b82f6]/10 px-2 py-0.5 rounded text-[#3b82f6]">{it.tag}</span>
                 )}
               </div>
               <h3 className="font-display font-bold text-xs text-white mb-1">{it.title}</h3>
@@ -741,13 +741,13 @@ function HealthDashboard() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-sm bg-[#0d1322] border border-[#00f5ff]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden"
+              className="w-full max-w-sm bg-[#0d1322] border border-[#3b82f6]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[#00f5ff]/5 rounded-full blur-2xl" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#3b82f6]/5 rounded-full blur-2xl" />
 
               <div className="flex items-center justify-between pb-3 border-b border-white/5 mb-4">
                 <h4 className="font-display font-extrabold text-sm text-white flex items-center gap-1.5">
-                  <Activity className="h-4.5 w-4.5 text-[#00f5ff]" />
+                  <Activity className="h-4.5 w-4.5 text-[#3b82f6]" />
                   Breathing Stress Regulator
                 </h4>
                 <button onClick={() => { setActiveModal(null); setBreathingActive(false); }} className="text-muted-foreground hover:text-white transition">
@@ -766,7 +766,7 @@ function HealthDashboard() {
                         : 1
                     }}
                     transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute inset-4 rounded-full bg-[#00f5ff]/10 border border-[#00f5ff]/30 shadow-[0_0_20px_rgba(0,245,255,0.15)] flex items-center justify-center"
+                    className="absolute inset-4 rounded-full bg-[#3b82f6]/10 border border-[#3b82f6]/30 shadow-[0_0_20px_rgba(59,130,246,0.15)] flex items-center justify-center"
                   />
                   <div className="absolute text-sm font-bold text-white font-mono leading-none z-10">
                     {breathingStep}
@@ -781,7 +781,7 @@ function HealthDashboard() {
                 <button
                   onClick={toggleBreathing}
                   className={`w-full py-2.5 rounded-xl text-xs font-bold transition ${
-                    breathingActive ? "bg-amber-500/20 text-amber-400 border border-amber-500/30" : "bg-[#00F5FF] text-[#050816] glow-cyan"
+                    breathingActive ? "bg-amber-500/20 text-amber-400 border border-amber-500/30" : "bg-[#3b82f6] text-[#050816] glow-cyan"
                   }`}
                 >
                   {breathingActive ? "Pause Breathing" : "Start 60s Breathing Exercise"}
@@ -799,13 +799,13 @@ function HealthDashboard() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-sm bg-[#0d1322] border border-[#00f5ff]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden"
+              className="w-full max-w-sm bg-[#0d1322] border border-[#3b82f6]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[#8b5cf6]/5 rounded-full blur-2xl" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#6366f1]/5 rounded-full blur-2xl" />
 
               <div className="flex items-center justify-between pb-3 border-b border-white/5 mb-4">
                 <h4 className="font-display font-extrabold text-sm text-white flex items-center gap-1.5">
-                  <Eye className="h-4.5 w-4.5 text-[#00f5ff]" />
+                  <Eye className="h-4.5 w-4.5 text-[#3b82f6]" />
                   20-20-20 Eye Rest Pacer
                 </h4>
                 <button onClick={() => { setActiveModal(null); setEyeTimerActive(false); }} className="text-muted-foreground hover:text-white transition">
@@ -814,13 +814,13 @@ function HealthDashboard() {
               </div>
 
               <div className="space-y-4 text-xs text-slate-300">
-                <div className="bg-[#00f5ff]/10 text-[#00f5ff] p-3.5 rounded-xl text-[10.5px] leading-relaxed">
+                <div className="bg-[#3b82f6]/10 text-[#3b82f6] p-3.5 rounded-xl text-[10.5px] leading-relaxed">
                   <b>20-20-20 Rule:</b> Every 20 minutes, look at an object 20 feet away for at least 20 seconds.
                 </div>
                 {eyeTimerActive ? (
                   <div className="flex flex-col items-center justify-center py-4 space-y-2">
-                    <div className="h-20 w-20 rounded-full border-4 border-dashed border-[#00f5ff] animate-spin flex items-center justify-center">
-                      <Eye className="h-8 w-8 text-[#00f5ff] animate-pulse" />
+                    <div className="h-20 w-20 rounded-full border-4 border-dashed border-[#3b82f6] animate-spin flex items-center justify-center">
+                      <Eye className="h-8 w-8 text-[#3b82f6] animate-pulse" />
                     </div>
                     <div className="text-base font-bold font-mono text-white mt-2">
                       Looking 20ft away: {eyeTimer}s
@@ -841,7 +841,7 @@ function HealthDashboard() {
                       showToast("Ocular rest timer started.", Eye);
                     }
                   }}
-                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#00F5FF] to-[#8B5CF6] text-xs font-bold text-[#050816] transition hover:shadow-lg"
+                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#3b82f6] to-[#6366f1] text-xs font-bold text-[#050816] transition hover:shadow-lg"
                 >
                   {eyeTimerActive ? "Cancel Timer" : "Start Ocular Rest Timer (20s)"}
                 </button>
@@ -858,13 +858,13 @@ function HealthDashboard() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-sm bg-[#0d1322] border border-[#00f5ff]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden"
+              className="w-full max-w-sm bg-[#0d1322] border border-[#3b82f6]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[#8b5cf6]/5 rounded-full blur-2xl" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#6366f1]/5 rounded-full blur-2xl" />
 
               <div className="flex items-center justify-between pb-3 border-b border-white/5 mb-4">
                 <h4 className="font-display font-extrabold text-sm text-white flex items-center gap-1.5">
-                  <Moon className="h-4.5 w-4.5 text-[#8b5cf6]" />
+                  <Moon className="h-4.5 w-4.5 text-[#6366f1]" />
                   Hypnogram Sleep Stage Insights
                 </h4>
                 <button onClick={() => setActiveModal(null)} className="text-muted-foreground hover:text-white transition">
@@ -895,7 +895,7 @@ function HealthDashboard() {
                 <div className="p-3 bg-slate-900/60 border border-white/5 rounded-xl space-y-2">
                   <div className="flex justify-between items-center text-[11px]">
                     <span className="text-slate-300 font-semibold">Adjust Sleep Hours:</span>
-                    <span className="font-mono font-bold text-[#8b5cf6]">{sleepScore}h</span>
+                    <span className="font-mono font-bold text-[#6366f1]">{sleepScore}h</span>
                   </div>
                   <input 
                     type="range" 
@@ -904,22 +904,22 @@ function HealthDashboard() {
                     step="0.5"
                     value={sleepScore} 
                     onChange={(e) => setSleepScore(parseFloat(e.target.value))}
-                    className="w-full accent-[#8b5cf6] bg-slate-800 h-1 rounded-lg appearance-none cursor-pointer"
+                    className="w-full accent-[#6366f1] bg-slate-800 h-1 rounded-lg appearance-none cursor-pointer"
                   />
                   <button
                     onClick={() => {
                       syncWithBackend({ sleep_hours: sleepScore });
                       showToast("Sleep hours synced with backend!", Award);
                     }}
-                    className="w-full py-1.5 bg-[#8b5cf6]/10 hover:bg-[#8b5cf6]/20 border border-[#8b5cf6]/30 text-[#8b5cf6] rounded-lg text-[10px] font-bold transition"
+                    className="w-full py-1.5 bg-[#6366f1]/10 hover:bg-[#6366f1]/20 border border-[#6366f1]/30 text-[#6366f1] rounded-lg text-[10px] font-bold transition"
                   >
                     Sync with Database
                   </button>
                 </div>
 
                 {wearableInsights && (
-                  <div className="p-3 bg-[#8b5cf6]/10 border border-[#8b5cf6]/30 rounded-xl text-[10px] leading-relaxed text-slate-200">
-                    <b className="text-[#8b5cf6] block mb-1">Wearable Analytics:</b>
+                  <div className="p-3 bg-[#6366f1]/10 border border-[#6366f1]/30 rounded-xl text-[10px] leading-relaxed text-slate-200">
+                    <b className="text-[#6366f1] block mb-1">Wearable Analytics:</b>
                     <p className="italic font-mono text-[9px] leading-normal">{wearableInsights}</p>
                   </div>
                 )}
@@ -942,13 +942,13 @@ function HealthDashboard() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-sm bg-[#0d1322] border border-[#00f5ff]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden"
+              className="w-full max-w-sm bg-[#0d1322] border border-[#3b82f6]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[#00f5ff]/5 rounded-full blur-2xl" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#3b82f6]/5 rounded-full blur-2xl" />
 
               <div className="flex items-center justify-between pb-3 border-b border-white/5 mb-4">
                 <h4 className="font-display font-extrabold text-sm text-white flex items-center gap-1.5">
-                  <Clock className="h-4.5 w-4.5 text-[#00f5ff]" />
+                  <Clock className="h-4.5 w-4.5 text-[#3b82f6]" />
                   Active Apps Screen Log
                 </h4>
                 <button onClick={() => setActiveModal(null)} className="text-muted-foreground hover:text-white transition">
@@ -960,14 +960,14 @@ function HealthDashboard() {
                 {TODAY_APPS.map((a, idx) => (
                   <div key={idx} className="p-3 rounded-xl bg-[#050816] border border-white/5 flex justify-between items-center">
                     <span className="font-semibold text-slate-300">{a.name}</span>
-                    <span className="font-mono text-[#00f5ff]">{a.hours}h today</span>
+                    <span className="font-mono text-[#3b82f6]">{a.hours}h today</span>
                   </div>
                 ))}
 
                 <div className="p-3 bg-slate-900/60 border border-white/5 rounded-xl space-y-2 mt-4 text-white">
                   <div className="flex justify-between items-center text-[11px]">
                     <span className="text-slate-300 font-semibold">Total Screen Hours:</span>
-                    <span className="font-mono font-bold text-[#00f5ff]">{screenHours}h</span>
+                    <span className="font-mono font-bold text-[#3b82f6]">{screenHours}h</span>
                   </div>
                   <input 
                     type="range" 
@@ -976,14 +976,14 @@ function HealthDashboard() {
                     step="0.5"
                     value={screenHours} 
                     onChange={(e) => setScreenHours(parseFloat(e.target.value))}
-                    className="w-full accent-[#00f5ff] bg-slate-800 h-1 rounded-lg appearance-none cursor-pointer"
+                    className="w-full accent-[#3b82f6] bg-slate-800 h-1 rounded-lg appearance-none cursor-pointer"
                   />
                   <button
                     onClick={() => {
                       syncWithBackend({ screen_hours: screenHours });
                       showToast("Screen hours synced with backend!", Award);
                     }}
-                    className="w-full py-1.5 bg-[#00f5ff]/10 hover:bg-[#00f5ff]/20 border border-[#00f5ff]/30 text-[#00f5ff] rounded-lg text-[10px] font-bold transition"
+                    className="w-full py-1.5 bg-[#3b82f6]/10 hover:bg-[#3b82f6]/20 border border-[#3b82f6]/30 text-[#3b82f6] rounded-lg text-[10px] font-bold transition"
                   >
                     Sync with Database
                   </button>
@@ -1007,13 +1007,13 @@ function HealthDashboard() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-sm bg-[#0d1322] border border-[#00f5ff]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden"
+              className="w-full max-w-sm bg-[#0d1322] border border-[#3b82f6]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[#8b5cf6]/5 rounded-full blur-2xl" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#6366f1]/5 rounded-full blur-2xl" />
 
               <div className="flex items-center justify-between pb-3 border-b border-white/5 mb-4">
                 <h4 className="font-display font-extrabold text-sm text-white flex items-center gap-1.5">
-                  <Info className="h-4.5 w-4.5 text-[#00f5ff]" />
+                  <Info className="h-4.5 w-4.5 text-[#3b82f6]" />
                   {activeModal === "stress" ? "Wearable Index Sync" : "Wellness Report"}
                 </h4>
                 <button onClick={() => setActiveModal(null)} className="text-muted-foreground hover:text-white transition">
@@ -1026,13 +1026,13 @@ function HealthDashboard() {
                   <p>Synchronize stress markers via local wearable APIs:</p>
                   <div className="p-3 bg-[#050816] rounded-xl border border-white/5 space-y-1.5 font-mono text-[9.5px]">
                     <div className="flex justify-between"><span>Heart Rate Variability:</span> <span className="text-emerald-400">74 ms (Optimal)</span></div>
-                    <div className="flex justify-between"><span>Skin Conductance:</span> <span className="text-[#00f5ff]">1.2 μS</span></div>
+                    <div className="flex justify-between"><span>Skin Conductance:</span> <span className="text-[#3b82f6]">1.2 μS</span></div>
                     <div className="flex justify-between"><span>Wearable Connection:</span> <span className="text-emerald-400">CONNECTED</span></div>
-                    <div className="flex justify-between"><span>Aggregated Stress Level:</span> <span className="text-[#00f5ff] font-bold">{stressLevel}</span></div>
+                    <div className="flex justify-between"><span>Aggregated Stress Level:</span> <span className="text-[#3b82f6] font-bold">{stressLevel}</span></div>
                   </div>
                   {wearableInsights && (
-                    <div className="p-3 bg-[#8b5cf6]/10 border border-[#8b5cf6]/30 rounded-xl text-[10px] leading-relaxed text-slate-200">
-                      <b className="text-[#8b5cf6] block mb-1">Wearable Analytics:</b>
+                    <div className="p-3 bg-[#6366f1]/10 border border-[#6366f1]/30 rounded-xl text-[10px] leading-relaxed text-slate-200">
+                      <b className="text-[#6366f1] block mb-1">Wearable Analytics:</b>
                       <p className="italic font-mono text-[9px] leading-normal">{wearableInsights}</p>
                     </div>
                   )}
@@ -1049,7 +1049,7 @@ function HealthDashboard() {
                   
                   {wearableInsights && (
                     <div className="p-3 bg-slate-900/60 border border-white/5 rounded-xl text-[10px] leading-relaxed text-slate-200">
-                      <b className="text-[#00f5ff] block mb-1">Coach Diagnostic Analysis:</b>
+                      <b className="text-[#3b82f6] block mb-1">Coach Diagnostic Analysis:</b>
                       <p className="italic font-mono text-[9px] leading-normal">{wearableInsights}</p>
                     </div>
                   )}

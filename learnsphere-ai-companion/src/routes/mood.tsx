@@ -258,7 +258,7 @@ function MoodAssistantPage() {
   // Circle scaling animation based on breathing action
   const getScaleClass = () => {
     if (!breathingActive) return "scale-90 bg-blue-500/10 border-blue-500/30";
-    if (activePhase.action === "breathe-in") return "scale-125 bg-[#00F5FF]/20 border-[#00F5FF]/50 shadow-[0_0_40px_rgba(0,245,255,0.4)]";
+    if (activePhase.action === "breathe-in") return "scale-125 bg-[#3b82f6]/20 border-[#3b82f6]/50 shadow-[0_0_40px_rgba(59,130,246,0.4)]";
     if (activePhase.action === "breathe-out") return "scale-75 bg-purple-500/20 border-purple-500/50 shadow-[0_0_30px_rgba(139,92,246,0.3)]";
     return "scale-100 bg-amber-500/20 border-amber-500/50 shadow-[0_0_35px_rgba(245,158,11,0.35)]"; // hold
   };
@@ -277,7 +277,7 @@ function MoodAssistantPage() {
               className={`fixed top-6 right-6 z-50 px-4 py-3 rounded-xl border flex items-center gap-2.5 shadow-2xl backdrop-blur-md text-xs font-mono font-semibold ${
                 toast.type === 'success' ? 'bg-emerald-950/80 text-emerald-400 border-emerald-500/25' :
                 toast.type === 'error' ? 'bg-rose-950/80 text-rose-400 border-rose-500/25' :
-                'bg-[#0b1530]/85 text-[#00F5FF] border-[#00F5FF]/25'
+                'bg-[#0b1530]/85 text-[#3b82f6] border-[#3b82f6]/25'
               }`}
             >
               <span className="h-2 w-2 rounded-full bg-current animate-ping" />
@@ -295,8 +295,8 @@ function MoodAssistantPage() {
           <GradientCard className="p-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
               <div>
-                <div className="inline-flex items-center gap-1.5 rounded-full bg-[#00F5FF]/10 px-3 py-1 text-[10px] font-mono font-bold text-[#00F5FF] border border-[#00F5FF]/20">
-                  <Sparkles className="h-3 w-3 text-[#00F5FF]" />
+                <div className="inline-flex items-center gap-1.5 rounded-full bg-[#3b82f6]/10 px-3 py-1 text-[10px] font-mono font-bold text-[#3b82f6] border border-[#3b82f6]/20">
+                  <Sparkles className="h-3 w-3 text-[#3b82f6]" />
                   Empathetic Wellness Engine Active
                 </div>
                 <h1 className="mt-3 text-xl lg:text-2xl font-display font-bold text-white">Mood Assistant & AI Wellness</h1>
@@ -313,7 +313,7 @@ function MoodAssistantPage() {
                 </button>
                 <button 
                   onClick={startBreathing}
-                  className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#00F5FF] to-[#8B5CF6] px-4.5 py-2.5 text-xs font-bold text-[#050816] glow-cyan hover:scale-[1.02] transition-all"
+                  className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#3b82f6] to-[#6366f1] px-4.5 py-2.5 text-xs font-bold text-[#050816] glow-cyan hover:scale-[1.02] transition-all"
                 >
                   <Wind className="h-4 w-4" /> Start Breathing
                 </button>
@@ -339,7 +339,7 @@ function MoodAssistantPage() {
               stressLevel === "High" ? "text-rose-400" :
               stressLevel === "Moderate" ? "text-amber-400" :
               stressLevel === "Calm" ? "text-emerald-400 animate-pulse" :
-              "text-[#00F5FF]"
+              "text-[#3b82f6]"
             }`}>{stressLevel}</div>
             <div className="text-[9px] text-blue-200/60 mt-2">Autonomic nervous state</div>
           </div>
@@ -347,12 +347,12 @@ function MoodAssistantPage() {
           <div className="bg-[#0b1530] border border-blue-500/20 text-white shadow-md p-4.5 rounded-2xl flex flex-col justify-between">
             <div className="text-[10px] text-blue-200/70 uppercase font-mono tracking-wider">Focus Health Index</div>
             <div className="text-lg font-bold text-white mt-1.5 leading-none flex items-baseline gap-1">
-              <span className="text-xl font-extrabold text-[#00F5FF]">{focusIndex}</span>
+              <span className="text-xl font-extrabold text-[#3b82f6]">{focusIndex}</span>
               <span className="text-[10px] text-slate-400">/100</span>
             </div>
             <div className="w-full bg-white/5 h-1 rounded-full overflow-hidden mt-2">
               <div 
-                className="h-full bg-gradient-to-r from-[#00F5FF] to-[#8B5CF6] transition-all duration-500" 
+                className="h-full bg-gradient-to-r from-[#3b82f6] to-[#6366f1] transition-all duration-500" 
                 style={{ width: `${focusIndex}%` }} 
               />
             </div>
@@ -360,8 +360,8 @@ function MoodAssistantPage() {
           
           <div className="bg-[#0b1530] border border-blue-500/20 text-white shadow-md p-4.5 rounded-2xl flex flex-col justify-between">
             <div className="text-[10px] text-blue-200/70 uppercase font-mono tracking-wider">Weekly Streak</div>
-            <div className="text-lg font-bold text-[#8B5CF6] mt-1.5 leading-none flex items-center gap-1.5">
-              <Zap className="h-4.5 w-4.5 fill-[#8B5CF6] text-transparent" />
+            <div className="text-lg font-bold text-[#6366f1] mt-1.5 leading-none flex items-center gap-1.5">
+              <Zap className="h-4.5 w-4.5 fill-[#6366f1] text-transparent" />
               <span>{streak} Days</span>
             </div>
             <div className="text-[9px] text-blue-200/60 mt-2">Consistent wellness syncing</div>
@@ -378,7 +378,7 @@ function MoodAssistantPage() {
             <GlassCard className="p-6 bg-[#0b1530] border border-blue-500/20 text-white shadow-lg space-y-4">
               <div>
                 <h3 className="font-display font-extrabold text-base text-white flex items-center gap-2">
-                  <Smile className="h-5 w-5 text-[#00F5FF]" /> Daily Mood Check-in
+                  <Smile className="h-5 w-5 text-[#3b82f6]" /> Daily Mood Check-in
                 </h3>
                 <p className="text-[11px] text-muted-foreground mt-0.5">How is your mental wellness and learning productivity today?</p>
               </div>
@@ -408,7 +408,7 @@ function MoodAssistantPage() {
                   value={feelingText}
                   onChange={(e) => setFeelingText(e.target.value)}
                   placeholder="E.g. Feeling a bit tired and anxious about my React coding exam tomorrow..."
-                  className="w-full h-20 p-3 rounded-xl bg-black/35 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-[#00F5FF]/50 transition resize-none"
+                  className="w-full h-20 p-3 rounded-xl bg-black/35 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-[#3b82f6]/50 transition resize-none"
                 />
               </div>
 
@@ -416,7 +416,7 @@ function MoodAssistantPage() {
               <button
                 onClick={handleMoodSubmit}
                 disabled={loading || !feelingText.trim()}
-                className="w-full py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-[#00F5FF] hover:bg-slate-700/60 font-semibold text-xs flex items-center justify-center gap-2 transition disabled:opacity-40"
+                className="w-full py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-[#3b82f6] hover:bg-slate-700/60 font-semibold text-xs flex items-center justify-center gap-2 transition disabled:opacity-40"
               >
                 {loading ? <RefreshCw className="h-3.5 w-3.5 animate-spin" /> : <Brain className="h-3.5 w-3.5" />}
                 Analyze focus mood with Llama 3.1
@@ -427,9 +427,9 @@ function MoodAssistantPage() {
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="p-4 rounded-xl bg-[#00F5FF]/5 border border-[#00F5FF]/10 text-xs text-slate-200 leading-relaxed font-sans space-y-2"
+                  className="p-4 rounded-xl bg-[#3b82f6]/5 border border-[#3b82f6]/10 text-xs text-slate-200 leading-relaxed font-sans space-y-2"
                 >
-                  <div className="font-mono text-[9px] text-[#00F5FF] font-extrabold uppercase tracking-widest flex items-center gap-1.5">
+                  <div className="font-mono text-[9px] text-[#3b82f6] font-extrabold uppercase tracking-widest flex items-center gap-1.5">
                     <Sparkles className="h-3 w-3" /> Llama 3.1 Wellness Recommendation:
                   </div>
                   <p>{moodResult}</p>
@@ -441,7 +441,7 @@ function MoodAssistantPage() {
             <GlassCard className="p-6 bg-[#0b1530] border border-blue-500/20 text-white shadow-lg space-y-4 flex-1 flex flex-col justify-between">
               <div>
                 <h3 className="font-display font-extrabold text-base text-white flex items-center gap-2">
-                  <Wind className="h-5 w-5 text-[#8B5CF6]" /> Bio-Adaptive Breathing visualizer
+                  <Wind className="h-5 w-5 text-[#6366f1]" /> Bio-Adaptive Breathing visualizer
                 </h3>
                 <p className="text-[11px] text-muted-foreground mt-0.5">Control focus and lower stress with guided respiratory timing sessions.</p>
               </div>
@@ -457,7 +457,7 @@ function MoodAssistantPage() {
                     disabled={breathingActive}
                     className={`flex-1 p-2.5 rounded-xl border text-left transition ${
                       activeTechniqueIdx === idx
-                        ? "bg-[#8B5CF6]/10 border-[#8B5CF6]/30 text-white"
+                        ? "bg-[#6366f1]/10 border-[#6366f1]/30 text-white"
                         : "bg-slate-900/30 border-slate-800 text-slate-400 hover:text-slate-200"
                     }`}
                   >
@@ -504,7 +504,7 @@ function MoodAssistantPage() {
                 ) : (
                   <button
                     onClick={startBreathing}
-                    className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#00F5FF] to-[#8B5CF6] text-[#050816] font-extrabold text-xs flex items-center justify-center gap-1.5 transition hover:shadow-[0_0_15px_rgba(0,245,255,0.3)]"
+                    className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#3b82f6] to-[#6366f1] text-[#050816] font-extrabold text-xs flex items-center justify-center gap-1.5 transition hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]"
                   >
                     <Play className="h-3.5 w-3.5 fill-current" /> Start Breathing Guide (1 Min)
                   </button>
@@ -521,12 +521,12 @@ function MoodAssistantPage() {
               <div>
                 <div className="flex items-center justify-between pb-3 border-b border-white/5">
                   <div className="flex items-center gap-2">
-                    <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-[#00F5FF] to-[#8B5CF6] flex items-center justify-center shadow-md">
+                    <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-[#3b82f6] to-[#6366f1] flex items-center justify-center shadow-md">
                       <Sparkles className="h-4 w-4 text-[#050816]" />
                     </div>
                     <div>
                       <h3 className="font-display font-extrabold text-xs leading-none">Asha</h3>
-                      <span className="text-[8px] font-mono text-[#00F5FF]">empthatic companion</span>
+                      <span className="text-[8px] font-mono text-[#3b82f6]">empthatic companion</span>
                     </div>
                   </div>
                   <span className="text-[8px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Llama 3.1 Live</span>
@@ -544,13 +544,13 @@ function MoodAssistantPage() {
                       <div className={`h-6 w-6 rounded-full shrink-0 flex items-center justify-center text-[9px] ${
                         msg.role === 'user' 
                           ? 'bg-slate-700 text-white' 
-                          : 'bg-[#8B5CF6]/20 text-[#8B5CF6] border border-[#8B5CF6]/30'
+                          : 'bg-[#6366f1]/20 text-[#6366f1] border border-[#6366f1]/30'
                       }`}>
                         {msg.role === 'user' ? <User className="h-3 w-3" /> : 'A'}
                       </div>
                       <div className={`p-2.5 rounded-2xl ${
                         msg.role === 'user'
-                          ? 'bg-[#8B5CF6]/10 border border-[#8B5CF6]/20 text-[#e9feff] rounded-tr-none'
+                          ? 'bg-[#6366f1]/10 border border-[#6366f1]/20 text-[#e9feff] rounded-tr-none'
                           : 'bg-slate-800/40 border border-slate-700/30 text-slate-200 rounded-tl-none'
                       }`}>
                         {msg.content}
@@ -559,11 +559,11 @@ function MoodAssistantPage() {
                   ))}
                   {chatLoading && (
                     <div className="flex gap-2 text-[11px] mr-auto">
-                      <div className="h-6 w-6 rounded-full bg-[#8B5CF6]/20 text-[#8B5CF6] flex items-center justify-center text-[9px]">
+                      <div className="h-6 w-6 rounded-full bg-[#6366f1]/20 text-[#6366f1] flex items-center justify-center text-[9px]">
                         A
                       </div>
                       <div className="p-2.5 rounded-2xl bg-slate-800/40 border border-slate-700/30 text-slate-400 rounded-tl-none flex items-center gap-1.5">
-                        <RefreshCw className="h-3 w-3 animate-spin text-[#8B5CF6]" />
+                        <RefreshCw className="h-3 w-3 animate-spin text-[#6366f1]" />
                         thinking...
                       </div>
                     </div>
@@ -601,12 +601,12 @@ function MoodAssistantPage() {
                     onChange={(e) => setChatInput(e.target.value)}
                     onKeyDown={(e) => { if (e.key === 'Enter') handleChatSend(); }}
                     placeholder="Chat with Asha..."
-                    className="flex-1 px-3 py-2 rounded-xl bg-black/35 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-[#8B5CF6]/50 transition"
+                    className="flex-1 px-3 py-2 rounded-xl bg-black/35 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-[#6366f1]/50 transition"
                   />
                   <button
                     onClick={() => handleChatSend()}
                     disabled={chatLoading || !chatInput.trim()}
-                    className="p-2 rounded-xl bg-[#8B5CF6] text-[#050816] hover:bg-[#8B5CF6]/85 transition disabled:opacity-40"
+                    className="p-2 rounded-xl bg-[#6366f1] text-[#050816] hover:bg-[#6366f1]/85 transition disabled:opacity-40"
                   >
                     <Send className="h-3.5 w-3.5" />
                   </button>
@@ -618,7 +618,7 @@ function MoodAssistantPage() {
             <GlassCard className="p-6 bg-[#0b1530] border border-blue-500/20 text-white shadow-lg space-y-4">
               <div>
                 <h3 className="font-display font-extrabold text-base text-white flex items-center gap-2">
-                  <Activity className="h-5 w-5 text-[#00F5FF]" /> Wellness Metrics Sync
+                  <Activity className="h-5 w-5 text-[#3b82f6]" /> Wellness Metrics Sync
                 </h3>
                 <p className="text-[11px] text-muted-foreground mt-0.5">Input your daily tracking numbers to calculate the index.</p>
               </div>
@@ -637,7 +637,7 @@ function MoodAssistantPage() {
                     step="0.5" 
                     value={screenHours}
                     onChange={(e) => setScreenHours(parseFloat(e.target.value))}
-                    className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#00F5FF]" 
+                    className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#3b82f6]" 
                   />
                 </div>
 
@@ -674,7 +674,7 @@ function MoodAssistantPage() {
                     step="0.5" 
                     value={sleepHours}
                     onChange={(e) => setSleepHours(parseFloat(e.target.value))}
-                    className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#8B5CF6]" 
+                    className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#6366f1]" 
                   />
                 </div>
               </div>
@@ -683,7 +683,7 @@ function MoodAssistantPage() {
               <button
                 onClick={handleSyncHealth}
                 disabled={loading}
-                className="w-full py-2.5 rounded-xl bg-[#00F5FF]/10 border border-[#00F5FF]/20 text-[#00F5FF] hover:bg-[#00F5FF]/20 font-semibold text-xs flex items-center justify-center gap-1.5 transition"
+                className="w-full py-2.5 rounded-xl bg-[#3b82f6]/10 border border-[#3b82f6]/20 text-[#3b82f6] hover:bg-[#3b82f6]/20 font-semibold text-xs flex items-center justify-center gap-1.5 transition"
               >
                 {loading ? <RefreshCw className="h-3.5 w-3.5 animate-spin" /> : <Activity className="h-3.5 w-3.5" />}
                 Sync Daily Wellness Metrics

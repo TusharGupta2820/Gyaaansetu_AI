@@ -2,11 +2,12 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { GlassCard, PageHeader, GradientCard } from "@/components/ui-kit/Card";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   User, Sparkles, ShieldAlert, Award, Compass, Cpu, Check, 
   Smile, Activity, Zap, RefreshCw, Eye, Star, Info, X
 } from "lucide-react";
+import { loadDashboardData } from "@/lib/api/dashboard.functions";
 
 export const Route = createFileRoute("/avatar")({
   head: () => ({ meta: [{ title: "Your Avatar — GyaanSetu AI" }] }),
@@ -22,7 +23,7 @@ const OUTFITS = [
 ];
 
 const AURAS = [
-  { id: "cyan", name: "Cyan Glow", style: "rgba(0, 245, 255, 0.4)", tailwind: "shadow-[0_0_40px_rgba(0,245,255,0.5)] bg-[#00F5FF]/10 text-[#00F5FF]" },
+  { id: "cyan", name: "Cyan Glow", style: "rgba(59, 130, 246, 0.4)", tailwind: "shadow-[0_0_40px_rgba(59,130,246,0.5)] bg-[#3b82f6]/10 text-[#3b82f6]" },
   { id: "pink", name: "Soft Pink", style: "rgba(255, 175, 210, 0.4)", tailwind: "shadow-[0_0_40px_rgba(255,175,210,0.5)] bg-[#ffafd2]/10 text-[#ffafd2]" },
   { id: "gold", name: "Golden Spark", style: "rgba(245, 158, 11, 0.4)", tailwind: "shadow-[0_0_40px_rgba(245,158,11,0.5)] bg-[#F59E0B]/10 text-[#F59E0B]" },
   { id: "emerald", name: "Emerald Flame", style: "rgba(34, 197, 94, 0.4)", tailwind: "shadow-[0_0_40px_rgba(34,197,94,0.5)] bg-[#22C55E]/10 text-[#22C55E]" }
@@ -36,6 +37,9 @@ const BADGES = [
 ];
 
 function AvatarDashboard() {
+  const [profile, setProfile] = useState<any>(null);
+  const [userId, setUserId] = useState("");
+
   // Customization States
   const [activeOutfit, setActiveOutfit] = useState(OUTFITS[0]);
   const [activeAura, setActiveAura] = useState(AURAS[0]);
@@ -57,6 +61,28 @@ function AvatarDashboard() {
   // Toast Notification State
   const [toast, setToast] = useState<{ message: string; icon: any } | null>(null);
 
+  useEffect(() => {
+    const userStr = localStorage.getItem("gyaansetu_user");
+    if (userStr) {
+      try {
+        const u = JSON.parse(userStr);
+        if (u.id) {
+          setUserId(u.id);
+          loadDashboardData({ data: { userId: u.id } })
+            .then(data => {
+              if (data.profile) {
+                setProfile(data.profile);
+                setXp(Math.round(8000 + (data.stats.studyHours || 0.0) * 100));
+              }
+            })
+            .catch(console.error);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }, []);
+
   const showToast = (message: string, icon: any) => {
     setToast({ message, icon });
     setTimeout(() => setToast(null), 4000);
@@ -67,7 +93,9 @@ function AvatarDashboard() {
     setScanResult(null);
     setTimeout(() => {
       setScanning(false);
-      setScanResult("Neural DNA Synced: Cognitive logic path optimal. +150 XP awarded!");
+      const styleText = profile ? profile.learningStyle : "Visual";
+      const subjectText = profile ? profile.currentSubject : "Logic";
+      setScanResult(`Neural DNA Synced: Cognitive style path detected as ${styleText} study focus. Current target subject: ${subjectText}. +150 XP awarded!`);
       setXp(prev => prev + 150);
     }, 2000);
   };
@@ -75,13 +103,17 @@ function AvatarDashboard() {
   const handleStatClick = (label: string, value: string) => {
     let desc = "";
     if (label === "Learning Style") {
-      desc = "Your primary input channel is visual. You absorb complex systems 40% faster through flowchart node mapping and interactive radar analytics.";
+      const style = profile?.learningStyle || "Visual";
+      desc = `Your primary input channel is registered as ${style}. GyaanSetu AI has optimized your path resources to prioritize ${style === 'Visual' ? 'interactive radar analytics and flowchart nodes' : 'narratives, audio recordings and revision materials'}.`;
     } else if (label === "Personality") {
-      desc = "INTJ-A (Strategic Architect). You prefer logical deduction, structured timetables, and self-directed study units rather than collaborative peer groups.";
+      const mode = profile?.explanationStyle || "Deep Learning";
+      desc = `Studying under Mode: "${mode}". You prefer detailed explanations tailored for self-directed study units and deep-work cycles rather than peer group revisions.`;
     } else if (label === "Top Strength") {
-      desc = "Logic formulation. You are in the top 98th percentile of all local students. Your optimal learning path includes deep-work algorithmic theory.";
+      const strong = profile?.strongTopics && profile.strongTopics.length > 0 ? profile.strongTopics.join(", ") : "Analytical Logic";
+      desc = `Verified strength areas: ${strong}. You rank in the 98th percentile of students for conceptual comprehension on these topics. Your path prioritizes deep-work algorithmic theories.`;
     } else {
-      desc = "Growth edge in public speaking and audio description. Regular use of GyaanSetu 'Teach Back' tool is recommended to improve verbal syntax.";
+      const weak = profile?.weakTopics && profile.weakTopics.length > 0 ? profile.weakTopics.join(", ") : "speaking and audio descriptions";
+      desc = `Growth edge detected: ${weak}. AI engine recommends using the GyaanSetu 'Teach Back' tool on these topics to improve recall and verbal synthesis.`;
     }
     setSelectedStat({ label, value, desc });
   };
@@ -96,9 +128,9 @@ function AvatarDashboard() {
             initial={{ opacity: 0, y: -50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.9 }}
-            className="fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border border-[#00F5FF]/30 shadow-2xl flex items-center gap-3 bg-[#0d1322] max-w-sm"
+            className="fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border border-[#3b82f6]/30 shadow-2xl flex items-center gap-3 bg-[#0d1322] max-w-sm"
           >
-            <div className="h-8 w-8 rounded-lg bg-[#00F5FF]/10 text-[#00F5FF] flex items-center justify-center shrink-0">
+            <div className="h-8 w-8 rounded-lg bg-[#3b82f6]/10 text-[#3b82f6] flex items-center justify-center shrink-0">
               <toast.icon className="h-4.5 w-4.5" />
             </div>
             <div className="text-xs font-semibold text-white">{toast.message}</div>
@@ -122,7 +154,7 @@ function AvatarDashboard() {
           <GradientCard className="flex-1 flex flex-col justify-between relative overflow-hidden bg-[#0b1530] border border-blue-500/20 text-white shadow-lg p-6 min-h-[400px]">
             
             {/* Background elements */}
-            <div className="absolute inset-0 bg-[#00f5ff]/5 blur-[80px] pointer-events-none" />
+            <div className="absolute inset-0 bg-[#3b82f6]/5 blur-[80px] pointer-events-none" />
             
             {/* Top Info overlay */}
             <div className="flex justify-between items-start z-10">
@@ -130,7 +162,7 @@ function AvatarDashboard() {
                 <div className="text-[10px] font-mono text-muted-foreground uppercase">Hologram Interface</div>
                 <div className="text-sm font-bold text-white mt-0.5">DNA Aura Sync</div>
               </div>
-              <div className="glass px-2.5 py-1 rounded-lg text-[10px] font-mono text-[#00f5ff]">
+              <div className="glass px-2.5 py-1 rounded-lg text-[10px] font-mono text-[#3b82f6]">
                 XP: {xp}
               </div>
             </div>
@@ -156,8 +188,8 @@ function AvatarDashboard() {
                 </div>
 
                 {/* Rotating scanner rings */}
-                <div className="absolute inset-0 rounded-full border border-dashed border-[#00f5ff]/20 animate-spin [animation-duration:15s]" />
-                <div className="absolute -inset-3 rounded-full border border-dashed border-[#8b5cf6]/10 animate-spin [animation-duration:25s] [animation-direction:reverse]" />
+                <div className="absolute inset-0 rounded-full border border-dashed border-[#3b82f6]/20 animate-spin [animation-duration:15s]" />
+                <div className="absolute -inset-3 rounded-full border border-dashed border-[#6366f1]/10 animate-spin [animation-duration:25s] [animation-direction:reverse]" />
               </motion.div>
 
               {/* Scanning visual overlay */}
@@ -168,7 +200,7 @@ function AvatarDashboard() {
                     animate={{ top: "90%", opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 1.5, repeat: Infinity }}
-                    className="absolute inset-x-8 h-0.5 bg-gradient-to-r from-transparent via-[#00f5ff] to-transparent shadow-[0_0_8px_#00f5ff]"
+                    className="absolute inset-x-8 h-0.5 bg-gradient-to-r from-transparent via-[#3b82f6] to-transparent shadow-[0_0_8px_#3b82f6]"
                   />
                 )}
               </AnimatePresence>
@@ -177,7 +209,7 @@ function AvatarDashboard() {
             {/* Interactive Scanner controls */}
             <div className="space-y-3 z-10">
               {scanResult && (
-                <div className="bg-[#00f5ff]/5 border border-[#00f5ff]/20 rounded-xl p-3 text-[11px] text-[#00f5ff] font-mono">
+                <div className="bg-[#3b82f6]/5 border border-[#3b82f6]/20 rounded-xl p-3 text-[11px] text-[#3b82f6] font-mono">
                   {scanResult}
                 </div>
               )}
@@ -185,7 +217,7 @@ function AvatarDashboard() {
                 <button
                   onClick={runNeuralScan}
                   disabled={scanning}
-                  className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[#00F5FF] to-[#8B5CF6] py-2.5 text-xs font-bold text-[#050816] transition hover:shadow-lg disabled:opacity-50"
+                  className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[#3b82f6] to-[#6366f1] py-2.5 text-xs font-bold text-[#050816] transition hover:shadow-lg disabled:opacity-50"
                 >
                   <RefreshCw className={`h-4 w-4 ${scanning ? "animate-spin" : ""}`} /> 
                   {scanning ? "Syncing DNA..." : "Neural Scan Sync"}
@@ -231,7 +263,7 @@ function AvatarDashboard() {
                           onClick={() => { setActiveOutfit(outfit); showToast(`Outfit changed to ${outfit.name}`, Zap); }}
                           className={`flex items-center gap-2.5 p-3 rounded-xl border transition-all text-left ${
                             activeOutfit.id === outfit.id
-                              ? "bg-white/5 border-[#00f5ff]/40 text-white"
+                              ? "bg-white/5 border-[#3b82f6]/40 text-white"
                               : "glass hover:bg-white/5 border-white/5 text-muted-foreground"
                           }`}
                         >
@@ -252,7 +284,7 @@ function AvatarDashboard() {
                           onClick={() => { setActiveAura(aura); showToast(`Aura changed to ${aura.name}`, Zap); }}
                           className={`flex items-center gap-2.5 p-3 rounded-xl border transition-all text-left ${
                             activeAura.id === aura.id
-                              ? "bg-white/5 border-[#00f5ff]/40 text-white"
+                              ? "bg-white/5 border-[#3b82f6]/40 text-white"
                               : "glass border-white/5 text-muted-foreground hover:bg-white/5"
                           }`}
                         >
@@ -295,9 +327,9 @@ function AvatarDashboard() {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
-                        className="bg-[#00f5ff]/5 p-4 rounded-2xl border border-[#00f5ff]/20 space-y-2"
+                        className="bg-[#3b82f6]/5 p-4 rounded-2xl border border-[#3b82f6]/20 space-y-2"
                       >
-                        <div className="text-xs font-bold text-[#00f5ff] flex items-center gap-1.5">
+                        <div className="text-xs font-bold text-[#3b82f6] flex items-center gap-1.5">
                           <Info className="h-4 w-4" /> {selectedStat.label}: {selectedStat.value}
                         </div>
                         <p className="text-xs text-blue-100/80 leading-relaxed font-sans mt-1">
@@ -315,7 +347,7 @@ function AvatarDashboard() {
 
                 {/* Subtitle / branding info */}
                 <div className="mt-4 text-[10px] text-muted-foreground flex items-center gap-1.5 border-t border-white/5 pt-3">
-                  <Sparkles className="h-3.5 w-3.5 text-[#00f5ff]" /> 
+                  <Sparkles className="h-3.5 w-3.5 text-[#3b82f6]" /> 
                   Cognitive profiling syncs automatically on local Gemma model-sets.
                 </div>
               </motion.div>
@@ -335,13 +367,13 @@ function AvatarDashboard() {
                 onClick={() => handleStatClick(s.label, s.value)}
                 className={`p-3.5 rounded-2xl border text-left transition-all hover:scale-[1.02] ${
                   selectedStat?.label === s.label
-                    ? "border-[#00f5ff]/60 bg-[#00f5ff]/10 shadow-[0_0_20px_rgba(0,245,255,0.1)]"
+                    ? "border-[#3b82f6]/60 bg-[#3b82f6]/10 shadow-[0_0_20px_rgba(59,130,246,0.1)]"
                     : "border-blue-500/20 bg-[#0b1530] hover:border-blue-400/30"
                 } text-white shadow-md`}
               >
                 <div className="text-[10px] text-blue-300/80 font-mono uppercase tracking-wide font-semibold">{s.label}</div>
                 <div className={`text-base font-bold mt-1 leading-none ${
-                  selectedStat?.label === s.label ? "text-[#00f5ff]" : "text-white"
+                  selectedStat?.label === s.label ? "text-[#3b82f6]" : "text-white"
                 }`}>{s.value}</div>
                 <div className="text-[9px] text-blue-200/50 mt-1.5 leading-none font-mono">{s.hint}</div>
               </button>
@@ -360,14 +392,14 @@ function AvatarDashboard() {
             title: "Learning DNA", 
             desc: "An AI-mapped profile of how you absorb, retain and apply knowledge across domains.", 
             tag: "Updated",
-            accent: "from-[#00F5FF] to-[#06b6d4]"
+            accent: "from-[#3b82f6] to-[#06b6d4]"
           },
           { 
             id: "radar",
             title: "Skill Radar", 
             desc: "Real-time radar of six core competencies — visualized as a glowing aura around your avatar.", 
             tag: "Interactive",
-            accent: "from-[#8B5CF6] to-[#6d28d9]"
+            accent: "from-[#6366f1] to-[#6d28d9]"
           },
           { 
             id: "badges",
@@ -391,7 +423,7 @@ function AvatarDashboard() {
             id: "studio",
             title: "Avatar Studio", 
             desc: "Customize your 3D look — pick outfits, auras, and animated emotes earned through XP.",
-            accent: "from-[#00F5FF] to-[#8B5CF6]"
+            accent: "from-[#3b82f6] to-[#6366f1]"
           },
         ].map((it, i) => (
           <motion.div
@@ -414,12 +446,12 @@ function AvatarDashboard() {
                   {String(i + 1).padStart(2, "0")}
                 </div>
                 {it.tag && (
-                  <span className="text-[9px] bg-[#00F5FF]/10 border border-[#00F5FF]/20 text-[#00F5FF] rounded-full px-2 py-0.5 font-mono font-bold uppercase tracking-wide">{it.tag}</span>
+                  <span className="text-[9px] bg-[#3b82f6]/10 border border-[#3b82f6]/20 text-[#3b82f6] rounded-full px-2 py-0.5 font-mono font-bold uppercase tracking-wide">{it.tag}</span>
                 )}
               </div>
               <h3 className="font-display font-bold text-sm text-white mb-1.5">{it.title}</h3>
               <p className="text-[11px] text-blue-200/60 leading-relaxed flex-1">{it.desc}</p>
-              <div className="mt-4 pt-3 border-t border-white/5 text-[10px] text-[#00f5ff] font-mono font-semibold flex items-center gap-1">
+              <div className="mt-4 pt-3 border-t border-white/5 text-[10px] text-[#3b82f6] font-mono font-semibold flex items-center gap-1">
                 View Details →
               </div>
             </div>
@@ -437,11 +469,11 @@ function AvatarDashboard() {
               exit={{ scale: 0.95, opacity: 0 }}
               className="w-full max-w-md bg-[#0b1530] border border-blue-500/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden text-white"
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[#8b5cf6]/5 rounded-full blur-2xl" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#6366f1]/5 rounded-full blur-2xl" />
 
               <div className="flex items-center justify-between pb-3 border-b border-white/5 mb-4">
                 <h4 className="font-display font-extrabold text-base text-white flex items-center gap-1.5">
-                  <Award className="h-5 w-5 text-[#00f5ff]" />
+                  <Award className="h-5 w-5 text-[#3b82f6]" />
                   {activeGridModal === "dna" && "Learning DNA Profile"}
                   {activeGridModal === "radar" && "Six Competencies Radar"}
                   {activeGridModal === "badges" && "Badge Collection"}
@@ -458,9 +490,9 @@ function AvatarDashboard() {
                 <div className="space-y-3 text-xs leading-relaxed text-slate-300">
                   <p>Your dynamic neural profile registers the following metrics:</p>
                   <div className="space-y-2 bg-[#050816] p-3.5 rounded-xl border border-white/5 font-mono text-[10px]">
-                    <div className="flex justify-between"><span>Retention Rate:</span> <span className="text-[#00f5ff]">92.4%</span></div>
+                    <div className="flex justify-between"><span>Retention Rate:</span> <span className="text-[#3b82f6]">92.4%</span></div>
                     <div className="flex justify-between"><span>Speed Index:</span> <span className="text-[#ffafd2]">1.2s/inf</span></div>
-                    <div className="flex justify-between"><span>Cognitive Load Limit:</span> <span className="text-[#00f5ff]">450 FLOPS</span></div>
+                    <div className="flex justify-between"><span>Cognitive Load Limit:</span> <span className="text-[#3b82f6]">450 FLOPS</span></div>
                   </div>
                   <p>GyaanSetu AI recommends studying Visual graphics for maximum recall.</p>
                 </div>
@@ -471,8 +503,8 @@ function AvatarDashboard() {
                 <div className="space-y-3 text-xs leading-relaxed text-slate-300">
                   <p>Six competencies mapped dynamically on GyaanSetu:</p>
                   <div className="space-y-2 bg-[#050816] p-3.5 rounded-xl border border-white/5 font-mono text-[10px]">
-                    <div className="flex justify-between"><span>Critical Logic:</span> <span className="text-[#00f5ff]">96%</span></div>
-                    <div className="flex justify-between"><span>Calculus:</span> <span className="text-[#00f5ff]">92%</span></div>
+                    <div className="flex justify-between"><span>Critical Logic:</span> <span className="text-[#3b82f6]">96%</span></div>
+                    <div className="flex justify-between"><span>Calculus:</span> <span className="text-[#3b82f6]">92%</span></div>
                     <div className="flex justify-between"><span>Vision OCR Processing:</span> <span className="text-emerald-400">80%</span></div>
                     <div className="flex justify-between"><span>Multilingual Vocabulary:</span> <span className="text-slate-400">70%</span></div>
                   </div>
@@ -488,9 +520,9 @@ function AvatarDashboard() {
                       const Icon = b.icon;
                       return (
                         <div key={idx} className={`p-3 rounded-xl border flex items-center gap-3 ${
-                          b.unlocked ? "bg-[#050816] border-[#00f5ff]/20 text-white" : "bg-white/5 border-white/5 opacity-50 text-slate-400"
+                          b.unlocked ? "bg-[#050816] border-[#3b82f6]/20 text-white" : "bg-white/5 border-white/5 opacity-50 text-slate-400"
                         }`}>
-                          <div className={`h-8 w-8 rounded-lg flex items-center justify-center shrink-0 ${b.unlocked ? "bg-[#00f5ff]/10 text-[#00f5ff]" : "bg-white/5 text-slate-500"}`}>
+                          <div className={`h-8 w-8 rounded-lg flex items-center justify-center shrink-0 ${b.unlocked ? "bg-[#3b82f6]/10 text-[#3b82f6]" : "bg-white/5 text-slate-500"}`}>
                             <Icon className="h-4.5 w-4.5" />
                           </div>
                           <div>
@@ -507,7 +539,7 @@ function AvatarDashboard() {
               {/* Personality content */}
               {activeGridModal === "personality" && (
                 <div className="space-y-3 text-xs leading-relaxed text-slate-300">
-                  <div className="bg-[#00F5FF]/10 text-[#00F5FF] p-3 rounded-xl text-[11px] font-semibold">
+                  <div className="bg-[#3b82f6]/10 text-[#3b82f6] p-3 rounded-xl text-[11px] font-semibold">
                     INTJ Study Guideline: Focus on self-paced system architectures.
                   </div>
                   <p>As a Strategic Thinker, you learn best when constructing model connections. Avoid plain memorization templates; utilize GyaanSetu Planners for high recall.</p>
@@ -521,15 +553,15 @@ function AvatarDashboard() {
                   <div className="grid grid-cols-2 gap-2 text-[10px] font-mono">
                     <div className="bg-[#050816] p-2.5 rounded-lg border border-white/5">
                       <div className="text-muted-foreground">Quantum superposition</div>
-                      <div className="text-[#00f5ff] font-bold mt-1">94% Mastery</div>
+                      <div className="text-[#3b82f6] font-bold mt-1">94% Mastery</div>
                     </div>
                     <div className="bg-[#050816] p-2.5 rounded-lg border border-white/5">
                       <div className="text-muted-foreground">DC Circuit Analysis</div>
-                      <div className="text-[#00f5ff] font-bold mt-1">88% Mastery</div>
+                      <div className="text-[#3b82f6] font-bold mt-1">88% Mastery</div>
                     </div>
                     <div className="bg-[#050816] p-2.5 rounded-lg border border-white/5">
                       <div className="text-muted-foreground">Gradient Descent</div>
-                      <div className="text-[#00f5ff] font-bold mt-1">95% Mastery</div>
+                      <div className="text-[#3b82f6] font-bold mt-1">95% Mastery</div>
                     </div>
                     <div className="bg-[#050816] p-2.5 rounded-lg border border-white/5">
                       <div className="text-muted-foreground">RC Charge Time</div>

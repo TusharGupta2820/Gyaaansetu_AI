@@ -4,7 +4,7 @@
  * All calls route to http://localhost:8000 (FastAPI backend).
  */
 
-const API_BASE = "http://localhost:8000";
+export const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -135,14 +135,15 @@ export async function tutorChatStream(
   callbacks: ChatStreamCallback,
 ): Promise<void> {
   try {
-    const response = await fetch(`${API_BASE}/tutor/chat`, {
+    const activeUser = getActiveUserId(req.user_id);
+    const response = await fetch(`${API_BASE}/tutor/chat?user_id=${encodeURIComponent(activeUser)}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         message: req.message,
         language: req.language ?? "English",
         mode: req.mode ?? "Deep Learning",
-        user_id: getActiveUserId(req.user_id),
+        user_id: activeUser,
         use_rag: req.use_rag ?? false,
       }),
     });
@@ -172,7 +173,18 @@ export async function tutorChatStream(
             callbacks.onDone();
             return;
           }
-          callbacks.onToken(rawPayload);
+          try {
+            const parsed = JSON.parse(rawPayload);
+            if (parsed.token !== undefined) {
+              if (parsed.token) callbacks.onToken(parsed.token);
+            } else if (parsed.error) {
+              callbacks.onError(parsed.error);
+            } else {
+              callbacks.onToken(rawPayload);
+            }
+          } catch (e) {
+            callbacks.onToken(rawPayload);
+          }
         }
       }
     }
@@ -573,6 +585,92 @@ export async function gradeCoding(
     body: JSON.stringify({ problem, code, user_id: activeUser }),
   });
   if (!res.ok) throw new Error(`Coding grading error: ${res.status}`);
+  return res.json();
+}
+
+export async function getLearningJourney(userId?: string): Promise<{ journey: string }> {
+  const activeUser = getActiveUserId(userId);
+  try {
+    const res = await fetch(`${API_BASE}/tutor/journey/${activeUser}`);
+    if (!res.ok) throw new Error();
+    return res.json();
+  } catch (err) {
+    return { journey: "Keep pushing forward! Set your subject and learning goals above, and I will narrate your optimal AI learning path here." };
+  }
+}
+
+export async function parseCertificate(text: string): Promise<{
+  title: string;
+  event: string;
+  date: string;
+  issuer: string;
+  grade: string;
+}> {
+  const res = await fetch(`${API_BASE}/tutor/parse_certificate`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text }),
+  });
+  if (!res.ok) throw new Error("Parser failed");
+  return res.json();
+}
+
+export async function generateAICourse(text: string): Promise<{
+  title: string;
+  desc: string;
+  tag: string;
+  hours: string;
+  syllabus: string[];
+}> {
+  const res = await fetch(`${API_BASE}/tutor/generate_course`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text }),
+  });
+  if (!res.ok) throw new Error("Course generation failed");
+  return res.json();
+}
+
+export async function generateFocusSession(text: string): Promise<{
+  title: string;
+  duration: number;
+  soundscape: string;
+  subtasks: string[];
+}> {
+  const res = await fetch(`${API_BASE}/tutor/focus_session`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text }),
+  });
+  if (!res.ok) throw new Error("Focus session generation failed");
+  return res.json();
+}
+
+export async function generateAITimetable(text: string): Promise<Array<{
+  title: string;
+  dueAt: string;
+  category: string;
+  priority: string;
+}>> {
+  const res = await fetch(`${API_BASE}/tutor/generate_timetable`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text }),
+  });
+  if (!res.ok) throw new Error("Timetable generation failed");
+  return res.json();
+}
+
+export async function generateAIDiagram(text: string, style: string): Promise<{
+  nodes: Array<{ id: string; label: string; color: string }>;
+  links: Array<{ source: string; target: string }>;
+}> {
+  const res = await fetch(`${API_BASE}/tutor/generate_diagram`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text, style }),
+  });
+  if (!res.ok) throw new Error("Diagram generation failed");
   return res.json();
 }
 

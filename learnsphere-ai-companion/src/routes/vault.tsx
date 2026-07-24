@@ -4,6 +4,7 @@ import { GlassCard, PageHeader, GradientCard } from "@/components/ui-kit/Card";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { loadCertificates, saveCertificate, deleteCertificate } from "@/lib/api/vault.functions";
+import { parseCertificate } from "@/lib/api/ai.service";
 import {
   Award, Plus, Trash2, Edit2, Calendar, FileText, Upload, X,
   Sparkles, Mic, Paperclip, FileUp, Eye, Download, Info, Check, ChevronRight, Bookmark
@@ -189,9 +190,9 @@ function CertificateVault() {
             initial={{ opacity: 0, y: -50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.9 }}
-            className="fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border border-[#00F5FF]/30 shadow-2xl flex items-center gap-3 bg-[#0d1322] max-w-sm"
+            className="fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border border-[#3b82f6]/30 shadow-2xl flex items-center gap-3 bg-[#0d1322] max-w-sm"
           >
-            <div className="h-8 w-8 rounded-lg bg-[#00F5FF]/10 text-[#00F5FF] flex items-center justify-center shrink-0">
+            <div className="h-8 w-8 rounded-lg bg-[#3b82f6]/10 text-[#3b82f6] flex items-center justify-center shrink-0">
               <toast.icon className="h-4.5 w-4.5" />
             </div>
             <div className="text-xs font-semibold text-white">{toast.message}</div>
@@ -213,7 +214,7 @@ function CertificateVault() {
         <div className="flex flex-col gap-4">
           <div className="flex justify-between items-center pb-2 border-b border-white/5">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-4.5 w-4.5 text-[#00f5ff]" />
+              <Sparkles className="h-4.5 w-4.5 text-[#3b82f6]" />
               <span className="font-display font-bold text-sm text-white">AI Credentials Parser</span>
             </div>
             <span className="text-[9px] font-mono text-blue-300 uppercase tracking-wider">Autofill Cards from Files/Dictation</span>
@@ -227,11 +228,11 @@ function CertificateVault() {
                 setVoiceText("");
               }}
               className={`flex items-center justify-between p-3 rounded-xl border transition text-left ${
-                hubMode === "voice" ? "bg-[#00f5ff]/10 border-[#00f5ff]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
+                hubMode === "voice" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
               }`}
             >
               <div className="flex items-center gap-2">
-                <Mic className="h-4 w-4 text-[#00f5ff]" />
+                <Mic className="h-4 w-4 text-[#3b82f6]" />
                 <span className="text-xs font-semibold">Dictate Credentials</span>
               </div>
               <ChevronRight className="h-3.5 w-3.5" />
@@ -244,11 +245,11 @@ function CertificateVault() {
                 setSelectedFile(null);
               }}
               className={`flex items-center justify-between p-3 rounded-xl border transition text-left ${
-                hubMode === "upload" ? "bg-[#00f5ff]/10 border-[#00f5ff]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
+                hubMode === "upload" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
               }`}
             >
               <div className="flex items-center gap-2">
-                <Paperclip className="h-4 w-4 text-[#00f5ff]" />
+                <Paperclip className="h-4 w-4 text-[#3b82f6]" />
                 <span className="text-xs font-semibold">Drop Certificate File</span>
               </div>
               <ChevronRight className="h-3.5 w-3.5" />
@@ -261,11 +262,11 @@ function CertificateVault() {
                 setPastedText("");
               }}
               className={`flex items-center justify-between p-3 rounded-xl border transition text-left ${
-                hubMode === "text" ? "bg-[#00f5ff]/10 border-[#00f5ff]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
+                hubMode === "text" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
               }`}
             >
               <div className="flex items-center gap-2">
-                <FileText className="h-4 w-4 text-[#00f5ff]" />
+                <FileText className="h-4 w-4 text-[#3b82f6]" />
                 <span className="text-xs font-semibold">Paste Verification Code</span>
               </div>
               <ChevronRight className="h-3.5 w-3.5" />
@@ -314,26 +315,32 @@ function CertificateVault() {
                   </button>
                   {voiceText && (
                     <button
-                      onClick={() => {
+                      onClick={async () => {
                         setSubmittingHub(true);
-                        setTimeout(() => {
+                        try {
+                          const parsed = await parseCertificate(voiceText);
+                          const payload = {
+                            userId,
+                            title: parsed.title || "Certificate of Accomplishment",
+                            event: parsed.event || "Voice Submission",
+                            date: parsed.date || new Date().toISOString().split("T")[0],
+                            issuer: parsed.issuer || "Independent Academy",
+                            fileName: "voice_transcribed_credential.pdf",
+                            fileType: "pdf" as const,
+                            grade: parsed.grade || "Passed",
+                          };
+                          const saved = await saveCertificate({ data: payload });
+                          setCerts(prev => [saved, ...prev]);
+                          showToast("AI parsed and created certificate card!", Award);
+                        } catch (err) {
+                          console.error("AI parse failed:", err);
+                          showToast("Failed to parse certificate", Info);
+                        } finally {
                           setSubmittingHub(false);
                           setHubMode("none");
-                          const autoCert: Certificate = {
-                            id: "cert-" + Date.now(),
-                            title: "Node JS Server Scale Certification",
-                            event: "Backend Summit 2026",
-                            date: "2026-06-05",
-                            issuer: "GyaanSetu Labs",
-                            fileName: "node_server_scale.pdf",
-                            fileType: "pdf",
-                            grade: "Grade: High Pass"
-                          };
-                          setCerts(prev => [autoCert, ...prev]);
-                          showToast("AI parsed and created certificate card!", Award);
-                        }, 1200);
+                        }
                       }}
-                      className="px-3 py-1.5 rounded-lg bg-[#00F5FF] text-[#050816] text-[10px] font-bold hover:scale-105 transition ml-auto"
+                      className="px-3 py-1.5 rounded-lg bg-[#3b82f6] text-[#050816] text-[10px] font-bold hover:scale-105 transition ml-auto"
                     >
                       {submittingHub ? "Parsing..." : "Add to Vault"}
                     </button>
@@ -344,13 +351,13 @@ function CertificateVault() {
 
             {hubMode === "upload" && (
               <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="p-3 bg-[#050816] rounded-xl border border-white/5 space-y-3 overflow-hidden">
-                <div className="border border-dashed border-white/10 rounded-xl p-4 flex flex-col items-center justify-center hover:border-[#00f5ff]/40 transition cursor-pointer"
+                <div className="border border-dashed border-white/10 rounded-xl p-4 flex flex-col items-center justify-center hover:border-[#3b82f6]/40 transition cursor-pointer"
                   onClick={() => {
                     setSelectedFile("aws_cloud_practitioner.pdf");
                     showToast("Uploaded aws_cloud_practitioner.pdf", FileUp);
                   }}
                 >
-                  <FileUp className="h-6 w-6 text-[#00f5ff] mb-1.5" />
+                  <FileUp className="h-6 w-6 text-[#3b82f6] mb-1.5" />
                   {selectedFile ? (
                     <span className="text-[10px] text-white font-mono font-bold">{selectedFile}</span>
                   ) : (
@@ -359,26 +366,31 @@ function CertificateVault() {
                 </div>
                 {selectedFile && (
                   <button
-                    onClick={() => {
+                    onClick={async () => {
                       setSubmittingHub(true);
-                      setTimeout(() => {
+                      try {
+                        const parsed = await parseCertificate(`A certificate file named ${selectedFile || 'aws_cloud_practitioner.pdf'} representing a professional AWS Cloud Practitioner credential, issued by Amazon Web Services on June 8th, 2026, score 840/1000.`);
+                        const payload = {
+                          userId,
+                          title: parsed.title || "AWS Cloud Practitioner Associate",
+                          event: parsed.event || "AWS Global Certification Sprint",
+                          date: parsed.date || "2026-06-08",
+                          issuer: parsed.issuer || "Amazon Web Services",
+                          fileName: selectedFile || "aws_cloud_practitioner.pdf",
+                          fileType: "pdf" as const,
+                          grade: parsed.grade || "Score: 840/1000",
+                        };
+                        const saved = await saveCertificate({ data: payload });
+                        setCerts(prev => [saved, ...prev]);
+                        showToast("AWS Certificate parsed successfully!", Check);
+                      } catch (err) {
+                        console.error(err);
+                      } finally {
                         setSubmittingHub(false);
                         setHubMode("none");
-                        const autoCert: Certificate = {
-                          id: "cert-" + Date.now(),
-                          title: "AWS Cloud Practitioner Associate",
-                          event: "AWS Global Certification Sprint",
-                          date: "2026-06-08",
-                          issuer: "Amazon Web Services",
-                          fileName: "aws_cloud_practitioner.pdf",
-                          fileType: "pdf",
-                          grade: "Score: 840/1000"
-                        };
-                        setCerts(prev => [autoCert, ...prev]);
-                        showToast("AWS Certificate parsed successfully!", Check);
-                      }, 1200);
+                      }
                     }}
-                    className="w-full py-2 rounded-lg bg-[#00F5FF] text-[#050816] text-[10px] font-bold hover:scale-[1.01] transition"
+                    className="w-full py-2 rounded-lg bg-[#3b82f6] text-[#050816] text-[10px] font-bold hover:scale-[1.01] transition"
                   >
                     {submittingHub ? "AI parsing metadata..." : "Generate Vault Card"}
                   </button>
@@ -392,21 +404,37 @@ function CertificateVault() {
                   value={pastedText}
                   onChange={(e) => setPastedText(e.target.value)}
                   placeholder="Paste credential serial number, verification url, or signature hashes..."
-                  className="w-full h-20 bg-black/40 border border-white/10 rounded-lg p-2 text-[10px] text-white placeholder-slate-500 focus:outline-none focus:border-[#00f5ff]/40 font-mono"
+                  className="w-full h-20 bg-black/40 border border-white/10 rounded-lg p-2 text-[10px] text-white placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]/40 font-mono"
                 />
                 <div className="flex justify-end">
                   <button
-                    onClick={() => {
+                    onClick={async () => {
                       if (!pastedText) return;
                       setSubmittingHub(true);
-                      setTimeout(() => {
+                      try {
+                        const parsed = await parseCertificate(pastedText);
+                        const payload = {
+                          userId,
+                          title: parsed.title || "Verified Accomplishment",
+                          event: parsed.event || "Signature Verification",
+                          date: parsed.date || new Date().toISOString().split("T")[0],
+                          issuer: parsed.issuer || "Online Verifier",
+                          fileName: "verified_credentials_hash.pdf",
+                          fileType: "pdf" as const,
+                          grade: parsed.grade || "Grade: A+",
+                        };
+                        const saved = await saveCertificate({ data: payload });
+                        setCerts(prev => [saved, ...prev]);
+                        showToast("Credential verification synced with database!", Check);
+                      } catch (err) {
+                        console.error(err);
+                      } finally {
                         setSubmittingHub(false);
                         setHubMode("none");
-                        showToast("Credential verification synced with database!", Check);
-                      }, 1200);
+                      }
                     }}
                     disabled={!pastedText}
-                    className="px-3 py-1.5 rounded-lg bg-[#00F5FF] text-[#050816] text-[10px] font-bold hover:scale-105 transition disabled:opacity-50"
+                    className="px-3 py-1.5 rounded-lg bg-[#3b82f6] text-[#050816] text-[10px] font-bold hover:scale-105 transition disabled:opacity-50"
                   >
                     {submittingHub ? "Verifying..." : "Verify & Sync"}
                   </button>
@@ -420,11 +448,11 @@ function CertificateVault() {
       {/* Main vault controls */}
       <div className="mb-6 flex justify-between items-center">
         <div className="text-xs text-slate-400">
-          Showing <span className="text-[#00f5ff] font-bold font-mono">{certs.length}</span> active certificates
+          Showing <span className="text-[#3b82f6] font-bold font-mono">{certs.length}</span> active certificates
         </div>
         <button
           onClick={handleOpenAdd}
-          className="inline-flex items-center gap-1.5 bg-gradient-to-r from-[#00F5FF] to-[#8B5CF6] text-[#050816] px-4 py-2 rounded-xl text-xs font-bold hover:scale-105 transition-all shadow-md"
+          className="inline-flex items-center gap-1.5 bg-gradient-to-r from-[#3b82f6] to-[#6366f1] text-[#050816] px-4 py-2 rounded-xl text-xs font-bold hover:scale-105 transition-all shadow-md"
         >
           <Plus className="h-4 w-4" /> Add Certificate
         </button>
@@ -450,7 +478,7 @@ function CertificateVault() {
                 <div>
                   <div className="flex items-start justify-between mb-3">
                     <div className="h-9 w-9 rounded-xl bg-blue-500/10 text-white flex items-center justify-center">
-                      <Award className="h-5 w-5 text-[#00f5ff]" />
+                      <Award className="h-5 w-5 text-[#3b82f6]" />
                     </div>
                     <div className="flex gap-1">
                       <button
@@ -471,7 +499,7 @@ function CertificateVault() {
                   </div>
 
                   <h3 className="font-display font-extrabold text-sm text-white leading-tight mb-1">{c.title}</h3>
-                  <div className="text-[10px] font-mono text-[#00f5ff] uppercase font-bold mb-3">{c.event}</div>
+                  <div className="text-[10px] font-mono text-[#3b82f6] uppercase font-bold mb-3">{c.event}</div>
 
                   <div className="space-y-2 mt-4 text-[11px] text-blue-200/80 bg-slate-900/40 p-3 rounded-2xl border border-white/5">
                     <div className="flex justify-between">
@@ -493,7 +521,7 @@ function CertificateVault() {
 
                 <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between">
                   <span className="text-[10px] font-mono text-blue-300/60 truncate max-w-[150px]">{c.fileName}</span>
-                  <span className="text-[9px] font-bold text-[#00F5FF] hover:underline flex items-center gap-1 font-mono uppercase">
+                  <span className="text-[9px] font-bold text-[#3b82f6] hover:underline flex items-center gap-1 font-mono uppercase">
                     View Doc <ChevronRight className="h-3 w-3" />
                   </span>
                 </div>
@@ -516,13 +544,13 @@ function CertificateVault() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-md bg-[#0d1322] border border-[#00f5ff]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden text-white"
+              className="w-full max-w-md bg-[#0d1322] border border-[#3b82f6]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden text-white"
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[#00f5ff]/5 rounded-full blur-2xl pointer-events-none" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#3b82f6]/5 rounded-full blur-2xl pointer-events-none" />
 
               <div className="flex items-center justify-between pb-3 border-b border-white/5 mb-4">
                 <h4 className="font-display font-extrabold text-sm text-white flex items-center gap-1.5">
-                  <Award className="h-4.5 w-4.5 text-[#00f5ff]" />
+                  <Award className="h-4.5 w-4.5 text-[#3b82f6]" />
                   {modalMode === "add" ? "Add New Certificate" : "Edit Certificate Record"}
                 </h4>
                 <button onClick={() => setModalMode("none")} className="text-slate-400 hover:text-white transition">
@@ -539,7 +567,7 @@ function CertificateVault() {
                     value={formTitle}
                     onChange={(e) => setFormTitle(e.target.value)}
                     placeholder="e.g. Advanced Machine Learning"
-                    className="w-full p-2.5 bg-slate-900/60 border border-white/10 rounded-xl focus:outline-none focus:border-[#00f5ff]/60 text-white placeholder-slate-500"
+                    className="w-full p-2.5 bg-slate-900/60 border border-white/10 rounded-xl focus:outline-none focus:border-[#3b82f6]/60 text-white placeholder-slate-500"
                   />
                 </div>
 
@@ -551,7 +579,7 @@ function CertificateVault() {
                     value={formEvent}
                     onChange={(e) => setFormEvent(e.target.value)}
                     placeholder="e.g. GyaanSetu Hackathon 2026"
-                    className="w-full p-2.5 bg-slate-900/60 border border-white/10 rounded-xl focus:outline-none focus:border-[#00f5ff]/60 text-white placeholder-slate-500"
+                    className="w-full p-2.5 bg-slate-900/60 border border-white/10 rounded-xl focus:outline-none focus:border-[#3b82f6]/60 text-white placeholder-slate-500"
                   />
                 </div>
 
@@ -562,7 +590,7 @@ function CertificateVault() {
                       type="date"
                       value={formDate}
                       onChange={(e) => setFormDate(e.target.value)}
-                      className="w-full p-2.5 bg-slate-900/60 border border-white/10 rounded-xl focus:outline-none focus:border-[#00f5ff]/60 text-white font-mono"
+                      className="w-full p-2.5 bg-slate-900/60 border border-white/10 rounded-xl focus:outline-none focus:border-[#3b82f6]/60 text-white font-mono"
                     />
                   </div>
                   <div>
@@ -572,7 +600,7 @@ function CertificateVault() {
                       value={formIssuer}
                       onChange={(e) => setFormIssuer(e.target.value)}
                       placeholder="e.g. Google Cloud"
-                      className="w-full p-2.5 bg-slate-900/60 border border-white/10 rounded-xl focus:outline-none focus:border-[#00f5ff]/60 text-white placeholder-slate-500"
+                      className="w-full p-2.5 bg-slate-900/60 border border-white/10 rounded-xl focus:outline-none focus:border-[#3b82f6]/60 text-white placeholder-slate-500"
                     />
                   </div>
                 </div>
@@ -585,7 +613,7 @@ function CertificateVault() {
                       value={formGrade}
                       onChange={(e) => setFormGrade(e.target.value)}
                       placeholder="e.g. Pass / Score 95%"
-                      className="w-full p-2.5 bg-slate-900/60 border border-white/10 rounded-xl focus:outline-none focus:border-[#00f5ff]/60 text-white placeholder-slate-500"
+                      className="w-full p-2.5 bg-slate-900/60 border border-white/10 rounded-xl focus:outline-none focus:border-[#3b82f6]/60 text-white placeholder-slate-500"
                     />
                   </div>
                   <div>
@@ -593,7 +621,7 @@ function CertificateVault() {
                     <select
                       value={formFileType}
                       onChange={(e) => setFormFileType(e.target.value as any)}
-                      className="w-full p-2.5 bg-slate-900/60 border border-white/10 rounded-xl focus:outline-none focus:border-[#00f5ff]/60 text-white"
+                      className="w-full p-2.5 bg-slate-900/60 border border-white/10 rounded-xl focus:outline-none focus:border-[#3b82f6]/60 text-white"
                     >
                       <option value="pdf">PDF Document</option>
                       <option value="image">Image File</option>
@@ -609,10 +637,10 @@ function CertificateVault() {
                       value={formFileName}
                       onChange={(e) => setFormFileName(e.target.value)}
                       placeholder="e.g. verified_certificate_hash.pdf"
-                      className="flex-1 p-2.5 bg-slate-900/60 border border-white/10 rounded-xl focus:outline-none focus:border-[#00f5ff]/60 text-white placeholder-slate-500 font-mono"
+                      className="flex-1 p-2.5 bg-slate-900/60 border border-white/10 rounded-xl focus:outline-none focus:border-[#3b82f6]/60 text-white placeholder-slate-500 font-mono"
                     />
                     <label className="cursor-pointer shrink-0 bg-white/10 hover:bg-white/15 border border-white/10 rounded-xl px-4 flex items-center justify-center text-[11px] font-bold text-white transition">
-                      <Upload className="h-4 w-4 mr-1.5 text-[#00f5ff]" />
+                      <Upload className="h-4 w-4 mr-1.5 text-[#3b82f6]" />
                       Upload
                       <input
                         type="file"
@@ -630,7 +658,7 @@ function CertificateVault() {
 
                 <button
                   type="submit"
-                  className="w-full mt-4 py-3 rounded-xl bg-gradient-to-r from-[#00F5FF] to-[#8B5CF6] text-[#050816] font-bold transition hover:shadow-lg glow-cyan"
+                  className="w-full mt-4 py-3 rounded-xl bg-gradient-to-r from-[#3b82f6] to-[#6366f1] text-[#050816] font-bold transition hover:shadow-lg glow-cyan"
                 >
                   {modalMode === "add" ? "Register Certificate" : "Update Records"}
                 </button>
@@ -650,13 +678,13 @@ function CertificateVault() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-lg bg-[#0d1322] border border-[#00f5ff]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden text-white"
+              className="w-full max-w-lg bg-[#0d1322] border border-[#3b82f6]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden text-white"
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[#00f5ff]/5 rounded-full blur-2xl pointer-events-none" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#3b82f6]/5 rounded-full blur-2xl pointer-events-none" />
 
               <div className="flex items-center justify-between pb-3 border-b border-white/5 mb-4">
                 <h4 className="font-display font-extrabold text-sm text-white flex items-center gap-1.5">
-                  <Bookmark className="h-4.5 w-4.5 text-[#00f5ff]" />
+                  <Bookmark className="h-4.5 w-4.5 text-[#3b82f6]" />
                   Credential Verification
                 </h4>
                 <button onClick={() => setModalMode("none")} className="text-slate-400 hover:text-white transition">
@@ -665,13 +693,13 @@ function CertificateVault() {
               </div>
 
               {/* Mock Certificate Visual representation */}
-              <div className="border-2 border-dashed border-[#00f5ff]/20 p-8 text-center bg-[#050816]/60 rounded-2xl relative overflow-hidden mb-5">
-                <div className="absolute inset-0 bg-[radial-gradient(#00f5ff_1px,transparent_1px)] [background-size:16px_16px] opacity-5 pointer-events-none" />
+              <div className="border-2 border-dashed border-[#3b82f6]/20 p-8 text-center bg-[#050816]/60 rounded-2xl relative overflow-hidden mb-5">
+                <div className="absolute inset-0 bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:16px_16px] opacity-5 pointer-events-none" />
                 <Award className="h-14 w-14 text-amber-400 mx-auto mb-2" />
                 <div className="font-serif text-[10px] tracking-widest text-blue-300 uppercase">Certificate of Accomplishment</div>
                 <div className="font-serif text-white text-lg font-bold mt-4 leading-tight">{selectedCert.title}</div>
                 <p className="text-[10px] text-blue-200/60 mt-2">awarded to student member of GyaanSetu</p>
-                <div className="font-mono text-[9px] text-[#00f5ff] mt-4">Verified at: {selectedCert.event}</div>
+                <div className="font-mono text-[9px] text-[#3b82f6] mt-4">Verified at: {selectedCert.event}</div>
                 <div className="flex justify-between items-center mt-6 pt-4 border-t border-white/5 text-[9px] font-mono text-blue-200/60">
                   <span>Date: {selectedCert.date}</span>
                   <span>Sponsor: {selectedCert.issuer}</span>
@@ -680,7 +708,7 @@ function CertificateVault() {
 
               <div className="flex justify-between items-center">
                 <span className="text-[10px] text-blue-300 font-mono flex items-center gap-1">
-                  <FileText className="h-3.5 w-3.5 text-[#8b5cf6]" /> {selectedCert.fileName}
+                  <FileText className="h-3.5 w-3.5 text-[#6366f1]" /> {selectedCert.fileName}
                 </span>
                 <div className="flex gap-2">
                   <button
@@ -694,7 +722,7 @@ function CertificateVault() {
                   </button>
                   <button
                     onClick={() => setModalMode("none")}
-                    className="px-4 py-2 bg-[#00F5FF] text-[#050816] rounded-xl text-xs font-bold transition hover:scale-[1.02]"
+                    className="px-4 py-2 bg-[#3b82f6] text-[#050816] rounded-xl text-xs font-bold transition hover:scale-[1.02]"
                   >
                     Done
                   </button>

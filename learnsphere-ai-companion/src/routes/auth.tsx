@@ -111,11 +111,11 @@ function AuthPage() {
    };
  
    return (
-     <div className="bg-[#050816] text-[#dde2f8] min-h-screen font-sans selection:bg-[#00f5ff]/20 selection:text-[#e9feff] flex items-center justify-center p-6 relative overflow-hidden">
+     <div className="bg-[#050816] text-[#dde2f8] min-h-screen font-sans selection:bg-[#3b82f6]/20 selection:text-[#e9feff] flex items-center justify-center p-6 relative overflow-hidden">
  
        {/* Background Decorative Glows */}
        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-         <div className="absolute top-[-10%] left-[-10%] w-[400px] h-[400px] rounded-full bg-[#00f5ff]/10 blur-[100px]" />
+         <div className="absolute top-[-10%] left-[-10%] w-[400px] h-[400px] rounded-full bg-[#3b82f6]/10 blur-[100px]" />
          <div className="absolute bottom-[-10%] right-[-10%] w-[400px] h-[400px] rounded-full bg-[#3626ce]/15 blur-[120px]" />
        </div>
  
@@ -130,7 +130,7 @@ function AuthPage() {
            <img
              src="/Gyaansetu AI logo.png"
              alt="GyaanSetu AI"
-             className="h-20 w-20 object-contain mb-3 drop-shadow-[0_0_20px_rgba(0,245,255,0.35)]"
+             className="h-20 w-20 object-contain mb-3 drop-shadow-[0_0_20px_rgba(59,130,246,0.35)]"
            />
            <h2 className="font-display font-extrabold text-2xl text-[#e9feff]">GyaanSetu AI</h2>
            <p className="text-xs text-muted-foreground mt-1">Bridging Knowledge Through Personalized Learning</p>
@@ -150,7 +150,7 @@ function AuthPage() {
                {isLogin && (
                  <motion.div
                    layoutId="auth-tab-bar"
-                   className="absolute bottom-[-1px] left-0 right-0 h-[2px] bg-gradient-to-r from-[#00f5ff] to-[#3626ce]"
+                   className="absolute bottom-[-1px] left-0 right-0 h-[2px] bg-gradient-to-r from-[#3b82f6] to-[#3626ce]"
                  />
                )}
              </button>
@@ -163,7 +163,7 @@ function AuthPage() {
                {!isLogin && (
                  <motion.div
                    layoutId="auth-tab-bar"
-                   className="absolute bottom-[-1px] left-0 right-0 h-[2px] bg-gradient-to-r from-[#00f5ff] to-[#3626ce]"
+                   className="absolute bottom-[-1px] left-0 right-0 h-[2px] bg-gradient-to-r from-[#3b82f6] to-[#3626ce]"
                  />
                )}
              </button>
@@ -205,7 +205,7 @@ function AuthPage() {
             {!isLogin && (
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-muted-foreground">Full Name</label>
-                <div className="glass rounded-xl flex items-center px-3.5 py-3 border-white/5 focus-within:border-[#00f5ff]/40 transition-colors">
+                <div className="glass rounded-xl flex items-center px-3.5 py-3 border-white/5 focus-within:border-[#3b82f6]/40 transition-colors">
                   <User className="h-4.5 w-4.5 text-muted-foreground mr-3" />
                   <input
                     type="text"
@@ -221,7 +221,7 @@ function AuthPage() {
             {/* Email Input */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-muted-foreground">Email Address</label>
-              <div className="glass rounded-xl flex items-center px-3.5 py-3 border-white/5 focus-within:border-[#00f5ff]/40 transition-colors">
+              <div className="glass rounded-xl flex items-center px-3.5 py-3 border-white/5 focus-within:border-[#3b82f6]/40 transition-colors">
                 <Mail className="h-4.5 w-4.5 text-muted-foreground mr-3" />
                 <input
                   type="email"
@@ -238,12 +238,12 @@ function AuthPage() {
               <div className="flex justify-between items-center">
                 <label className="text-xs font-semibold text-muted-foreground">Password</label>
                 {isLogin && (
-                  <button type="button" className="text-[10px] text-[#00f5ff] hover:underline font-semibold">
+                  <button type="button" className="text-[10px] text-[#3b82f6] hover:underline font-semibold">
                     Forgot?
                   </button>
                 )}
               </div>
-              <div className="glass rounded-xl flex items-center px-3.5 py-3 border-white/5 focus-within:border-[#00f5ff]/40 transition-colors">
+              <div className="glass rounded-xl flex items-center px-3.5 py-3 border-white/5 focus-within:border-[#3b82f6]/40 transition-colors">
                 <Lock className="h-4.5 w-4.5 text-muted-foreground mr-3" />
                 <input
                   type={showPassword ? "text" : "password"}
@@ -268,10 +268,10 @@ function AuthPage() {
                 <input
                   type="checkbox"
                   required
-                  className="rounded border-white/10 bg-white/5 text-[#00f5ff] focus:ring-0 mt-0.5"
+                  className="rounded border-white/10 bg-white/5 text-[#3b82f6] focus:ring-0 mt-0.5"
                 />
                 <span className="text-[10px] text-muted-foreground leading-snug">
-                  I agree to the <span className="text-[#00f5ff] hover:underline">Terms of Service</span> and <span className="text-[#00f5ff] hover:underline">Privacy Policy</span>.
+                  I agree to the <span className="text-[#3b82f6] hover:underline">Terms of Service</span> and <span className="text-[#3b82f6] hover:underline">Privacy Policy</span>.
                 </span>
               </label>
             )}
@@ -280,7 +280,7 @@ function AuthPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full relative inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#00f5ff] to-[#3626ce] py-3.5 text-sm font-bold text-[#050816] transition-all hover:shadow-[0_0_20px_rgba(0,245,255,0.4)] disabled:opacity-75 disabled:pointer-events-none cursor-pointer"
+              className="w-full relative inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#3b82f6] to-[#3626ce] py-3.5 text-sm font-bold text-[#050816] transition-all hover:shadow-[0_0_20px_rgba(59,130,246,0.4)] disabled:opacity-75 disabled:pointer-events-none cursor-pointer"
             >
               {loading ? (
                 <span className="animate-spin h-4 w-4 border-2 border-t-transparent border-[#050816] rounded-full" />
@@ -305,7 +305,7 @@ function AuthPage() {
               onClick={() => handleSocialLogin("Google")}
               className="glass rounded-xl py-2.5 text-xs font-semibold hover:bg-white/5 flex items-center justify-center gap-2 border-white/5 transition"
             >
-              <Chrome className="h-4 w-4 text-[#00f5ff]" /> Google
+              <Chrome className="h-4 w-4 text-[#3b82f6]" /> Google
             </button>
             <button
               onClick={() => handleSocialLogin("GitHub")}
@@ -320,7 +320,7 @@ function AuthPage() {
             <button
               onClick={handleDemoLogin}
               type="button"
-              className="w-full py-2.5 rounded-xl border border-dashed border-[#00f5ff]/30 text-xs font-semibold text-[#00f5ff] hover:bg-[#00f5ff]/5 hover:border-[#00f5ff]/50 transition flex items-center justify-center gap-1.5"
+              className="w-full py-2.5 rounded-xl border border-dashed border-[#3b82f6]/30 text-xs font-semibold text-[#3b82f6] hover:bg-[#3b82f6]/5 hover:border-[#3b82f6]/50 transition flex items-center justify-center gap-1.5"
             >
               <ShieldCheck className="h-4 w-4" /> Auto-fill Demo Credentials
             </button>

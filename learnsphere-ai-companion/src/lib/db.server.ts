@@ -44,6 +44,17 @@ export function getDbForUser(explicitUserId?: string): DatabaseSync {
           learning_goal TEXT DEFAULT '',
           preferred_lang TEXT DEFAULT 'English',
           career_target TEXT DEFAULT '',
+          branch TEXT DEFAULT '',
+          semester TEXT DEFAULT '',
+          weak_topics TEXT DEFAULT '[]',
+          strong_topics TEXT DEFAULT '[]',
+          learning_style TEXT DEFAULT 'Visual',
+          daily_study_hours REAL DEFAULT 2.0,
+          current_subject TEXT DEFAULT '',
+          current_chapter TEXT DEFAULT '',
+          explanation_style TEXT DEFAULT 'Deep Learning',
+          recent_quiz_score REAL DEFAULT 0.0,
+          persona TEXT DEFAULT 'Academy Teacher',
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );
 
@@ -168,13 +179,44 @@ export function getDbForUser(explicitUserId?: string): DatabaseSync {
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
           FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
         );
+
+        CREATE TABLE IF NOT EXISTS timetable_deadlines (
+          id TEXT PRIMARY KEY,
+          user_id TEXT NOT NULL,
+          title TEXT NOT NULL,
+          due_at TEXT NOT NULL,
+          category TEXT DEFAULT 'assignment',
+          priority TEXT DEFAULT 'Medium',
+          reminder_interval_mins INTEGER DEFAULT 30,
+          completed INTEGER DEFAULT 0,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+        );
       `);
 
       // Migration for existing users
       try {
         dbInstance.exec("ALTER TABLE ai_projects ADD COLUMN tag TEXT DEFAULT ''");
-      } catch (e) {
-        // already exists
+      } catch (e) {}
+
+      const cols = [
+        ["branch", "TEXT DEFAULT ''"],
+        ["semester", "TEXT DEFAULT ''"],
+        ["weak_topics", "TEXT DEFAULT '[]'"],
+        ["strong_topics", "TEXT DEFAULT '[]'"],
+        ["learning_style", "TEXT DEFAULT 'Visual'"],
+        ["daily_study_hours", "REAL DEFAULT 2.0"],
+        ["current_subject", "TEXT DEFAULT ''"],
+        ["current_chapter", "TEXT DEFAULT ''"],
+        ["explanation_style", "TEXT DEFAULT 'Deep Learning'"],
+        ["recent_quiz_score", "REAL DEFAULT 0.0"],
+        ["persona", "TEXT DEFAULT 'Academy Teacher'"]
+      ];
+
+      for (const [colName, colDef] of cols) {
+        try {
+          dbInstance.exec(`ALTER TABLE users ADD COLUMN ${colName} ${colDef}`);
+        } catch (e) {}
       }
     } catch (err) {
       console.error(`Failed to initialize database schema for user ${safeId}:`, err);

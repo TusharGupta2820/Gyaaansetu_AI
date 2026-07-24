@@ -1,10 +1,11 @@
+/// <reference types="vite/client" />
 /**
  * GyaanSetu AI — DevInterview Offline Interview Service
  * Replaces cloud Gemini with local: Whisper → DeepSeek R1 → Piper TTS
  * Connect to the FastAPI backend running on port 8000.
  */
 
-const API_BASE = "http://localhost:8000";
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
 export interface InterviewSession {
   sessionId: string;

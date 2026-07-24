@@ -3,7 +3,8 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { GlassCard, GradientCard } from "@/components/ui-kit/Card";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
-import { loadDashboardData, addTask as apiAddTask, toggleTask as apiToggleTask, deleteTask as apiDeleteTask, completeFocusSession as apiCompleteFocusSession } from "@/lib/api/dashboard.functions";
+import { loadDashboardData, addTask as apiAddTask, toggleTask as apiToggleTask, deleteTask as apiDeleteTask, completeFocusSession as apiCompleteFocusSession, updateUserProfile, addDeadline, toggleDeadline } from "@/lib/api/dashboard.functions";
+import { getLearningJourney } from "@/lib/api/ai.service";
 import {
   Flame, Target, Brain, TrendingUp, Sparkles, Clock, Trophy, BookCheck,
   Bot, ArrowRight, Zap, Send, X, Play, Square, Award, AlertCircle, RefreshCw, BarChart2, Check,
@@ -62,12 +63,46 @@ function Dashboard() {
   const [masteryScore, setMasteryScore] = useState(0);
   const [streakDays, setStreakDays] = useState(0);
 
+  // Profile Context States
+  const [profile, setProfile] = useState({
+    name: "Student",
+    educationLevel: "Undergraduate",
+    learningGoal: "Master CS foundations",
+    preferredLang: "English",
+    careerTarget: "Software Engineer",
+    branch: "Computer Science",
+    semester: "Semester 1",
+    weakTopics: [] as string[],
+    strongTopics: [] as string[],
+    learningStyle: "Visual",
+    dailyStudyHours: 2.0,
+    currentSubject: "Computer Science",
+    currentChapter: "Variables",
+    explanationStyle: "Deep Learning",
+    recentQuizScore: 0.0,
+    persona: "Academy Teacher"
+  });
+
+  const [learningJourney, setLearningJourney] = useState("Analyzing your learning milestones...");
+  const [deadlines, setDeadlines] = useState<Array<{ id: string; title: string; dueAt: string; category: string; priority: string; completed: boolean }>>([]);
+  
+  const [newDeadlineTitle, setNewDeadlineTitle] = useState("");
+  const [newDeadlineDate, setNewDeadlineDate] = useState("");
+  const [newDeadlinePriority, setNewDeadlinePriority] = useState("Medium");
+
   // Dynamic metrics calculations
-  const goalPercentage = Math.min(100, Math.round((studyHours / 2.0) * 100));
+  const goalPercentage = Math.min(100, Math.round((studyHours / (profile.dailyStudyHours || 2.0)) * 100));
   const calculatedFocusScore = studyHours > 0 ? Math.min(100, Math.round(80 + (studyHours * 2))) : 0;
   const calculatedWeeklyProgress = studyHours > 0 ? `+${Math.round(studyHours * 10)}%` : "+0%";
   const calculatedAiReadiness = masteryScore === 0 ? "N/A" : (masteryScore > 80 ? "A+" : (masteryScore > 60 ? "A" : (masteryScore > 40 ? "B" : "C")));
   
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 17) return "Good afternoon";
+    return "Good evening";
+  };
+
   // Chart Interactions & Filters
   const [selectedKpi, setSelectedKpi] = useState<"all" | "hours" | "focus">("all");
   const [activeSubjectFilter, setActiveSubjectFilter] = useState<string | null>(null);
@@ -133,7 +168,7 @@ function Dashboard() {
       return;
     }
 
-    // Load dashboard stats & tasks from SQLite DB
+    // Load dashboard stats, profile & tasks from SQLite DB
     loadDashboardData({ data: { userId: activeId } })
       .then((data) => {
         setStudyHours(data.stats.studyHours);
@@ -143,6 +178,21 @@ function Dashboard() {
         setMasteryScore(data.stats.masteryScore);
         setStreakDays(data.stats.streakDays);
         setTasks(data.tasks);
+        setDeadlines(data.deadlines);
+        if (data.profile) {
+          setProfile(data.profile);
+          if (data.profile.name) {
+            setUserName(data.profile.name);
+            const userStr = localStorage.getItem("gyaansetu_user");
+            if (userStr) {
+              try {
+                const userObj = JSON.parse(userStr);
+                userObj.name = data.profile.name;
+                localStorage.setItem("gyaansetu_user", JSON.stringify(userObj));
+              } catch (e) {}
+            }
+          }
+        }
 
         // Store stats in localStorage for Sidebar consumption
         localStorage.setItem("gyaansetu_stats", JSON.stringify(data.stats));
@@ -150,7 +200,29 @@ function Dashboard() {
       .catch((err) => {
         console.error("Failed to load dashboard data from SQLite:", err);
       });
+
+    // Load learning journey narration
+    getLearningJourney(activeId)
+      .then((res) => {
+        setLearningJourney(res.journey);
+      })
+      .catch((err) => {
+        console.error("Failed to load learning journey:", err);
+      });
   }, []);
+
+  const handleUpdateProfileField = async (fields: Partial<typeof profile>) => {
+    try {
+      const updated = { ...profile, ...fields };
+      setProfile(updated);
+      await updateUserProfile({ data: { userId, ...fields } });
+      showToast("AI Context updated successfully!", Sparkles);
+      const res = await getLearningJourney(userId);
+      setLearningJourney(res.journey);
+    } catch (err) {
+      console.error("Failed to update profile field:", err);
+    }
+  };
 
   // Show dynamic toast helper
   const showToast = (message: string, icon: any = Sparkles) => {
@@ -303,9 +375,9 @@ function Dashboard() {
             initial={{ opacity: 0, y: -50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.9 }}
-            className="fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border border-[#00F5FF]/30 shadow-2xl flex items-center gap-3 bg-[#0d1322] max-w-sm"
+            className="fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border border-[#3b82f6]/30 shadow-2xl flex items-center gap-3 bg-[#0d1322] max-w-sm"
           >
-            <div className="h-8 w-8 rounded-lg bg-[#00F5FF]/10 text-[#00F5FF] flex items-center justify-center shrink-0">
+            <div className="h-8 w-8 rounded-lg bg-[#3b82f6]/10 text-[#3b82f6] flex items-center justify-center shrink-0">
               <toast.icon className="h-4 w-4" />
             </div>
             <div className="text-xs font-semibold text-white">{toast.message}</div>
@@ -322,28 +394,34 @@ function Dashboard() {
           <div className="grid lg:grid-cols-[1fr_auto] gap-6 items-center">
             <div className="min-w-0">
               <div className="inline-flex items-center gap-1.5 glass rounded-full px-3 py-1 text-xs">
-                <Sparkles className="h-3 w-3 text-[#00F5FF]" />
+                <Sparkles className="h-3 w-3 text-[#3b82f6]" />
                 AI Tutor is ready
               </div>
               <h1 className="mt-3 text-3xl lg:text-4xl font-display font-bold">
-                Good morning, <span className="text-gradient">{userName}</span> 👋
+                {getGreeting()}, <span className="text-gradient">{userName}</span> 👋
               </h1>
-              <p className="mt-2 text-muted-foreground max-w-xl">
-                Welcome back to GyaanSetu AI. Continue your personalized learning journey — you're on a {streakDays}-day streak.
-              </p>
+              <div className="mt-3 bg-[#070e20]/60 border border-cyan-500/20 p-4 rounded-xl max-w-xl shadow-inner backdrop-blur-sm">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <Bot className="h-4 w-4 text-[#3b82f6]" />
+                  <span className="text-[10px] font-mono tracking-widest text-[#3b82f6] uppercase font-bold">AI Learning Journey Narrative</span>
+                </div>
+                <p className="text-xs leading-relaxed text-[#e2e8f0]">
+                  {learningJourney}
+                </p>
+              </div>
 
               {/* Pomodoro Timer overlay inline if active */}
               {focusActive || focusSeconds < 1500 ? (
-                <div className="mt-5 glass p-4 rounded-xl border-[#00F5FF]/20 max-w-md flex items-center justify-between gap-4">
+                <div className="mt-5 glass p-4 rounded-xl border-[#3b82f6]/20 max-w-md flex items-center justify-between gap-4">
                   <div>
                     <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-mono font-bold">Focus Room Active</div>
-                    <div className="text-2xl font-mono font-bold text-[#00F5FF] mt-0.5">{formatTime(focusSeconds)}</div>
+                    <div className="text-2xl font-mono font-bold text-[#3b82f6] mt-0.5">{formatTime(focusSeconds)}</div>
                   </div>
                   <div className="flex gap-2">
                     <button 
                       onClick={toggleFocusSession} 
                       className={`h-9 w-9 rounded-lg flex items-center justify-center transition-all ${
-                        focusActive ? "bg-amber-500/20 text-amber-400 border border-amber-500/30" : "bg-[#00F5FF] text-[#050816]"
+                        focusActive ? "bg-amber-500/20 text-amber-400 border border-amber-500/30" : "bg-[#3b82f6] text-[#050816]"
                       }`}
                     >
                       {focusActive ? <Clock className="h-4.5 w-4.5" /> : <Play className="h-4.5 w-4.5 fill-[#050816]" />}
@@ -360,7 +438,7 @@ function Dashboard() {
                 <div className="mt-5 flex flex-wrap gap-2">
                   <button 
                     onClick={toggleFocusSession}
-                    className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#00F5FF] to-[#8B5CF6] px-4 py-2 text-sm font-medium text-[#050816] glow-cyan hover:scale-[1.02] transition-all"
+                    className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#3b82f6] to-[#6366f1] px-4 py-2 text-sm font-medium text-[#050816] glow-cyan hover:scale-[1.02] transition-all"
                   >
                     <Zap className="h-4 w-4 fill-[#050816]" /> Continue Learning (Focus Timer)
                   </button>
@@ -376,10 +454,10 @@ function Dashboard() {
               <div className="mt-6 grid grid-cols-2 sm:grid-cols-5 gap-3 text-xs">
                 {[
                   { label: "Streak", val: `${streakDays}d`, icon: Flame, c: "text-[#F59E0B]" },
-                  { label: "Today's Goal", val: `${goalPercentage}%`, icon: Target, c: "text-[#00F5FF]" },
-                  { label: "Focus Score", val: calculatedFocusScore.toString(), icon: Brain, c: "text-[#8B5CF6]" },
+                  { label: "Today's Goal", val: `${goalPercentage}%`, icon: Target, c: "text-[#3b82f6]" },
+                  { label: "Focus Score", val: calculatedFocusScore.toString(), icon: Brain, c: "text-[#6366f1]" },
                   { label: "Weekly Progress", val: calculatedWeeklyProgress, icon: TrendingUp, c: "text-[#22C55E]" },
-                  { label: "AI Readiness", val: calculatedAiReadiness, icon: Sparkles, c: "text-[#FF00AA]" },
+                  { label: "AI Readiness", val: calculatedAiReadiness, icon: Sparkles, c: "text-[#4f46e5]" },
                 ].map((x) => (
                   <div key={x.label} className="glass rounded-lg p-2.5 hover:border-white/10 transition-colors">
                     <x.icon className={`h-3.5 w-3.5 ${x.c}`} />
@@ -402,7 +480,7 @@ function Dashboard() {
                     cx="48" 
                     cy="48" 
                     r="40" 
-                    className="stroke-[#00F5FF] fill-none stroke-[8] transition-all duration-500" 
+                    className="stroke-[#3b82f6] fill-none stroke-[8] transition-all duration-500" 
                     strokeDasharray="251.2" 
                     strokeDashoffset={251.2 - (251.2 * goalPercentage) / 100} 
                   />
@@ -421,12 +499,109 @@ function Dashboard() {
         </GradientCard>
       </motion.div>
 
+      {/* AI Context Engine Controls */}
+      <GlassCard className="mt-4 bg-[#0b1530] border border-[#3b82f6]/20 text-white shadow-lg">
+        <div className="flex flex-col gap-4">
+          <div className="flex justify-between items-center pb-2 border-b border-white/5">
+            <div className="flex items-center gap-2">
+              <Zap className="h-4.5 w-4.5 text-[#3b82f6] animate-pulse" />
+              <span className="font-display font-bold text-sm text-white">AI Context Engine Controls</span>
+            </div>
+            <span className="text-[9px] font-mono text-[#3b82f6] uppercase tracking-wider">Dynamic Learning OS Configurations</span>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+            {/* Subject */}
+            <div className="space-y-1">
+              <label className="text-[10px] text-blue-200/60 font-mono uppercase font-bold">Subject</label>
+              <input 
+                type="text" 
+                value={profile.currentSubject} 
+                onChange={(e) => setProfile(prev => ({ ...prev, currentSubject: e.target.value }))}
+                onBlur={(e) => handleUpdateProfileField({ currentSubject: e.target.value })}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleUpdateProfileField({ currentSubject: e.currentTarget.value });
+                  }
+                }}
+                className="w-full bg-[#070e20] border border-blue-500/20 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-[#3b82f6]/50 transition" 
+                placeholder="e.g. CS Foundations"
+              />
+            </div>
+
+            {/* Chapter */}
+            <div className="space-y-1">
+              <label className="text-[10px] text-blue-200/60 font-mono uppercase font-bold">Chapter</label>
+              <input 
+                type="text" 
+                value={profile.currentChapter} 
+                onChange={(e) => setProfile(prev => ({ ...prev, currentChapter: e.target.value }))}
+                onBlur={(e) => handleUpdateProfileField({ currentChapter: e.target.value })}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleUpdateProfileField({ currentChapter: e.currentTarget.value });
+                  }
+                }}
+                className="w-full bg-[#070e20] border border-blue-500/20 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-[#3b82f6]/50 transition" 
+                placeholder="e.g. Recursion"
+              />
+            </div>
+
+            {/* Persona */}
+            <div className="space-y-1">
+              <label className="text-[10px] text-blue-200/60 font-mono uppercase font-bold">AI Persona</label>
+              <select 
+                value={profile.persona || "Academy Teacher"} 
+                onChange={(e) => handleUpdateProfileField({ persona: e.target.value })}
+                className="w-full bg-[#070e20] border border-blue-500/20 rounded-xl px-2.5 py-2.5 text-xs text-white outline-none focus:border-[#3b82f6]/50 transition"
+              >
+                <option value="Teacher">Academy Teacher</option>
+                <option value="Industry Engineer">Industry Engineer</option>
+                <option value="Research Scientist">Research Scientist</option>
+                <option value="Doubt Solver Peer">Doubt Solver Peer</option>
+              </select>
+            </div>
+
+            {/* Mode */}
+            <div className="space-y-1">
+              <label className="text-[10px] text-blue-200/60 font-mono uppercase font-bold">Learning Mode</label>
+              <select 
+                value={profile.explanationStyle} 
+                onChange={(e) => handleUpdateProfileField({ explanationStyle: e.target.value })}
+                className="w-full bg-[#070e20] border border-blue-500/20 rounded-xl px-2.5 py-2.5 text-xs text-white outline-none focus:border-[#3b82f6]/50 transition"
+              >
+                <option value="Deep Learning">Deep Learning</option>
+                <option value="Quick Assist">Quick Assist</option>
+                <option value="Exam Preparation">Exam Preparation</option>
+                <option value="Competitive Exam Mode">Competitive Mode</option>
+                <option value="ATL VTR Mode">ATL VTR Mode</option>
+              </select>
+            </div>
+
+            {/* Language */}
+            <div className="space-y-1">
+              <label className="text-[10px] text-blue-200/60 font-mono uppercase font-bold">Preferred Lang</label>
+              <select 
+                value={profile.preferredLang} 
+                onChange={(e) => handleUpdateProfileField({ preferredLang: e.target.value })}
+                className="w-full bg-[#070e20] border border-blue-500/20 rounded-xl px-2.5 py-2.5 text-xs text-white outline-none focus:border-[#3b82f6]/50 transition"
+              >
+                <option value="English">English</option>
+                <option value="Hindi">Hindi (हिंदी)</option>
+                <option value="Spanish">Spanish (Español)</option>
+                <option value="German">German (Deutsch)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </GlassCard>
+
       {/* My Study Hub & Task Planner */}
       <GlassCard className="mt-6 bg-[#0b1530] border border-blue-500/20 text-white shadow-lg">
         <div className="flex flex-col gap-5">
           <div className="flex justify-between items-center pb-2 border-b border-white/5">
             <div className="flex items-center gap-2">
-              <BookCheck className="h-4.5 w-4.5 text-[#00f5ff]" />
+              <BookCheck className="h-4.5 w-4.5 text-[#3b82f6]" />
               <span className="font-display font-bold text-sm text-white">My Study Hub & Task Planner</span>
             </div>
             <span className="text-[9px] font-mono text-blue-300 uppercase tracking-wider">Realistic Interactive Learning Controls</span>
@@ -438,7 +613,7 @@ function Dashboard() {
               <div>
                 <div className="flex justify-between items-center mb-2.5">
                   <span className="font-display font-bold text-xs text-blue-200/80">Daily Study Objectives</span>
-                  <span className="text-[9.5px] font-mono text-[#00f5ff] bg-[#00f5ff]/10 px-2 py-0.5 rounded">
+                  <span className="text-[9.5px] font-mono text-[#3b82f6] bg-[#3b82f6]/10 px-2 py-0.5 rounded">
                     {tasks.filter(t => t.completed).length} of {tasks.length} Completed
                   </span>
                 </div>
@@ -493,12 +668,106 @@ function Dashboard() {
                   value={newTaskText}
                   onChange={(e) => setNewTaskText(e.target.value)}
                   placeholder="Type next study target..." 
-                  className="flex-1 bg-slate-900/50 border border-slate-700/40 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#00F5FF]/50"
+                  className="flex-1 bg-slate-900/50 border border-slate-700/40 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]/50"
                 />
-                <button type="submit" className="bg-[#00F5FF] text-[#050816] rounded-xl px-4 py-2 text-xs font-bold hover:scale-[1.02] transition-transform shrink-0">
+                <button type="submit" className="bg-[#3b82f6] text-[#050816] rounded-xl px-4 py-2 text-xs font-bold hover:scale-[1.02] transition-transform shrink-0">
                   Add Target
                 </button>
               </form>
+
+              {/* Upcoming Timetable Deadlines */}
+              <div className="mt-4 pt-4 border-t border-white/5">
+                <div className="flex justify-between items-center mb-2.5">
+                  <span className="font-display font-bold text-xs text-blue-200/80">Upcoming Timetable Deadlines</span>
+                  <span className="text-[9.5px] font-mono text-[#6366f1] bg-[#6366f1]/10 px-2 py-0.5 rounded">
+                    {deadlines.length} Scheduled
+                  </span>
+                </div>
+                <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
+                  {deadlines.map(d => (
+                    <div 
+                      key={d.id} 
+                      onClick={async () => {
+                        try {
+                          await toggleDeadline({ data: { id: d.id, completed: true } });
+                          setDeadlines(deadlines.filter(x => x.id !== d.id));
+                          showToast("Deadline completed!", Sparkles);
+                        } catch (err) {
+                          console.error(err);
+                        }
+                      }}
+                      className="flex items-center justify-between p-2.5 rounded-xl border bg-slate-800/40 border-slate-700/30 text-blue-100 hover:bg-slate-800/60 transition cursor-pointer"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="h-4.5 w-4.5 rounded border border-purple-500/50 flex items-center justify-center shrink-0" />
+                        <div>
+                          <span className="text-xs block">{d.title}</span>
+                          <span className="text-[9px] text-purple-300/80 font-mono">Due: {d.dueAt}</span>
+                        </div>
+                      </div>
+                      <span className={`text-[9px] font-mono px-2 py-0.5 rounded ${
+                        d.priority === 'High' ? 'bg-red-500/20 text-red-400' : 'bg-amber-500/20 text-amber-400'
+                      }`}>
+                        {d.priority}
+                      </span>
+                    </div>
+                  ))}
+                  {deadlines.length === 0 && (
+                    <div className="text-xs text-slate-500 italic py-2 text-center">No upcoming deadlines. Schedule one below!</div>
+                  )}
+                </div>
+                
+                {/* Form to add deadline */}
+                <form 
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    if (!newDeadlineTitle.trim() || !newDeadlineDate) return;
+                    try {
+                      const saved = await addDeadline({ 
+                        data: { 
+                          userId, 
+                          title: newDeadlineTitle, 
+                          dueAt: newDeadlineDate, 
+                          priority: newDeadlinePriority 
+                        } 
+                      });
+                      setDeadlines([...deadlines, saved as any]);
+                      setNewDeadlineTitle("");
+                      setNewDeadlineDate("");
+                      showToast("New deadline scheduled!", Sparkles);
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }}
+                  className="flex flex-wrap gap-2 mt-3"
+                >
+                  <input 
+                    type="text" 
+                    value={newDeadlineTitle}
+                    onChange={(e) => setNewDeadlineTitle(e.target.value)}
+                    placeholder="Assignment / Exam..." 
+                    className="flex-1 min-w-[120px] bg-slate-900/50 border border-slate-700/40 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#6366f1]/50"
+                  />
+                  <input 
+                    type="date"
+                    value={newDeadlineDate}
+                    onChange={(e) => setNewDeadlineDate(e.target.value)}
+                    className="bg-slate-900/50 border border-slate-700/40 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#6366f1]/50"
+                  />
+                  <select 
+                    value={newDeadlinePriority}
+                    onChange={(e) => setNewDeadlinePriority(e.target.value)}
+                    className="bg-slate-900/50 border border-slate-700/40 rounded-xl px-2 py-2 text-xs text-white focus:outline-none focus:border-[#6366f1]/50"
+                  >
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+                  </select>
+                  <button type="submit" className="bg-[#6366f1] text-white rounded-xl px-4 py-2 text-xs font-bold hover:scale-[1.02] transition-transform">
+                    Add Event
+                  </button>
+                </form>
+              </div>
             </div>
 
             {/* Right: Quick Sync Tools */}
@@ -516,10 +785,10 @@ function Dashboard() {
                       setVoiceText("");
                     }}
                     className={`flex flex-col items-center justify-center p-2.5 rounded-xl border transition text-center gap-1.5 ${
-                      hubMode === "voice" ? "bg-[#00f5ff]/10 border-[#00f5ff]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
+                      hubMode === "voice" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
                     }`}
                   >
-                    <Mic className="h-4 w-4 text-[#00f5ff]" />
+                    <Mic className="h-4 w-4 text-[#3b82f6]" />
                     <span className="text-[10px] font-semibold">Voice Dictate</span>
                   </button>
 
@@ -530,10 +799,10 @@ function Dashboard() {
                       setSelectedFile(null);
                     }}
                     className={`flex flex-col items-center justify-center p-2.5 rounded-xl border transition text-center gap-1.5 ${
-                      hubMode === "upload" ? "bg-[#00f5ff]/10 border-[#00f5ff]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
+                      hubMode === "upload" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
                     }`}
                   >
-                    <Paperclip className="h-4 w-4 text-[#00f5ff]" />
+                    <Paperclip className="h-4 w-4 text-[#3b82f6]" />
                     <span className="text-[10px] font-semibold">Upload PDF</span>
                   </button>
 
@@ -544,10 +813,10 @@ function Dashboard() {
                       setPastedText("");
                     }}
                     className={`flex flex-col items-center justify-center p-2.5 rounded-xl border transition text-center gap-1.5 ${
-                      hubMode === "text" ? "bg-[#00f5ff]/10 border-[#00f5ff]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
+                      hubMode === "text" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
                     }`}
                   >
-                    <FileText className="h-4 w-4 text-[#00f5ff]" />
+                    <FileText className="h-4 w-4 text-[#3b82f6]" />
                     <span className="text-[10px] font-semibold">Paste Notes</span>
                   </button>
                 </div>
@@ -606,7 +875,7 @@ function Dashboard() {
                               showToast("Task synced from dictation!", Award);
                             }, 1200);
                           }}
-                          className="px-3 py-1.5 rounded-lg bg-[#00F5FF] text-[#050816] text-[10px] font-bold hover:scale-105 transition ml-auto"
+                          className="px-3 py-1.5 rounded-lg bg-[#3b82f6] text-[#050816] text-[10px] font-bold hover:scale-105 transition ml-auto"
                         >
                           {submittingHub ? "Syncing..." : "Add to Tasks"}
                         </button>
@@ -617,13 +886,13 @@ function Dashboard() {
 
                 {hubMode === "upload" && (
                   <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="p-3 bg-[#050816] rounded-xl border border-white/5 space-y-3 overflow-hidden">
-                    <div className="border border-dashed border-white/10 rounded-xl p-4 flex flex-col items-center justify-center hover:border-[#00f5ff]/40 transition cursor-pointer"
+                    <div className="border border-dashed border-white/10 rounded-xl p-4 flex flex-col items-center justify-center hover:border-[#3b82f6]/40 transition cursor-pointer"
                       onClick={() => {
                         setSelectedFile("syllabus_quantum.pdf");
                         showToast("Uploaded syllabus_quantum.pdf", FileUp);
                       }}
                     >
-                      <FileUp className="h-6 w-6 text-[#00f5ff] mb-1.5" />
+                      <FileUp className="h-6 w-6 text-[#3b82f6] mb-1.5" />
                       {selectedFile ? (
                         <span className="text-[10px] text-white font-mono font-bold">{selectedFile}</span>
                       ) : (
@@ -642,7 +911,7 @@ function Dashboard() {
                             showToast("PDF parsed! Tasks updated.", Award);
                           }, 1200);
                         }}
-                        className="w-full py-2 rounded-lg bg-[#00F5FF] text-[#050816] text-[10px] font-bold hover:scale-[1.01] transition"
+                        className="w-full py-2 rounded-lg bg-[#3b82f6] text-[#050816] text-[10px] font-bold hover:scale-[1.01] transition"
                       >
                         {submittingHub ? "Analyzing file..." : "Sync PDF"}
                       </button>
@@ -656,7 +925,7 @@ function Dashboard() {
                       value={pastedText}
                       onChange={(e) => setPastedText(e.target.value)}
                       placeholder="Paste study logs, notes or tasks..."
-                      className="w-full h-20 bg-black/40 border border-white/10 rounded-lg p-2 text-[10px] text-white placeholder-slate-500 focus:outline-none focus:border-[#00f5ff]/40 font-mono"
+                      className="w-full h-20 bg-black/40 border border-white/10 rounded-lg p-2 text-[10px] text-white placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]/40 font-mono"
                     />
                     <div className="flex justify-end">
                       <button
@@ -672,7 +941,7 @@ function Dashboard() {
                           }, 1200);
                         }}
                         disabled={!pastedText}
-                        className="px-3 py-1.5 rounded-lg bg-[#00F5FF] text-[#050816] text-[10px] font-bold hover:scale-105 transition disabled:opacity-50"
+                        className="px-3 py-1.5 rounded-lg bg-[#3b82f6] text-[#050816] text-[10px] font-bold hover:scale-105 transition disabled:opacity-50"
                       >
                         {submittingHub ? "Analyzing..." : "Sync Notes"}
                       </button>
@@ -689,21 +958,21 @@ function Dashboard() {
       <div className="mt-6 grid grid-cols-2 lg:grid-cols-6 gap-3">
         <div 
           onClick={() => { setSelectedKpi("hours"); showToast("Progress chart filtered: Hours Only", Clock); }}
-          className={`cursor-pointer transition-all ${selectedKpi === "hours" ? "ring-1 ring-[#00F5FF] scale-[0.98]" : ""}`}
+          className={`cursor-pointer transition-all ${selectedKpi === "hours" ? "ring-1 ring-[#3b82f6] scale-[0.98]" : ""}`}
         >
-          <KpiCard icon={Clock} label="Study Hours" value={`${studyHours.toFixed(1)}h`} delta="12" color="bg-[#00F5FF]/15 text-[#00F5FF]" />
+          <KpiCard icon={Clock} label="Study Hours" value={`${studyHours.toFixed(1)}h`} delta="12" color="bg-[#3b82f6]/15 text-[#3b82f6]" />
         </div>
         <div 
           onClick={() => { setCoursesDone(c => c + 1); showToast("Manually added mock completed course!", BookCheck); }}
           className="cursor-pointer transition-all hover:scale-[0.98]"
         >
-          <KpiCard icon={BookCheck} label="Courses Done" value={coursesDone.toString()} delta="8" color="bg-[#8B5CF6]/15 text-[#8B5CF6]" />
+          <KpiCard icon={BookCheck} label="Courses Done" value={coursesDone.toString()} delta="8" color="bg-[#6366f1]/15 text-[#6366f1]" />
         </div>
         <div 
           onClick={() => { setChatOpen(true); showToast("Opening AI chat companion...", Bot); }}
           className="cursor-pointer transition-all hover:scale-[0.98]"
         >
-          <KpiCard icon={Bot} label="AI Sessions" value={aiSessions.toString()} delta="22" color="bg-[#FF00AA]/15 text-[#FF00AA]" />
+          <KpiCard icon={Bot} label="AI Sessions" value={aiSessions.toString()} delta="22" color="bg-[#4f46e5]/15 text-[#4f46e5]" />
         </div>
         <div 
           onClick={() => { setGlobalRank(r => Math.max(1, r - 5)); showToast("Rank improved! +5 ranks gained", Trophy); }}
@@ -713,7 +982,7 @@ function Dashboard() {
         </div>
         <div 
           onClick={() => { setSelectedKpi("focus"); showToast("Progress chart filtered: Focus Score Only", Brain); }}
-          className={`cursor-pointer transition-all ${selectedKpi === "focus" ? "ring-1 ring-[#8B5CF6] scale-[0.98]" : ""}`}
+          className={`cursor-pointer transition-all ${selectedKpi === "focus" ? "ring-1 ring-[#6366f1] scale-[0.98]" : ""}`}
         >
           <KpiCard icon={Brain} label="Mastery" value={`${masteryScore}%`} delta="5" color="bg-[#22C55E]/15 text-[#22C55E]" />
         </div>
@@ -745,13 +1014,13 @@ function Dashboard() {
               </button>
               <button 
                 onClick={() => setSelectedKpi("hours")}
-                className={`px-2.5 py-1 rounded-md transition ${selectedKpi === "hours" ? "bg-[#00F5FF]/20 text-[#00F5FF]" : "text-muted-foreground hover:text-[#00F5FF]"}`}
+                className={`px-2.5 py-1 rounded-md transition ${selectedKpi === "hours" ? "bg-[#3b82f6]/20 text-[#3b82f6]" : "text-muted-foreground hover:text-[#3b82f6]"}`}
               >
                 Hours
               </button>
               <button 
                 onClick={() => setSelectedKpi("focus")}
-                className={`px-2.5 py-1 rounded-md transition ${selectedKpi === "focus" ? "bg-[#8B5CF6]/20 text-[#8B5CF6]" : "text-muted-foreground hover:text-[#8B5CF6]"}`}
+                className={`px-2.5 py-1 rounded-md transition ${selectedKpi === "focus" ? "bg-[#6366f1]/20 text-[#6366f1]" : "text-muted-foreground hover:text-[#6366f1]"}`}
               >
                 Focus
               </button>
@@ -763,12 +1032,12 @@ function Dashboard() {
               <AreaChart data={weekly}>
                 <defs>
                   <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#00F5FF" stopOpacity={0.6} />
-                    <stop offset="100%" stopColor="#00F5FF" stopOpacity={0} />
+                    <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.6} />
+                    <stop offset="100%" stopColor="#3b82f6" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="g2" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#8B5CF6" stopOpacity={0.5} />
-                    <stop offset="100%" stopColor="#8B5CF6" stopOpacity={0} />
+                    <stop offset="0%" stopColor="#6366f1" stopOpacity={0.5} />
+                    <stop offset="100%" stopColor="#6366f1" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid stroke="rgba(255,255,255,0.05)" vertical={false} />
@@ -777,10 +1046,10 @@ function Dashboard() {
                 <Tooltip contentStyle={{ background: "#0B1120", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8 }} />
                 
                 {(selectedKpi === "all" || selectedKpi === "hours") && (
-                  <Area type="monotone" dataKey="hours" stroke="#00F5FF" fill="url(#g1)" strokeWidth={2} name="Hours" />
+                  <Area type="monotone" dataKey="hours" stroke="#3b82f6" fill="url(#g1)" strokeWidth={2} name="Hours" />
                 )}
                 {(selectedKpi === "all" || selectedKpi === "focus") && (
-                  <Area type="monotone" dataKey="focus" stroke="#8B5CF6" fill="url(#g2)" strokeWidth={2} name="Focus Score" />
+                  <Area type="monotone" dataKey="focus" stroke="#6366f1" fill="url(#g2)" strokeWidth={2} name="Focus Score" />
                 )}
               </AreaChart>
             </ResponsiveContainer>
@@ -815,7 +1084,7 @@ function Dashboard() {
                   }}
                 />
                 <PolarRadiusAxis tick={false} axisLine={false} />
-                <Radar dataKey="v" stroke="#00F5FF" fill="#00F5FF" fillOpacity={0.3} strokeWidth={2} />
+                <Radar dataKey="v" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.3} strokeWidth={2} />
               </RadarChart>
             </ResponsiveContainer>
           </div>
@@ -858,9 +1127,9 @@ function Dashboard() {
               >
                 <div className="flex items-center justify-between text-xs mb-1.5">
                   <span className="font-semibold text-slate-300 group-hover:text-white flex items-center gap-1.5">
-                    <Sparkles className="h-3.5 w-3.5 text-[#00F5FF]" /> {r.name}
+                    <Sparkles className="h-3.5 w-3.5 text-[#3b82f6]" /> {r.name}
                   </span>
-                  <span className="text-[10px] text-[#00F5FF] font-mono group-hover:underline flex items-center gap-1">
+                  <span className="text-[10px] text-[#3b82f6] font-mono group-hover:underline flex items-center gap-1">
                     Start Course <ArrowRight className="h-3 w-3" />
                   </span>
                 </div>
@@ -869,7 +1138,7 @@ function Dashboard() {
                     initial={{ width: 0 }}
                     animate={{ width: `${r.confidence}%` }}
                     transition={{ duration: 1 }}
-                    className="h-full rounded-full bg-gradient-to-r from-[#00F5FF] to-[#8B5CF6]"
+                    className="h-full rounded-full bg-gradient-to-r from-[#3b82f6] to-[#6366f1]"
                   />
                 </div>
               </div>
@@ -886,13 +1155,13 @@ function Dashboard() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="w-full max-w-sm p-6 rounded-3xl border border-[#00F5FF]/20 bg-[#0d1322] shadow-2xl relative overflow-hidden"
+              className="w-full max-w-sm p-6 rounded-3xl border border-[#3b82f6]/20 bg-[#0d1322] shadow-2xl relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[#00F5FF]/5 rounded-full blur-2xl" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#3b82f6]/5 rounded-full blur-2xl" />
               
               <div className="flex items-center justify-between mb-4 pb-2 border-b border-white/5">
                 <h4 className="font-display font-bold text-sm text-[#e9feff] flex items-center gap-2">
-                  <RefreshCw className={`h-4.5 w-4.5 text-[#00F5FF] ${recGenerating ? "animate-spin" : ""}`} /> 
+                  <RefreshCw className={`h-4.5 w-4.5 text-[#3b82f6] ${recGenerating ? "animate-spin" : ""}`} /> 
                   Generating Curriculum
                 </h4>
                 {!recGenerating && (
@@ -911,11 +1180,11 @@ function Dashboard() {
                 <div className="space-y-1.5">
                   <div className="flex justify-between items-center text-xs">
                     <span className="text-muted-foreground">Inference Compiler</span>
-                    <span className="text-[#00F5FF] font-mono">{recProgress}%</span>
+                    <span className="text-[#3b82f6] font-mono">{recProgress}%</span>
                   </div>
                   <div className="w-full bg-white/5 h-2 rounded-full overflow-hidden">
                     <div 
-                      className="h-full bg-gradient-to-r from-[#00F5FF] to-[#8B5CF6] transition-all duration-300"
+                      className="h-full bg-gradient-to-r from-[#3b82f6] to-[#6366f1] transition-all duration-300"
                       style={{ width: `${recProgress}%` }}
                     />
                   </div>
@@ -928,7 +1197,7 @@ function Dashboard() {
                 {!recGenerating && (
                   <button 
                     onClick={() => setActiveRecommendation(null)}
-                    className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#00F5FF] to-[#8B5CF6] text-xs font-bold text-[#050816] transition hover:shadow-lg"
+                    className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#3b82f6] to-[#6366f1] text-xs font-bold text-[#050816] transition hover:shadow-lg"
                   >
                     Launch Study Unit
                   </button>
@@ -946,20 +1215,20 @@ function Dashboard() {
             initial={{ opacity: 0, x: 100 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 120 }}
-            className="fixed bottom-6 right-6 z-40 w-full max-w-sm h-[480px] rounded-3xl border border-[#00F5FF]/30 bg-[#0d1322] shadow-[0_20px_50px_rgba(0,245,255,0.15)] flex flex-col overflow-hidden"
+            className="fixed bottom-4 right-4 left-4 sm:left-auto sm:right-6 sm:bottom-6 z-40 w-[calc(100%-2rem)] sm:w-full sm:max-w-sm h-[480px] rounded-3xl border border-[#3b82f6]/30 bg-[#0d1322] shadow-[0_20px_50px_rgba(59,130,246,0.15)] flex flex-col overflow-hidden"
           >
             {/* Header */}
             <div className="bg-[#0f172a] px-4 py-3.5 border-b border-white/10 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="relative">
-                  <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-[#00F5FF] to-[#8B5CF6] flex items-center justify-center glow-cyan">
+                  <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-[#3b82f6] to-[#6366f1] flex items-center justify-center glow-cyan">
                     <Bot className="h-4 w-4 text-[#050816]" />
                   </div>
                   <span className="absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full bg-emerald-400 border border-[#0f172a]" />
                 </div>
                 <div>
                   <div className="text-xs font-bold text-white leading-none">GyaanSetu AI Tutor</div>
-                  <div className="text-[9px] text-[#00F5FF] mt-1 font-mono">Local Inference Client</div>
+                  <div className="text-[9px] text-[#3b82f6] mt-1 font-mono">Local Inference Client</div>
                 </div>
               </div>
               <button 
@@ -979,7 +1248,7 @@ function Dashboard() {
                 >
                   <div className={`p-3 rounded-2xl max-w-[80%] leading-relaxed ${
                     msg.sender === "user" 
-                      ? "bg-gradient-to-r from-[#00F5FF]/20 to-[#8B5CF6]/20 text-white border border-[#00F5FF]/20 rounded-tr-none"
+                      ? "bg-gradient-to-r from-[#3b82f6]/20 to-[#6366f1]/20 text-white border border-[#3b82f6]/20 rounded-tr-none"
                       : "bg-white/5 text-slate-300 border border-white/5 rounded-tl-none"
                   }`}>
                     {msg.text}
@@ -989,9 +1258,9 @@ function Dashboard() {
               {isTyping && (
                 <div className="flex justify-start">
                   <div className="bg-white/5 border border-white/5 text-muted-foreground p-3 rounded-2xl rounded-tl-none flex items-center gap-1">
-                    <span className="h-1.5 w-1.5 bg-[#00F5FF] rounded-full animate-bounce" />
-                    <span className="h-1.5 w-1.5 bg-[#00F5FF] rounded-full animate-bounce [animation-delay:0.2s]" />
-                    <span className="h-1.5 w-1.5 bg-[#00F5FF] rounded-full animate-bounce [animation-delay:0.4s]" />
+                    <span className="h-1.5 w-1.5 bg-[#3b82f6] rounded-full animate-bounce" />
+                    <span className="h-1.5 w-1.5 bg-[#3b82f6] rounded-full animate-bounce [animation-delay:0.2s]" />
+                    <span className="h-1.5 w-1.5 bg-[#3b82f6] rounded-full animate-bounce [animation-delay:0.4s]" />
                   </div>
                 </div>
               )}
@@ -1001,19 +1270,19 @@ function Dashboard() {
             <div className="px-4 py-2 flex gap-1.5 overflow-x-auto scrollbar-thin border-t border-white/5">
               <button 
                 onClick={() => handleSendMessage("how do i improve my focus score?")}
-                className="text-[9px] bg-white/5 border border-white/5 text-[#00F5FF] px-2.5 py-1 rounded-full whitespace-nowrap hover:bg-white/10 transition"
+                className="text-[9px] bg-white/5 border border-white/5 text-[#3b82f6] px-2.5 py-1 rounded-full whitespace-nowrap hover:bg-white/10 transition"
               >
                 Improve Focus
               </button>
               <button 
                 onClick={() => handleSendMessage("explain reinforcement learning")}
-                className="text-[9px] bg-white/5 border border-white/5 text-[#00F5FF] px-2.5 py-1 rounded-full whitespace-nowrap hover:bg-white/10 transition"
+                className="text-[9px] bg-white/5 border border-white/5 text-[#3b82f6] px-2.5 py-1 rounded-full whitespace-nowrap hover:bg-white/10 transition"
               >
                 RL Concept
               </button>
               <button 
                 onClick={() => handleSendMessage("give me a math study tip")}
-                className="text-[9px] bg-white/5 border border-white/5 text-[#00F5FF] px-2.5 py-1 rounded-full whitespace-nowrap hover:bg-white/10 transition"
+                className="text-[9px] bg-white/5 border border-white/5 text-[#3b82f6] px-2.5 py-1 rounded-full whitespace-nowrap hover:bg-white/10 transition"
               >
                 Math Tip
               </button>
@@ -1029,11 +1298,11 @@ function Dashboard() {
                 placeholder="Ask me anything..."
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
-                className="flex-1 bg-white/5 border border-white/5 rounded-xl px-3 py-2 text-xs text-white outline-none placeholder:text-muted-foreground/60 focus:border-[#00F5FF]/30 transition"
+                className="flex-1 bg-white/5 border border-white/5 rounded-xl px-3 py-2 text-xs text-white outline-none placeholder:text-muted-foreground/60 focus:border-[#3b82f6]/30 transition"
               />
               <button 
                 type="submit" 
-                className="h-8 w-8 rounded-xl bg-gradient-to-r from-[#00F5FF] to-[#3626ce] flex items-center justify-center text-[#050816] hover:scale-105 active:scale-95 transition"
+                className="h-8 w-8 rounded-xl bg-gradient-to-r from-[#3b82f6] to-[#3626ce] flex items-center justify-center text-[#050816] hover:scale-105 active:scale-95 transition"
               >
                 <Send className="h-4 w-4" />
               </button>

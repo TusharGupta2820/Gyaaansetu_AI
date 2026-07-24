@@ -3,7 +3,8 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { GlassCard, PageHeader, GradientCard } from "@/components/ui-kit/Card";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
-import { loadCourses, updateCourseProgress } from "@/lib/api/learning.functions";
+import { loadCourses, updateCourseProgress, saveCourse } from "@/lib/api/learning.functions";
+import { generateAICourse } from "@/lib/api/ai.service";
 import { 
   BookOpen, Sparkles, Play, Award, Bookmark, ArrowRight, 
   Check, RefreshCw, X, FileText, Download, Info, Zap,
@@ -119,9 +120,9 @@ function LearningDashboard() {
             initial={{ opacity: 0, y: -50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.9 }}
-            className="fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border border-[#00F5FF]/30 shadow-2xl flex items-center gap-3 bg-[#0d1322] max-w-sm"
+            className="fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border border-[#3b82f6]/30 shadow-2xl flex items-center gap-3 bg-[#0d1322] max-w-sm"
           >
-            <div className="h-8 w-8 rounded-lg bg-[#00F5FF]/10 text-[#00F5FF] flex items-center justify-center shrink-0">
+            <div className="h-8 w-8 rounded-lg bg-[#3b82f6]/10 text-[#3b82f6] flex items-center justify-center shrink-0">
               <toast.icon className="h-4.5 w-4.5" />
             </div>
             <div className="text-xs font-semibold text-white">{toast.message}</div>
@@ -143,7 +144,7 @@ function LearningDashboard() {
         <div className="flex flex-col gap-4">
           <div className="flex justify-between items-center pb-2 border-b border-white/5">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-4.5 w-4.5 text-[#00f5ff]" />
+              <Sparkles className="h-4.5 w-4.5 text-[#3b82f6]" />
               <span className="font-display font-bold text-sm text-white">AI Course Generator</span>
             </div>
             <span className="text-[9px] font-mono text-blue-300 uppercase tracking-wider">Upload Syllabus or Dictate Topics</span>
@@ -157,11 +158,11 @@ function LearningDashboard() {
                 setVoiceText("");
               }}
               className={`flex items-center justify-between p-3 rounded-xl border transition text-left ${
-                hubMode === "voice" ? "bg-[#00f5ff]/10 border-[#00f5ff]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
+                hubMode === "voice" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
               }`}
             >
               <div className="flex items-center gap-2">
-                <Mic className="h-4 w-4 text-[#00f5ff]" />
+                <Mic className="h-4 w-4 text-[#3b82f6]" />
                 <span className="text-xs font-semibold text-white">Voice Topic Input</span>
               </div>
               <ChevronRight className="h-3.5 w-3.5 text-blue-300" />
@@ -174,11 +175,11 @@ function LearningDashboard() {
                 setSelectedFile(null);
               }}
               className={`flex items-center justify-between p-3 rounded-xl border transition text-left ${
-                hubMode === "upload" ? "bg-[#00f5ff]/10 border-[#00f5ff]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
+                hubMode === "upload" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
               }`}
             >
               <div className="flex items-center gap-2">
-                <Paperclip className="h-4 w-4 text-[#00f5ff]" />
+                <Paperclip className="h-4 w-4 text-[#3b82f6]" />
                 <span className="text-xs font-semibold text-white">Upload Syllabus PDF</span>
               </div>
               <ChevronRight className="h-3.5 w-3.5 text-blue-300" />
@@ -191,11 +192,11 @@ function LearningDashboard() {
                 setPastedText("");
               }}
               className={`flex items-center justify-between p-3 rounded-xl border transition text-left ${
-                hubMode === "text" ? "bg-[#00f5ff]/10 border-[#00f5ff]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
+                hubMode === "text" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
               }`}
             >
               <div className="flex items-center gap-2">
-                <FileText className="h-4 w-4 text-[#00f5ff]" />
+                <FileText className="h-4 w-4 text-[#3b82f6]" />
                 <span className="text-xs font-semibold text-white">Paste Syllabus Outline</span>
               </div>
               <ChevronRight className="h-3.5 w-3.5 text-blue-300" />
@@ -244,25 +245,30 @@ function LearningDashboard() {
                   </button>
                   {voiceText && (
                     <button
-                      onClick={() => {
+                      onClick={async () => {
                         setSubmittingHub(true);
-                        setTimeout(() => {
+                        try {
+                          const generated = await generateAICourse(voiceText);
+                          const payload = {
+                            userId,
+                            title: generated.title || "Quantum Algorithms",
+                            desc: generated.desc || "Learn quantum gates, superposition math, and Shor's algorithms.",
+                            tag: generated.tag || "Custom",
+                            progress: 0,
+                            hours: generated.hours || "18 hours total",
+                            syllabus: generated.syllabus || ["Vector Spaces & qubits", "Hadamard & Pauli Gates"],
+                          };
+                          const saved = await saveCourse({ data: payload });
+                          setCourses(prev => [saved, ...prev]);
+                          showToast(`${saved.title} custom course generated!`, Zap);
+                        } catch (err) {
+                          console.error(err);
+                        } finally {
                           setSubmittingHub(false);
                           setHubMode("none");
-                          const mockCourse = {
-                            id: "quantum-custom",
-                            title: "Quantum Algorithms",
-                            desc: "Learn quantum gates, superposition math, and Shor's algorithms from scratch.",
-                            tag: "Custom",
-                            progress: 0,
-                            hours: "18 hours total",
-                            syllabus: ["Vector Spaces & qubits", "Hadamard & Pauli Gates", "Fourier transform math"]
-                          };
-                          setCourses(prev => [mockCourse, ...prev]);
-                          showToast("Quantum Algorithms custom course generated!", Zap);
-                        }, 1200);
+                        }
                       }}
-                      className="px-4 py-2 rounded-lg bg-[#00F5FF] text-[#050816] text-xs font-bold hover:scale-105 transition ml-auto"
+                      className="px-4 py-2 rounded-lg bg-[#3b82f6] text-[#050816] text-xs font-bold hover:scale-105 transition ml-auto"
                     >
                       {submittingHub ? "Generating..." : "Generate Course"}
                     </button>
@@ -273,13 +279,13 @@ function LearningDashboard() {
 
             {hubMode === "upload" && (
               <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="p-4 bg-[#050816] rounded-xl border border-white/5 space-y-4">
-                <div className="border border-dashed border-white/10 rounded-xl p-6 flex flex-col items-center justify-center hover:border-[#00f5ff]/40 transition cursor-pointer bg-slate-900/40"
+                <div className="border border-dashed border-white/10 rounded-xl p-6 flex flex-col items-center justify-center hover:border-[#3b82f6]/40 transition cursor-pointer bg-slate-900/40"
                   onClick={() => {
                     setSelectedFile("syllabus_advanced_math.pdf");
                     showToast("Uploaded syllabus_advanced_math.pdf", FileUp);
                   }}
                 >
-                  <FileUp className="h-8 w-8 text-[#00f5ff] mb-2" />
+                  <FileUp className="h-8 w-8 text-[#3b82f6] mb-2" />
                   {selectedFile ? (
                     <span className="text-xs text-white font-mono font-bold">{selectedFile}</span>
                   ) : (
@@ -288,25 +294,30 @@ function LearningDashboard() {
                 </div>
                 {selectedFile && (
                   <button
-                    onClick={() => {
+                    onClick={async () => {
                       setSubmittingHub(true);
-                      setTimeout(() => {
+                      try {
+                        const generated = await generateAICourse(`A syllabus file named ${selectedFile || 'syllabus_advanced_math.pdf'} containing engineering mathematical topics like laplace transforms, residues, and fourier integrals.`);
+                        const payload = {
+                          userId,
+                          title: generated.title || "Advanced Engineering Math",
+                          desc: generated.desc || "Differential equations, Laplace transforms, and complex variable mapping.",
+                          tag: generated.tag || "Custom",
+                          progress: 0,
+                          hours: generated.hours || "22 hours total",
+                          syllabus: generated.syllabus || ["Fourier Series integrals", "Laplace transforms"],
+                        };
+                        const saved = await saveCourse({ data: payload });
+                        setCourses(prev => [saved, ...prev]);
+                        showToast(`AI custom course generated from ${selectedFile}!`, Zap);
+                      } catch (err) {
+                        console.error(err);
+                      } finally {
                         setSubmittingHub(false);
                         setHubMode("none");
-                        const mockCourse = {
-                          id: "math-custom",
-                          title: "Advanced Engineering Math",
-                          desc: "Differential equations, Laplace transforms, and complex variable mapping.",
-                          tag: "Custom",
-                          progress: 0,
-                          hours: "22 hours total",
-                          syllabus: ["Fourier Series integrals", "Laplace transforms", "Complex differentiation residue theorem"]
-                        };
-                        setCourses(prev => [mockCourse, ...prev]);
-                        showToast("AI custom math course generated from syllabus PDF!", Zap);
-                      }, 1200);
+                      }
                     }}
-                    className="w-full py-2 rounded-lg bg-[#00F5FF] text-[#050816] text-xs font-bold hover:scale-[1.01] transition"
+                    className="w-full py-2 rounded-lg bg-[#3b82f6] text-[#050816] text-xs font-bold hover:scale-[1.01] transition"
                   >
                     {submittingHub ? "Analyzing syllabus..." : "Generate Custom Course"}
                   </button>
@@ -320,21 +331,36 @@ function LearningDashboard() {
                   value={pastedText}
                   onChange={(e) => setPastedText(e.target.value)}
                   placeholder="Paste custom study notes or topics here..."
-                  className="w-full h-24 bg-black/40 border border-white/10 rounded-lg p-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#00f5ff]/40 font-mono"
+                  className="w-full h-24 bg-black/40 border border-white/10 rounded-lg p-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]/40 font-mono"
                 />
                 <div className="flex justify-end">
                   <button
-                    onClick={() => {
+                    onClick={async () => {
                       if (!pastedText) return;
                       setSubmittingHub(true);
-                      setTimeout(() => {
+                      try {
+                        const generated = await generateAICourse(pastedText);
+                        const payload = {
+                          userId,
+                          title: generated.title || "Custom Course",
+                          desc: generated.desc || "Custom generated curriculum outline.",
+                          tag: generated.tag || "Custom",
+                          progress: 0,
+                          hours: generated.hours || "10 hours total",
+                          syllabus: generated.syllabus || ["Introduction", "Core Concepts"],
+                        };
+                        const saved = await saveCourse({ data: payload });
+                        setCourses(prev => [saved, ...prev]);
+                        showToast("AI custom course generated from pasted text outline!", Zap);
+                      } catch (err) {
+                        console.error(err);
+                      } finally {
                         setSubmittingHub(false);
                         setHubMode("none");
-                        showToast("AI custom course generated from pasted text outline!", Zap);
-                      }, 1200);
+                      }
                     }}
                     disabled={!pastedText}
-                    className="px-4 py-2 rounded-lg bg-[#00F5FF] text-[#050816] text-xs font-bold hover:scale-105 transition disabled:opacity-50"
+                    className="px-4 py-2 rounded-lg bg-[#3b82f6] text-[#050816] text-xs font-bold hover:scale-105 transition disabled:opacity-50"
                   >
                     {submittingHub ? "Analyzing text..." : "Generate Course"}
                   </button>
@@ -348,12 +374,12 @@ function LearningDashboard() {
       {/* Main CTA Section */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
         <GradientCard className="overflow-hidden relative bg-[#0b1530] border border-blue-500/20 text-white shadow-lg p-6 rounded-3xl">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#00f5ff]/10 to-[#8b5cf6]/10 rounded-full blur-3xl" />
+          <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#3b82f6]/10 to-[#6366f1]/10 rounded-full blur-3xl" />
           
           <div className="grid lg:grid-cols-[1fr_auto] gap-6 items-center relative z-10">
             <div>
-              <div className="inline-flex items-center gap-1.5 bg-[#00f5ff]/10 text-[#00f5ff] border border-[#00f5ff]/20 rounded-full px-3 py-1 text-xs font-semibold">
-                <Sparkles className="h-3 w-3 text-[#00f5ff]" />
+              <div className="inline-flex items-center gap-1.5 bg-[#3b82f6]/10 text-[#3b82f6] border border-[#3b82f6]/20 rounded-full px-3 py-1 text-xs font-semibold">
+                <Sparkles className="h-3 w-3 text-[#3b82f6]" />
                 Powered by GyaanSetu AI
               </div>
               <h1 className="mt-3 text-2xl lg:text-3xl font-display font-bold text-white">
@@ -367,7 +393,7 @@ function LearningDashboard() {
               <button 
                 onClick={handleResumeCourse}
                 disabled={resuming}
-                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#00F5FF] to-[#8B5CF6] px-5 py-3.5 text-xs font-bold text-[#050816] glow-cyan hover:scale-[1.02] transition disabled:opacity-50"
+                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#3b82f6] to-[#6366f1] px-5 py-3.5 text-xs font-bold text-[#050816] glow-cyan hover:scale-[1.02] transition disabled:opacity-50"
               >
                 {resuming ? (
                   <>
@@ -387,15 +413,15 @@ function LearningDashboard() {
       {/* 4 Interactive Stats Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {[
-          { id: "progress", label: "Courses In Progress", value: "3 courses", color: "text-[#00F5FF]" },
+          { id: "progress", label: "Courses In Progress", value: "3 courses", color: "text-[#3b82f6]" },
           { id: "completed", label: "Completed", value: "23 courses", color: "text-emerald-500" },
           { id: "certs", label: "Certificates", value: "11 credentials", color: "text-amber-500" },
-          { id: "recommend", label: "AI Recommended", value: "18 paths", color: "text-[#8B5CF6]" }
+          { id: "recommend", label: "AI Recommended", value: "18 paths", color: "text-[#6366f1]" }
         ].map((st) => (
           <button
             key={st.id}
             onClick={() => { setActiveModalList(st.id); showToast(`Opening logs for ${st.label}`, Info); }}
-            className="bg-[#0b1530] border border-blue-500/20 p-5 rounded-3xl shadow-md text-left transition hover:scale-[1.02] group text-white hover:border-[#00F5FF]/30"
+            className="bg-[#0b1530] border border-blue-500/20 p-5 rounded-3xl shadow-md text-left transition hover:scale-[1.02] group text-white hover:border-[#3b82f6]/30"
           >
             <div className="text-[10px] text-blue-300 uppercase font-mono tracking-wider font-semibold">{st.label}</div>
             <div className="text-xl font-extrabold text-white mt-1.5 leading-none">{st.value.split(" ")[0]}</div>
@@ -414,7 +440,7 @@ function LearningDashboard() {
             onClick={() => setActiveTab(tab as any)}
             className={`px-4 py-1.5 rounded-full text-xs font-bold transition capitalize ${
               activeTab === tab 
-                ? "bg-[#00f5ff]/10 text-[#00f5ff] border border-[#00f5ff]/30 font-semibold" 
+                ? "bg-[#3b82f6]/10 text-[#3b82f6] border border-[#3b82f6]/30 font-semibold" 
                 : "text-slate-400 hover:text-white"
             }`}
           >
@@ -435,11 +461,11 @@ function LearningDashboard() {
             <div className="bg-[#0b1530] border border-blue-500/20 p-5 rounded-3xl shadow-md hover:shadow-xl transition-all h-full flex flex-col justify-between text-white">
               <div>
                 <div className="flex items-start justify-between mb-4">
-                  <div className="h-8.5 w-8.5 rounded-xl bg-gradient-to-br from-[#00F5FF] to-[#8B5CF6] flex items-center justify-center text-[#050816] font-bold text-xs font-mono">
+                  <div className="h-8.5 w-8.5 rounded-xl bg-gradient-to-br from-[#3b82f6] to-[#6366f1] flex items-center justify-center text-[#050816] font-bold text-xs font-mono">
                     {String(i + 1).padStart(2, "0")}
                   </div>
                   {c.tag && (
-                    <span className="text-[9px] font-bold font-mono bg-[#00F5FF]/10 px-2 py-0.5 rounded text-[#00F5FF] border border-[#00F5FF]/20">
+                    <span className="text-[9px] font-bold font-mono bg-[#3b82f6]/10 px-2 py-0.5 rounded text-[#3b82f6] border border-[#3b82f6]/20">
                       {c.tag}
                     </span>
                   )}
@@ -455,7 +481,7 @@ function LearningDashboard() {
                   <span className="font-bold text-white">{c.progress}%</span>
                 </div>
                 <div className="w-full bg-white/5 h-1.5 rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-[#00F5FF] to-[#8B5CF6] rounded-full" style={{ width: `${c.progress}%` }} />
+                  <div className="h-full bg-gradient-to-r from-[#3b82f6] to-[#6366f1] rounded-full" style={{ width: `${c.progress}%` }} />
                 </div>
               </div>
 
@@ -474,13 +500,13 @@ function LearningDashboard() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-sm bg-[#0d1322] border border-[#00f5ff]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden text-white"
+              className="w-full max-w-sm bg-[#0d1322] border border-[#3b82f6]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden text-white"
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[#00f5ff]/5 rounded-full blur-2xl" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#3b82f6]/5 rounded-full blur-2xl" />
 
               <div className="flex items-center justify-between pb-3 border-b border-white/5 mb-4">
                 <h4 className="font-display font-extrabold text-sm text-white flex items-center gap-1.5">
-                  <BookOpen className="h-4.5 w-4.5 text-[#00f5ff]" />
+                  <BookOpen className="h-4.5 w-4.5 text-[#3b82f6]" />
                   Curriculum Details
                 </h4>
                 <button onClick={() => setSelectedCourse(null)} className="text-slate-400 hover:text-white transition">
@@ -517,7 +543,7 @@ function LearningDashboard() {
                       setSelectedCourse(null);
                       handleResumeCourse();
                     }}
-                    className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#00F5FF] to-[#8B5CF6] text-[#050816] font-bold text-xs shadow-md glow-cyan"
+                    className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#3b82f6] to-[#6366f1] text-[#050816] font-bold text-xs shadow-md glow-cyan"
                   >
                     Start Study Unit
                   </button>
@@ -538,13 +564,13 @@ function LearningDashboard() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-sm bg-[#0d1322] border border-[#00f5ff]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden text-white"
+              className="w-full max-w-sm bg-[#0d1322] border border-[#3b82f6]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden text-white"
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[#8b5cf6]/5 rounded-full blur-2xl" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#6366f1]/5 rounded-full blur-2xl" />
 
               <div className="flex items-center justify-between pb-3 border-b border-white/5 mb-4">
                 <h4 className="font-display font-extrabold text-sm text-white flex items-center gap-1.5">
-                  <Award className="h-4.5 w-4.5 text-[#8b5cf6]" />
+                  <Award className="h-4.5 w-4.5 text-[#6366f1]" />
                   {activeModalList === "progress" && "Active Courses"}
                   {activeModalList === "completed" && "Completed Courses"}
                   {activeModalList === "certs" && "Your Certifications"}
@@ -563,7 +589,7 @@ function LearningDashboard() {
                         <div className="font-bold text-white">{c.title}</div>
                         <div className="text-[10px] text-blue-200/60 mt-0.5">{c.hours} remaining</div>
                       </div>
-                      <span className="text-[10px] font-mono font-bold text-[#00f5ff]">{c.progress}% done</span>
+                      <span className="text-[10px] font-mono font-bold text-[#3b82f6]">{c.progress}% done</span>
                     </div>
                   ))
                 )}
@@ -609,14 +635,14 @@ function LearningDashboard() {
                     <div key={idx} className="p-3 bg-slate-900/40 border border-white/5 rounded-2xl flex justify-between items-center text-xs">
                       <div>
                         <div className="font-bold text-white">{rec.name}</div>
-                        <div className="text-[9px] text-[#8b5cf6] font-semibold mt-0.5">{rec.reason}</div>
+                        <div className="text-[9px] text-[#6366f1] font-semibold mt-0.5">{rec.reason}</div>
                       </div>
                       <button 
                         onClick={() => {
                           setActiveModalList(null);
                           showToast("Added to study path!", Zap);
                         }}
-                        className="p-1.5 bg-[#00f5ff] text-[#050816] rounded-lg hover:scale-105 transition font-bold"
+                        className="p-1.5 bg-[#3b82f6] text-[#050816] rounded-lg hover:scale-105 transition font-bold"
                       >
                         + Add
                       </button>

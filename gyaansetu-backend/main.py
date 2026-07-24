@@ -55,7 +55,7 @@ async def db_context_middleware(request: Request, call_next):
             user_id = match.group(1)
 
     # 3. Check JSON request payload (without consuming stream)
-    if user_id == "default" and request.method in ("POST", "PUT", "PATCH"):
+    if user_id == "default" and request.method in ("POST", "PUT", "PATCH") and not request.url.path.endswith("/tutor/chat"):
         try:
             body = await request.body()
             if body:
@@ -87,16 +87,7 @@ async def db_context_middleware(request: Request, call_next):
 # ── CORS: allow the React frontends ─────────────────────────────────────────
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://localhost:5173",
-        "http://localhost:5180",
-        "http://localhost:8080",
-        "http://127.0.0.1:3000",
-        "http://127.0.0.1:5173",
-        "http://127.0.0.1:5180",
-        "http://127.0.0.1:8080",
-    ],
+    allow_origin_regex=r"https?://.*",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

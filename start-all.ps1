@@ -4,6 +4,7 @@
 
 param(
     [switch]$SkipInstall,
+    [switch]$ForceInstall,
     [switch]$BackendOnly,
     [switch]$FrontendOnly
 )
@@ -49,9 +50,22 @@ if (-not $FrontendOnly) {
     Write-Host ""
     Write-Host "[2/5] Verifying AI models (llama3.1:8b + phi3 + deepseek-r1)..." -ForegroundColor Yellow
     if ($ollamaRunning -and (Get-Command $ollamaExe -ErrorAction SilentlyContinue)) {
+        # Check currently installed models to avoid redundant network calls
+        $installedModels = & $ollamaExe list
         foreach ($model in @("llama3.1:8b", "phi3", "deepseek-r1")) {
-            Write-Host "      Pulling $model (skipped if cached)..." -ForegroundColor Gray
-            Start-Process -FilePath $ollamaExe -ArgumentList "pull $model" -WindowStyle Hidden -Wait
+            $isInstalled = $false
+            foreach ($line in $installedModels) {
+                if ($line -like "*$model*" -or ($model -eq "phi3" -and $line -like "*phi3:latest*") -or ($model -eq "deepseek-r1" -and $line -like "*deepseek-r1:latest*")) {
+                    $isInstalled = $true
+                    break
+                }
+            }
+            if ($isInstalled) {
+                Write-Host "      Model $model is already cached OK" -ForegroundColor Green
+            } else {
+                Write-Host "      Pulling $model..." -ForegroundColor Gray
+                Start-Process -FilePath $ollamaExe -ArgumentList "pull $model" -WindowStyle Hidden -Wait
+            }
         }
         Write-Host "      Models ready OK" -ForegroundColor Green
     } else {
@@ -72,16 +86,20 @@ if (-not $FrontendOnly) {
         $venvDir    = Join-Path $backendPath "venv"
 
         # Create venv if missing
+        $needsInstall = $false
         if (-not (Test-Path $venvDir)) {
             Write-Host "      Creating Python virtual environment..." -ForegroundColor Gray
             python -m venv $venvDir
+            $needsInstall = $true
         }
 
         # Install deps
-        if (-not $SkipInstall) {
+        if ($ForceInstall -or ($needsInstall -and -not $SkipInstall)) {
             Write-Host "      Installing Python dependencies..." -ForegroundColor Gray
             $reqFile = Join-Path $backendPath "requirements.txt"
             & $venvPip install -r $reqFile -q 2>&1 | Out-Null
+        } elseif (-not $ForceInstall -and -not $needsInstall) {
+            Write-Host "      Python virtual environment already exists. Skipping dependency installation." -ForegroundColor Gray
         }
 
         # Copy .env if missing
@@ -121,9 +139,13 @@ if (-not $BackendOnly) {
     $frontendPath = Join-Path $PSScriptRoot "learnsphere-ai-companion"
 
     if (Test-Path $frontendPath) {
-        if (-not $SkipInstall) {
+        $nodeModulesPath = Join-Path $frontendPath "node_modules"
+        $needsNpmInstall = -not (Test-Path $nodeModulesPath)
+        if ($ForceInstall -or ($needsNpmInstall -and -not $SkipInstall)) {
             Write-Host "      Installing npm packages..." -ForegroundColor Gray
             Start-Process -FilePath "cmd.exe" -ArgumentList "/c npm install" -WorkingDirectory $frontendPath -Wait -WindowStyle Hidden
+        } elseif (-not $ForceInstall -and -not $needsNpmInstall) {
+            Write-Host "      node_modules already exists. Skipping npm install." -ForegroundColor Gray
         }
 
         $frontendProcess = Start-Process `
@@ -149,8 +171,13 @@ if (-not $BackendOnly) {
     $botPath = Join-Path $PSScriptRoot "devinterviewbot"
 
     if (Test-Path $botPath) {
-        if (-not $SkipInstall) {
+        $botNodeModulesPath = Join-Path $botPath "node_modules"
+        $needsBotNpmInstall = -not (Test-Path $botNodeModulesPath)
+        if ($ForceInstall -or ($needsBotNpmInstall -and -not $SkipInstall)) {
+            Write-Host "      Installing npm packages for DevInterview Bot..." -ForegroundColor Gray
             Start-Process -FilePath "cmd.exe" -ArgumentList "/c npm install" -WorkingDirectory $botPath -Wait -WindowStyle Hidden
+        } elseif (-not $ForceInstall -and -not $needsBotNpmInstall) {
+            Write-Host "      node_modules for DevInterview Bot already exists. Skipping npm install." -ForegroundColor Gray
         }
 
         $botProcess = Start-Process `

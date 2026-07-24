@@ -30,11 +30,11 @@ function Skills() {
                 <PolarGrid stroke="rgba(255,255,255,0.12)" />
                 <PolarAngleAxis dataKey="skill" tick={{ fill: "#cbd5e1", fontSize: 12 }} />
                 <PolarRadiusAxis tick={false} axisLine={false} domain={[0, 100]} />
-                <Radar dataKey="value" stroke="#00F5FF" fill="url(#radarFill)" fillOpacity={0.5} strokeWidth={2.5} />
+                <Radar dataKey="value" stroke="#3b82f6" fill="url(#radarFill)" fillOpacity={0.5} strokeWidth={2.5} />
                 <defs>
                   <linearGradient id="radarFill" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stopColor="#00F5FF" stopOpacity={0.7} />
-                    <stop offset="100%" stopColor="#8B5CF6" stopOpacity={0.4} />
+                    <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.7} />
+                    <stop offset="100%" stopColor="#6366f1" stopOpacity={0.4} />
                   </linearGradient>
                 </defs>
               </RadarChart>
@@ -46,10 +46,10 @@ function Skills() {
             <GlassCard key={d.skill}>
               <div className="flex items-center justify-between mb-2">
                 <span className="font-medium">{d.skill}</span>
-                <span className="text-sm font-mono text-[#00F5FF]">{d.value}</span>
+                <span className="text-sm font-mono text-[#3b82f6]">{d.value}</span>
               </div>
               <div className="h-2 rounded-full bg-white/5 overflow-hidden">
-                <div className="h-full rounded-full bg-gradient-to-r from-[#00F5FF] to-[#8B5CF6]" style={{ width: `${d.value}%` }} />
+                <div className="h-full rounded-full bg-gradient-to-r from-[#3b82f6] to-[#6366f1]" style={{ width: `${d.value}%` }} />
               </div>
             </GlassCard>
           ))}

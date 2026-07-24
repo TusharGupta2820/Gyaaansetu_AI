@@ -20,7 +20,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
   if (!authorized) {
     return (
       <div className="flex min-h-screen w-full bg-[#050816] items-center justify-center">
-        <div className="animate-spin h-8 w-8 border-4 border-t-transparent border-[#00f5ff] rounded-full" />
+        <div className="animate-spin h-8 w-8 border-4 border-t-transparent border-[#3b82f6] rounded-full" />
       </div>
     );
   }
@@ -53,7 +53,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           <div className="ml-auto flex items-center gap-2">
             <button className="bg-slate-100 text-slate-600 hover:bg-slate-200/85 relative rounded-lg p-2 transition">
               <Bell className="h-4 w-4" />
-              <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-[#FF00AA]" />
+              <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-[#4f46e5]" />
             </button>
             <div className="bg-slate-100 text-slate-700 rounded-lg px-3 py-1.5 text-xs font-mono">
               <span className="text-emerald-500">●</span> Online

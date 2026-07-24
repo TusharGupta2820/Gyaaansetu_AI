@@ -66,6 +66,7 @@ async def analyze_text_mistake(req: TextMistakeRequest):
         task="mistakes",
         system=MISTAKE_SYSTEM,
         language=req.language,
+        user_id=req.user_id,
     )
 
     mistake = _parse_json(raw)
@@ -152,6 +153,7 @@ async def get_heatmap(user_id: str):
                 ),
                 task="fast",
                 max_tokens=150,
+                user_id=user_id,
             )
         else:
             insight = "No mistakes logged yet. Start logging your errors to get AI insights!"
@@ -174,6 +176,7 @@ async def generate_quiz(req: QuizRequest):
         system=QUIZ_SYSTEM,
         language=req.language,
         max_tokens=1000,
+        user_id=req.user_id,
     )
 
     quiz = _parse_json(raw)

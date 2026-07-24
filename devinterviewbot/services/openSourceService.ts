@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 /**
  * GyaanSetu AI — Open Source Interview Service
  * Routes ALL AI calls through the local FastAPI backend (Ollama).
@@ -10,7 +11,7 @@
  * No Gemini API key needed. No cloud calls made.
  */
 
-const API_BASE = "http://localhost:8000";
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
 export interface ChatTurn {
   role: "user" | "model";

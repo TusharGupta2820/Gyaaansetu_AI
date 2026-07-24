@@ -106,7 +106,7 @@ function LandingPage() {
       {/* Background Decorative Glows */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] pointer-events-none overflow-hidden z-0">
         <div className="absolute top-[-20%] left-[20%] w-[550px] h-[550px] rounded-full bg-blue-500/5 blur-[120px]" />
-        <div className="absolute top-[10%] right-[15%] w-[450px] h-[450px] rounded-full bg-[#8b5cf6]/5 blur-[130px]" />
+        <div className="absolute top-[10%] right-[15%] w-[450px] h-[450px] rounded-full bg-[#6366f1]/5 blur-[130px]" />
       </div>
 
       {/* Full-width logo watermark touching both side corners and fully visible */}
@@ -180,7 +180,7 @@ function LandingPage() {
           >
             Learn Without <span className="text-blue-600">Limits</span>.<br />
             Powered by AI.<br />
-            Personalized <span className="bg-gradient-to-r from-[#8B5CF6] to-[#EC4899] bg-clip-text text-transparent">for You</span>.
+            Personalized <span className="bg-gradient-to-r from-[#6366f1] to-[#EC4899] bg-clip-text text-transparent">for You</span>.
           </motion.h1>
 
           <motion.p 

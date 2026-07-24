@@ -9,12 +9,12 @@ type Item = { title: string; desc: string; tag?: string };
 
 // Unique accent colors for each feature card
 const CARD_ACCENTS = [
-  "from-[#00F5FF] to-[#06b6d4]",
-  "from-[#8B5CF6] to-[#6d28d9]",
+  "from-[#3b82f6] to-[#06b6d4]",
+  "from-[#6366f1] to-[#6d28d9]",
   "from-[#F59E0B] to-[#d97706]",
   "from-[#EC4899] to-[#be185d]",
   "from-[#22C55E] to-[#16a34a]",
-  "from-[#00F5FF] to-[#8B5CF6]",
+  "from-[#3b82f6] to-[#6366f1]",
 ];
 
 export function FeaturePage({
@@ -24,7 +24,7 @@ export function FeaturePage({
   stats,
   items,
   cta,
-  accent = "from-[#00F5FF] to-[#8B5CF6]",
+  accent = "from-[#3b82f6] to-[#6366f1]",
 }: {
   icon: LucideIcon;
   title: string;
@@ -42,12 +42,12 @@ export function FeaturePage({
       {/* Hero Banner */}
       <div className="mb-6 bg-[#0b1530] border border-blue-500/20 rounded-3xl p-6 relative overflow-hidden shadow-lg">
         {/* Decorative glow */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-[#00f5ff]/5 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#8b5cf6]/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-0 w-64 h-64 bg-[#3b82f6]/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#6366f1]/5 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative grid lg:grid-cols-[1fr_auto] gap-5 items-center">
           <div>
-            <div className="inline-flex items-center gap-1.5 bg-[#00f5ff]/10 border border-[#00f5ff]/20 rounded-full px-3 py-1 text-xs text-[#00f5ff] font-mono font-semibold mb-3">
+            <div className="inline-flex items-center gap-1.5 bg-[#3b82f6]/10 border border-[#3b82f6]/20 rounded-full px-3 py-1 text-xs text-[#3b82f6] font-mono font-semibold mb-3">
               <Sparkles className="h-3 w-3" /> Powered by GyaanSetu AI
             </div>
             <p className="text-blue-100/80 text-sm max-w-2xl leading-relaxed">{subtitle}</p>
@@ -75,7 +75,7 @@ export function FeaturePage({
               className="bg-[#0b1530] border border-blue-500/20 rounded-2xl p-4 text-white shadow-md hover:border-blue-400/30 transition-all"
             >
               <div className="text-[10px] text-blue-300/70 font-mono uppercase tracking-wider font-semibold">{s.label}</div>
-              <div className="mt-1.5 text-2xl font-display font-bold text-[#00f5ff]">{s.value}</div>
+              <div className="mt-1.5 text-2xl font-display font-bold text-[#3b82f6]">{s.value}</div>
               {s.hint && <div className="text-[10px] text-blue-200/50 mt-1 font-mono">{s.hint}</div>}
             </motion.div>
           ))}
@@ -102,7 +102,7 @@ export function FeaturePage({
                   {String(i + 1).padStart(2, "0")}
                 </div>
                 {it.tag && (
-                  <span className="text-[9px] bg-[#00F5FF]/10 border border-[#00F5FF]/20 text-[#00F5FF] rounded-full px-2 py-0.5 font-mono font-bold uppercase tracking-wide">
+                  <span className="text-[9px] bg-[#3b82f6]/10 border border-[#3b82f6]/20 text-[#3b82f6] rounded-full px-2 py-0.5 font-mono font-bold uppercase tracking-wide">
                     {it.tag}
                   </span>
                 )}
@@ -113,7 +113,7 @@ export function FeaturePage({
               <p className="text-[11px] text-blue-200/60 leading-relaxed flex-1">{it.desc}</p>
 
               {/* Footer link */}
-              <div className="mt-4 pt-3 border-t border-white/5 text-[10px] text-[#00f5ff] font-mono font-semibold flex items-center gap-1">
+              <div className="mt-4 pt-3 border-t border-white/5 text-[10px] text-[#3b82f6] font-mono font-semibold flex items-center gap-1">
                 Explore Feature →
               </div>
             </div>

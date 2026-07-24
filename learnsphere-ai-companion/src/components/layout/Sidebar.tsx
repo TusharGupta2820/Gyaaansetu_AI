@@ -118,7 +118,7 @@ export function Sidebar({ open: mobileOpen = false, onClose }: SidebarProps) {
                 to={item.to}
                 onClick={() => onClose?.()}
                 className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 ${active
-                    ? "bg-[#00f5ff]/10 border border-[#00f5ff]/25 text-white font-semibold shadow-[0_0_12px_rgba(0,245,255,0.08)]"
+                    ? "bg-[#3b82f6]/10 border border-[#3b82f6]/25 text-white font-semibold shadow-[0_0_12px_rgba(59,130,246,0.08)]"
                     : "text-blue-200/60 hover:text-white hover:bg-white/5 border border-transparent"
                   }`}
               >
@@ -126,11 +126,11 @@ export function Sidebar({ open: mobileOpen = false, onClose }: SidebarProps) {
                 {active && (
                   <motion.div
                     layoutId="sidebar-active"
-                    className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 rounded-full bg-[#00f5ff]"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 rounded-full bg-[#3b82f6]"
                   />
                 )}
                 <Icon
-                  className={`h-4 w-4 shrink-0 transition-colors ${active ? "text-[#00f5ff]" : "text-blue-300/50 group-hover:text-blue-200"
+                  className={`h-4 w-4 shrink-0 transition-colors ${active ? "text-[#3b82f6]" : "text-blue-300/50 group-hover:text-blue-200"
                     }`}
                 />
                 <span className="font-medium truncate">{item.label}</span>
@@ -144,7 +144,7 @@ export function Sidebar({ open: mobileOpen = false, onClose }: SidebarProps) {
           <div className="bg-[#050d1f] border border-blue-500/20 rounded-2xl p-3.5">
             <div className="flex items-center gap-3">
               <div className="relative shrink-0">
-                <div className="h-9 w-9 rounded-full bg-gradient-to-br from-[#00F5FF] to-[#8B5CF6] flex items-center justify-center font-bold text-sm text-[#050816] shadow-md">
+                <div className="h-9 w-9 rounded-full bg-gradient-to-br from-[#3b82f6] to-[#6366f1] flex items-center justify-center font-bold text-sm text-[#050816] shadow-md">
                   {userName.charAt(0).toUpperCase()}
                 </div>
                 <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-[#22C55E] border-2 border-[#0b1530]" />
@@ -173,14 +173,14 @@ export function Sidebar({ open: mobileOpen = false, onClose }: SidebarProps) {
             {/* XP Progress Bar */}
             <div className="mt-3 flex items-center justify-between text-[10px] mb-1.5">
               <span className="text-blue-300/50 font-mono">Level {level}</span>
-              <span className="text-[#00f5ff] font-mono font-bold">{xp.toLocaleString()} XP</span>
+              <span className="text-[#3b82f6] font-mono font-bold">{xp.toLocaleString()} XP</span>
             </div>
             <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${(xp % 1000) / 10}%` }}
                 transition={{ duration: 1.2, ease: "easeOut" }}
-                className="h-full rounded-full bg-gradient-to-r from-[#00F5FF] to-[#8B5CF6]"
+                className="h-full rounded-full bg-gradient-to-r from-[#3b82f6] to-[#6366f1]"
               />
             </div>
           </div>

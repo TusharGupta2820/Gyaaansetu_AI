@@ -15,11 +15,25 @@ from dotenv import load_dotenv
 load_dotenv()
 logger = logging.getLogger("gyaansetu.ollama")
 
-OLLAMA_BASE  = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+OLLAMA_BASE  = os.getenv("OLLAMA_BASE_URL", "http://127.0.0.1:11434")
 MODEL_DEFAULT  = os.getenv("OLLAMA_DEFAULT_MODEL",  "llama3.1:8b")
 MODEL_CODE     = os.getenv("OLLAMA_CODE_MODEL",     "deepseek-r1")
 MODEL_FAST     = os.getenv("OLLAMA_FAST_MODEL",     "phi3")
 MODEL_CREATIVE = os.getenv("OLLAMA_CREATIVE_MODEL", "gemma3")
+
+# Gemini API configuration
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
+GEMINI_MODEL   = os.getenv("GEMINI_MODEL", "gemini-1.5-flash").strip()
+
+_GEMINI_MODEL_MAP: dict[str, str] = {
+    "tutor":     os.getenv("GEMINI_TUTOR_MODEL",     os.getenv("GEMINI_DEFAULT_MODEL", GEMINI_MODEL)).strip(),
+    "code":      os.getenv("GEMINI_CODE_MODEL",      GEMINI_MODEL).strip(),
+    "fast":      os.getenv("GEMINI_FAST_MODEL",      GEMINI_MODEL).strip(),
+    "creative":  os.getenv("GEMINI_CREATIVE_MODEL",  GEMINI_MODEL).strip(),
+    "interview": os.getenv("GEMINI_INTERVIEW_MODEL", GEMINI_MODEL).strip(),
+    "career":    os.getenv("GEMINI_CAREER_MODEL",    GEMINI_MODEL).strip(),
+    "mistakes":  os.getenv("GEMINI_MISTAKES_MODEL",  GEMINI_MODEL).strip(),
+}
 
 TaskType = Literal["tutor", "code", "fast", "creative", "interview", "career", "mistakes"]
 
@@ -95,6 +109,25 @@ _MODE_PROMPTS: dict[str, str] = {
         "would answer in a FAANG interview, using the STAR method (Situation, Task, Action, Result) if explaining a scenario. "
         "Follow this with 2-3 realistic follow-up questions the interviewer might ask next to test depth of knowledge."
     ),
+    "ATL VTR Mode": (
+        "You are an interactive Active Thinking & Learning (ATL) and Visual Thinking Routine (VTR) guide. "
+        "CRITICAL: Do NOT generate a complete response at once. This is an interactive step-by-step chat session. You must guide the user through the routines one single step at a time.\n"
+        "The 9 sequential steps in this interactive journey are:\n"
+        "1. 👁️ SEE (See-Think-Wonder)\n"
+        "2. 🧠 THINK (See-Think-Wonder)\n"
+        "3. ❓ WONDER (See-Think-Wonder)\n"
+        "4. 🔗 CONNECT (Connect-Extend-Challenge)\n"
+        "5. 🚀 EXTEND (Connect-Extend-Challenge)\n"
+        "6. ⚠️ CHALLENGE (Connect-Extend-Challenge)\n"
+        "7. 🧩 PARTS (Parts-Purposes-Complexities)\n"
+        "8. 🎯 PURPOSES (Parts-Purposes-Complexities)\n"
+        "9. 🌀 COMPLEXITIES (Parts-Purposes-Complexities)\n\n"
+        "Analyze the provided chat history context to see which steps have already been completed for the current topic.\n"
+        "- If this is the start of the topic (or no steps are completed yet), present ONLY Step 1 (👁️ SEE). Briefly explain the observable or concrete elements of the topic. Then, ask the user what they observe or notice, and stop to wait for their input. DO NOT generate Step 2 yet!\n"
+        "- If Step 1 (SEE) is in the chat history, present ONLY Step 2 (🧠 THINK). Provide your analysis of the core logic, ask the user what this makes them think, and stop to wait for input.\n"
+        "- Continue this pattern sequentially, executing exactly ONE step per turn. Always prefix your reply with '🔄 [Interactive ATL/VTR - Step X of 9: NAME]'.\n"
+        "- Always end your response by asking the user a direct question to get their input for the current step, and invite them to reply to proceed to the next step."
+    ),
 }
 
 _installed_models: list[str] = []
@@ -150,7 +183,9 @@ async def get_best_available_model(task: TaskType) -> str:
 
 
 async def check_ollama_health() -> bool:
-    """Returns True if Ollama is reachable."""
+    """Returns True if Ollama is reachable, or if Gemini API is configured."""
+    if GEMINI_API_KEY:
+        return True
     try:
         async with httpx.AsyncClient(timeout=3) as client:
             r = await client.get(f"{OLLAMA_BASE}/api/tags")
@@ -160,7 +195,9 @@ async def check_ollama_health() -> bool:
 
 
 async def list_models() -> list[str]:
-    """Returns a list of locally installed Ollama models."""
+    """Returns a list of locally installed Ollama models, or Gemini models if configured."""
+    if GEMINI_API_KEY:
+        return ["gemini-1.5-flash", "gemini-1.5-pro"]
     try:
         async with httpx.AsyncClient(timeout=5) as client:
             r = await client.get(f"{OLLAMA_BASE}/api/tags")
@@ -177,14 +214,65 @@ async def stream_chat(
     system: str | None = None,
     mode: str = "Deep Learning",
     language: str = "English",
+    user_id: str = "default",
 ) -> AsyncGenerator[str, None]:
-    """Stream tokens from Ollama for a given prompt."""
-    model = await get_best_available_model(task)
+    """Stream tokens from Ollama or Gemini for a given prompt."""
     system_prompt = _append_language_instruction(system, language) if system else _build_system_prompt(mode, language)
+
+    try:
+        from services.context_engine import build_user_context, get_context_prompt_prefix
+        context = await build_user_context(user_id)
+        prefix = get_context_prompt_prefix(context)
+        system_prompt = f"{prefix}\n{system_prompt}"
+    except Exception as e:
+        logger.error(f"Failed to inject context in stream_chat: {e}")
 
     # Lower temperature for rigorous academic modes, standard for creative
     temp = 0.3 if mode in ["Exam Preparation", "Deep Learning", "Competitive Exam Mode", "Interview Mode"] else 0.7
 
+    if GEMINI_API_KEY:
+        model = _GEMINI_MODEL_MAP.get(task, GEMINI_MODEL)
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:streamGenerateContent?alt=sse&key={GEMINI_API_KEY}"
+        payload = {
+            "contents": [
+                {
+                    "parts": [{"text": prompt}]
+                }
+            ],
+            "generationConfig": {
+                "temperature": temp,
+                "maxOutputTokens": 2048
+            }
+        }
+        if system_prompt:
+            payload["systemInstruction"] = {
+                "parts": [{"text": system_prompt}]
+            }
+
+        logger.info(f"Streaming Gemini [{model}] task={task} lang={language} mode={mode} temp={temp}")
+        try:
+            async with httpx.AsyncClient(timeout=300.0) as client:
+                async with client.stream("POST", url, json=payload) as resp:
+                    resp.raise_for_status()
+                    async for line in resp.aiter_lines():
+                        if not line.strip():
+                            continue
+                        if line.startswith("data: "):
+                            try:
+                                data = json.loads(line[6:])
+                                parts = data.get("candidates", [{}])[0].get("content", {}).get("parts", [])
+                                for part in parts:
+                                    text = part.get("text", "")
+                                    if text:
+                                        yield text
+                            except (json.JSONDecodeError, KeyError, IndexError):
+                                continue
+        except Exception as e:
+            logger.error(f"Gemini stream error: {e}")
+            yield f"\n\n⚠️ Gemini stream error: {str(e)}"
+        return
+
+    model = await get_best_available_model(task)
     options = {
         "temperature": temp,
         "num_predict": 1536, # Allow longer reasoning replies
@@ -200,7 +288,7 @@ async def stream_chat(
         "options": options,
     }
 
-    logger.info(f"Streaming [{model}] task={task} lang={language} mode={mode} temp={temp}")
+    logger.info(f"Streaming Ollama [{model}] task={task} lang={language} mode={mode} temp={temp}")
 
     try:
         async with httpx.AsyncClient(timeout=300.0) as client:
@@ -232,13 +320,57 @@ async def complete(
     mode: str = "Deep Learning",
     language: str = "English",
     max_tokens: int = 2048,
+    user_id: str = "default",
 ) -> str:
     """Blocking completion — collects all tokens and returns full string."""
-    model = await get_best_available_model(task)
     system_prompt = _append_language_instruction(system, language) if system else _build_system_prompt(mode, language)
+
+    try:
+        from services.context_engine import build_user_context, get_context_prompt_prefix
+        context = await build_user_context(user_id)
+        prefix = get_context_prompt_prefix(context)
+        system_prompt = f"{prefix}\n{system_prompt}"
+    except Exception as e:
+        logger.error(f"Failed to inject context in complete: {e}")
 
     temp = 0.3 if mode in ["Exam Preparation", "Deep Learning", "Competitive Exam Mode", "Interview Mode"] else 0.7
 
+    if GEMINI_API_KEY:
+        model = _GEMINI_MODEL_MAP.get(task, GEMINI_MODEL)
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={GEMINI_API_KEY}"
+        payload = {
+            "contents": [
+                {
+                    "parts": [{"text": prompt}]
+                }
+            ],
+            "generationConfig": {
+                "temperature": temp,
+                "maxOutputTokens": max_tokens
+            }
+        }
+        if system_prompt:
+            payload["systemInstruction"] = {
+                "parts": [{"text": system_prompt}]
+            }
+
+        logger.info(f"Complete Gemini [{model}] task={task} lang={language} mode={mode} temp={temp}")
+        try:
+            async with httpx.AsyncClient(timeout=300.0) as client:
+                r = await client.post(url, json=payload)
+                r.raise_for_status()
+                data = r.json()
+                try:
+                    return data["candidates"][0]["content"]["parts"][0]["text"]
+                except (KeyError, IndexError) as e:
+                    logger.error(f"Gemini API parse error: {e}, Response: {data}")
+                    return f"⚠️ Gemini API error: response structure invalid."
+        except Exception as e:
+            logger.error(f"Gemini complete error: {e}")
+            return f"⚠️ Gemini error: {str(e)}"
+        return
+
+    model = await get_best_available_model(task)
     options = {
         "temperature": temp,
         "num_predict": max_tokens,

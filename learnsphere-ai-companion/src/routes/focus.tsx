@@ -8,6 +8,7 @@ import {
   Settings, Award, RefreshCw, X, Users, BarChart2, BellOff, Info, Check, VolumeX,
   Mic, Paperclip, FileUp, FileText, ChevronRight
 } from "lucide-react";
+import { generateFocusSession } from "@/lib/api/ai.service";
 
 export const Route = createFileRoute("/focus")({
   head: () => ({ meta: [{ title: "Focus Room — GyaanSetu AI" }] }),
@@ -49,6 +50,14 @@ function FocusDashboard() {
   
   // Statistics States
   const [todayFocus, setTodayFocus] = useState(168); // 2h 48m = 168 mins
+
+  // Custom AI focus schedule
+  const [focusTitle, setFocusTitle] = useState("Deep Work Mode");
+  const [focusTasks, setFocusTasks] = useState<string[]>([
+    "Review core concepts of your topic",
+    "Identify weak sub-topics or formulas",
+    "Run a quick self-test or active recall session"
+  ]);
 
   // AI Input Hub States
   const [hubMode, setHubMode] = useState<"none" | "voice" | "upload" | "text">("none");
@@ -137,9 +146,9 @@ function FocusDashboard() {
             initial={{ opacity: 0, y: -50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.9 }}
-            className="fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border border-[#00F5FF]/30 shadow-2xl flex items-center gap-3 bg-[#0d1322] max-w-sm"
+            className="fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border border-[#3b82f6]/30 shadow-2xl flex items-center gap-3 bg-[#0d1322] max-w-sm"
           >
-            <div className="h-8 w-8 rounded-lg bg-[#00F5FF]/10 text-[#00F5FF] flex items-center justify-center shrink-0">
+            <div className="h-8 w-8 rounded-lg bg-[#3b82f6]/10 text-[#3b82f6] flex items-center justify-center shrink-0">
               <toast.icon className="h-4.5 w-4.5" />
             </div>
             <div className="text-xs font-semibold text-white">{toast.message}</div>
@@ -210,7 +219,7 @@ function FocusDashboard() {
               type="text"
               value={botPort}
               onChange={(e) => setBotPort(e.target.value)}
-              className="bg-[#050816] border border-white/10 rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-[#00f5ff]/40 flex-1"
+              className="bg-[#050816] border border-white/10 rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-[#3b82f6]/40 flex-1"
               placeholder="5180"
             />
             <button
@@ -218,7 +227,7 @@ function FocusDashboard() {
                 setShowPortSettings(false);
                 showToast(`Switched port connection to ${botPort}`, Check);
               }}
-              className="bg-[#00f5ff] text-[#050816] rounded-xl px-4 py-2 text-xs font-bold hover:scale-[1.02] transition"
+              className="bg-[#3b82f6] text-[#050816] rounded-xl px-4 py-2 text-xs font-bold hover:scale-[1.02] transition"
             >
               Apply
             </button>
@@ -233,7 +242,7 @@ function FocusDashboard() {
           <div className="flex flex-col gap-4">
           <div className="flex justify-between items-center pb-2 border-b border-white/5">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-4.5 w-4.5 text-[#00f5ff]" />
+              <Sparkles className="h-4.5 w-4.5 text-[#3b82f6]" />
               <span className="font-display font-bold text-sm text-white">AI Focus Assistant</span>
             </div>
             <span className="text-[9px] font-mono text-blue-300 uppercase tracking-wider">Upload Study PDFs or Dictate Tasks</span>
@@ -247,11 +256,11 @@ function FocusDashboard() {
                 setVoiceText("");
               }}
               className={`flex items-center justify-between p-3 rounded-xl border transition text-left ${
-                hubMode === "voice" ? "bg-[#00f5ff]/10 border-[#00f5ff]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
+                hubMode === "voice" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
               }`}
             >
               <div className="flex items-center gap-2">
-                <Mic className="h-4 w-4 text-[#00f5ff]" />
+                <Mic className="h-4 w-4 text-[#3b82f6]" />
                 <span className="text-xs font-semibold">Voice Task Input</span>
               </div>
               <ChevronRight className="h-3.5 w-3.5" />
@@ -264,11 +273,11 @@ function FocusDashboard() {
                 setSelectedFile(null);
               }}
               className={`flex items-center justify-between p-3 rounded-xl border transition text-left ${
-                hubMode === "upload" ? "bg-[#00f5ff]/10 border-[#00f5ff]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
+                hubMode === "upload" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
               }`}
             >
               <div className="flex items-center gap-2">
-                <Paperclip className="h-4 w-4 text-[#00f5ff]" />
+                <Paperclip className="h-4 w-4 text-[#3b82f6]" />
                 <span className="text-xs font-semibold">Upload Study PDF</span>
               </div>
               <ChevronRight className="h-3.5 w-3.5" />
@@ -281,11 +290,11 @@ function FocusDashboard() {
                 setPastedText("");
               }}
               className={`flex items-center justify-between p-3 rounded-xl border transition text-left ${
-                hubMode === "text" ? "bg-[#00f5ff]/10 border-[#00f5ff]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
+                hubMode === "text" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
               }`}
             >
               <div className="flex items-center gap-2">
-                <FileText className="h-4 w-4 text-[#00f5ff]" />
+                <FileText className="h-4 w-4 text-[#3b82f6]" />
                 <span className="text-xs font-semibold">Paste Study Notes</span>
               </div>
               <ChevronRight className="h-3.5 w-3.5" />
@@ -334,15 +343,23 @@ function FocusDashboard() {
                   </button>
                   {voiceText && (
                     <button
-                      onClick={() => {
+                      onClick={async () => {
                         setSubmittingHub(true);
-                        setTimeout(() => {
+                        try {
+                          const result = await generateFocusSession(voiceText);
+                          setFocusTitle(result.title || "Voice Session");
+                          if (result.duration) handleDurationChange(result.duration);
+                          if (result.soundscape) setActiveSound(result.soundscape);
+                          if (result.subtasks) setFocusTasks(result.subtasks);
+                          showToast("Focus session updated with voice goals! Ready.", Award);
+                        } catch (err) {
+                          console.error(err);
+                        } finally {
                           setSubmittingHub(false);
                           setHubMode("none");
-                          showToast("Focus session updated with voice goals! Ready.", Award);
-                        }, 1200);
+                        }
                       }}
-                      className="px-4 py-2 rounded-lg bg-[#00F5FF] text-[#050816] text-xs font-bold hover:scale-105 transition ml-auto"
+                      className="px-4 py-2 rounded-lg bg-[#3b82f6] text-[#050816] text-xs font-bold hover:scale-105 transition ml-auto"
                     >
                       {submittingHub ? "Syncing..." : "Submit to AI"}
                     </button>
@@ -353,13 +370,13 @@ function FocusDashboard() {
 
             {hubMode === "upload" && (
               <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="p-4 bg-[#050816] rounded-xl border border-white/5 space-y-4">
-                <div className="border border-dashed border-white/10 rounded-xl p-6 flex flex-col items-center justify-center hover:border-[#00f5ff]/40 transition cursor-pointer"
+                <div className="border border-dashed border-white/10 rounded-xl p-6 flex flex-col items-center justify-center hover:border-[#3b82f6]/40 transition cursor-pointer"
                   onClick={() => {
                     setSelectedFile("study_guide_networks.pdf");
                     showToast("Uploaded study_guide_networks.pdf", FileUp);
                   }}
                 >
-                  <FileUp className="h-8 w-8 text-[#00f5ff] mb-2" />
+                  <FileUp className="h-8 w-8 text-[#3b82f6] mb-2" />
                   {selectedFile ? (
                     <span className="text-xs text-white font-mono font-bold">{selectedFile}</span>
                   ) : (
@@ -368,15 +385,23 @@ function FocusDashboard() {
                 </div>
                 {selectedFile && (
                   <button
-                    onClick={() => {
+                    onClick={async () => {
                       setSubmittingHub(true);
-                      setTimeout(() => {
+                      try {
+                        const result = await generateFocusSession(`A syllabus/notes guide named ${selectedFile || 'study_guide_networks.pdf'} containing textbook topics to study during the focus session.`);
+                        setFocusTitle(result.title || "PDF Guide Session");
+                        if (result.duration) handleDurationChange(result.duration);
+                        if (result.soundscape) setActiveSound(result.soundscape);
+                        if (result.subtasks) setFocusTasks(result.subtasks);
+                        showToast("Study guide summarized! Focus block optimized.", Award);
+                      } catch (err) {
+                        console.error(err);
+                      } finally {
                         setSubmittingHub(false);
                         setHubMode("none");
-                        showToast("Study guide summarized! Focus block optimized.", Award);
-                      }, 1200);
+                      }
                     }}
-                    className="w-full py-2 rounded-lg bg-[#00F5FF] text-[#050816] text-xs font-bold hover:scale-[1.01] transition"
+                    className="w-full py-2 rounded-lg bg-[#3b82f6] text-[#050816] text-xs font-bold hover:scale-[1.01] transition"
                   >
                     {submittingHub ? "Analyzing text..." : "Summarize & Start Focus"}
                   </button>
@@ -390,21 +415,29 @@ function FocusDashboard() {
                   value={pastedText}
                   onChange={(e) => setPastedText(e.target.value)}
                   placeholder="Paste your custom notes or exam question outline here..."
-                  className="w-full h-24 bg-black/40 border border-white/10 rounded-lg p-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#00f5ff]/40 font-mono"
+                  className="w-full h-24 bg-black/40 border border-white/10 rounded-lg p-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]/40 font-mono"
                 />
                 <div className="flex justify-end">
                   <button
-                    onClick={() => {
+                    onClick={async () => {
                       if (!pastedText) return;
                       setSubmittingHub(true);
-                      setTimeout(() => {
+                      try {
+                        const result = await generateFocusSession(pastedText);
+                        setFocusTitle(result.title || "Custom Study Session");
+                        if (result.duration) handleDurationChange(result.duration);
+                        if (result.soundscape) setActiveSound(result.soundscape);
+                        if (result.subtasks) setFocusTasks(result.subtasks);
+                        showToast("Focus session outlines created!", Award);
+                      } catch (err) {
+                        console.error(err);
+                      } finally {
                         setSubmittingHub(false);
                         setHubMode("none");
-                        showToast("Focus session outlines created!", Award);
-                      }, 1200);
+                      }
                     }}
                     disabled={!pastedText}
-                    className="px-4 py-2 rounded-lg bg-[#00F5FF] text-[#050816] text-xs font-bold hover:scale-105 transition disabled:opacity-50"
+                    className="px-4 py-2 rounded-lg bg-[#3b82f6] text-[#050816] text-xs font-bold hover:scale-105 transition disabled:opacity-50"
                   >
                     {submittingHub ? "Analyzing..." : "Sync Outline"}
                   </button>
@@ -426,7 +459,7 @@ function FocusDashboard() {
             <div className="flex justify-between items-center w-full z-10">
               <div>
                 <div className="text-[10px] font-mono text-blue-300 uppercase tracking-wider">Pomodoro Cycle</div>
-                <div className="text-sm font-bold text-white mt-0.5">Deep Work Mode</div>
+                <div className="text-sm font-bold text-white mt-0.5">{focusTitle}</div>
               </div>
               <div className="flex gap-1">
                 {[25, 45, 60].map((m) => (
@@ -435,7 +468,7 @@ function FocusDashboard() {
                     onClick={() => handleDurationChange(m)}
                     className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold transition ${
                       activeDuration === m * 60 
-                        ? "bg-[#00f5ff] text-[#050816]" 
+                        ? "bg-[#3b82f6] text-[#050816]" 
                         : "bg-slate-800/40 border border-slate-700/30 text-slate-400 hover:text-white"
                     }`}
                   >
@@ -449,7 +482,7 @@ function FocusDashboard() {
             <div className="my-6 relative flex items-center justify-center">
               {/* Outer Glow Ring */}
               <div className={`absolute h-56 w-56 rounded-full border border-white/5 transition-all duration-700 ${
-                timerActive ? "shadow-[0_0_50px_rgba(0,245,255,0.2)] border-[#00f5ff]/20 animate-pulse" : ""
+                timerActive ? "shadow-[0_0_50px_rgba(59,130,246,0.2)] border-[#3b82f6]/20 animate-pulse" : ""
               }`} />
               
               {/* SVG Circle Progress */}
@@ -465,7 +498,7 @@ function FocusDashboard() {
                   cx="104"
                   cy="104"
                   r="94"
-                  className="stroke-[#00F5FF] fill-none"
+                  className="stroke-[#3b82f6] fill-none"
                   strokeWidth="6"
                   strokeDasharray="590"
                   strokeDashoffset={590 - (590 * getProgressPercentage()) / 100}
@@ -484,6 +517,21 @@ function FocusDashboard() {
               </div>
             </div>
 
+            {/* AI Focus Tasks Checklist */}
+            <div className="w-full max-w-sm bg-[#050816]/60 p-4 rounded-2xl border border-white/5 z-10 mb-6 text-left">
+              <div className="text-[10px] text-blue-300 font-mono uppercase font-bold mb-2 flex items-center gap-1.5">
+                <Sparkles className="h-3.5 w-3.5 text-[#3b82f6]" /> Focus Tasks Checklist
+              </div>
+              <div className="space-y-2">
+                {focusTasks.map((task, idx) => (
+                  <div key={idx} className="flex gap-2 items-start text-[10.5px] text-slate-300 font-mono">
+                    <Check className="h-3.5 w-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                    <span>{task}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             {/* Bottom Actions inside Timer */}
             <div className="flex gap-3 w-full max-w-sm z-10">
               <button
@@ -491,7 +539,7 @@ function FocusDashboard() {
                 className={`flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl py-2.5 text-xs font-bold transition hover:scale-[1.02] ${
                   timerActive 
                     ? "bg-amber-500/20 text-amber-400 border border-amber-500/30" 
-                    : "bg-[#00F5FF] text-[#050816] glow-cyan"
+                    : "bg-[#3b82f6] text-[#050816] glow-cyan"
                 }`}
               >
                 {timerActive ? <VolumeX className="h-4 w-4" /> : <Play className="h-4 w-4 fill-[#050816]" />}
@@ -534,7 +582,7 @@ function FocusDashboard() {
                     onClick={() => { setActiveSound(snd.id); showToast(`Ambient sound layer set to ${snd.name}`, Volume2); }}
                     className={`flex items-center gap-2 p-2.5 rounded-xl border transition-all text-left ${
                       activeSound === snd.id 
-                        ? "bg-[#00f5ff]/10 border-[#00f5ff]/30 text-white font-bold"
+                        ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white font-bold"
                         : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
                     }`}
                   >
@@ -554,7 +602,7 @@ function FocusDashboard() {
                     key={i}
                     animate={{ height: [6, 16, 6] }}
                     transition={{ duration: 0.8 + i*0.1, repeat: Infinity, ease: "easeInOut" }}
-                    className="w-0.5 bg-[#00F5FF] rounded-full"
+                    className="w-0.5 bg-[#3b82f6] rounded-full"
                   />
                 ))}
               </div>
@@ -564,7 +612,7 @@ function FocusDashboard() {
           {/* Social Study Partners */}
           <GlassCard className="bg-[#0b1530] border border-blue-500/20 p-6 text-white shadow-lg">
             <h3 className="font-display font-extrabold text-base text-white mb-1.5 flex items-center gap-1.5">
-              <Users className="h-4.5 w-4.5 text-[#00f5ff]" /> Virtual Study Room
+              <Users className="h-4.5 w-4.5 text-[#3b82f6]" /> Virtual Study Room
             </h3>
             <p className="text-[11px] text-blue-200/60 mb-3">Silent focus groups synced live on GyaanSetu</p>
             
@@ -599,16 +647,16 @@ function FocusDashboard() {
         </div>
         <button 
           onClick={() => { setActiveModal("sessions"); showToast("Opening focus sessions log...", Info); }}
-          className="glass p-4 rounded-2xl border border-white/5 text-left hover:border-[#00F5FF]/30 transition hover:scale-[1.02]"
+          className="glass p-4 rounded-2xl border border-white/5 text-left hover:border-[#3b82f6]/30 transition hover:scale-[1.02]"
         >
           <div className="text-[10px] text-muted-foreground uppercase font-mono tracking-wider">Sessions</div>
           <div className="text-xl font-bold text-white mt-1 leading-none">{sessionsCount}</div>
-          <div className="text-[9px] text-[#00F5FF] mt-2 underline">Click to view log</div>
+          <div className="text-[9px] text-[#3b82f6] mt-2 underline">Click to view log</div>
         </button>
         <div className="glass p-4 rounded-2xl border border-white/5">
           <div className="text-[10px] text-muted-foreground uppercase font-mono tracking-wider">Avg Focus Score</div>
           <div className="text-xl font-bold text-gradient mt-1 leading-none">92</div>
-          <div className="text-[9px] text-[#8B5CF6] mt-2">Attention stability rating</div>
+          <div className="text-[9px] text-[#6366f1] mt-2">Attention stability rating</div>
         </div>
         <button 
           onClick={() => { setActiveModal("shield"); showToast("Opening distraction alert logs...", Info); }}
@@ -645,11 +693,11 @@ function FocusDashboard() {
           >
             <GlassCard className="h-full">
               <div className="flex items-start justify-between mb-3">
-                <div className="h-8.5 w-8.5 rounded-xl bg-gradient-to-br from-[#00F5FF] to-[#8B5CF6] flex items-center justify-center text-[#050816] font-bold text-xs">
+                <div className="h-8.5 w-8.5 rounded-xl bg-gradient-to-br from-[#3b82f6] to-[#6366f1] flex items-center justify-center text-[#050816] font-bold text-xs">
                   {String(i + 1).padStart(2, "0")}
                 </div>
                 {it.tag && (
-                  <span className="text-[8px] font-mono bg-[#00F5FF]/10 px-2 py-0.5 rounded text-[#00F5FF]">{it.tag}</span>
+                  <span className="text-[8px] font-mono bg-[#3b82f6]/10 px-2 py-0.5 rounded text-[#3b82f6]">{it.tag}</span>
                 )}
               </div>
               <h3 className="font-display font-bold text-xs text-[#e9feff] mb-1">{it.title}</h3>
@@ -667,8 +715,8 @@ function FocusDashboard() {
 
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-white/5 mb-6 z-10 relative">
               <div>
-                <h3 className="font-display font-extrabold text-lg text-[#00f5ff] flex items-center gap-2">
-                  <Sparkles className="h-5 w-5 text-[#00f5ff]" />
+                <h3 className="font-display font-extrabold text-lg text-[#3b82f6] flex items-center gap-2">
+                  <Sparkles className="h-5 w-5 text-[#3b82f6]" />
                   DevInterview AI Companion
                 </h3>
                 <p className="text-xs text-slate-300 mt-1">
@@ -676,7 +724,7 @@ function FocusDashboard() {
                 </p>
               </div>
               <div className="flex flex-wrap items-center gap-3">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-mono font-bold bg-[#00f5ff]/10 text-[#00f5ff] border border-[#00f5ff]/20">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-mono font-bold bg-[#3b82f6]/10 text-[#3b82f6] border border-[#3b82f6]/20">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
                   Target: http://localhost:{botPort}
                 </span>
@@ -705,7 +753,7 @@ function FocusDashboard() {
             {/* Launch Instructions Helper */}
             <div className="mt-6 p-4 rounded-xl bg-[#050816]/70 border border-white/5 space-y-2 z-10 relative">
               <h4 className="text-xs font-bold text-white flex items-center gap-1.5">
-                <Info className="h-4 w-4 text-[#00f5ff]" />
+                <Info className="h-4 w-4 text-[#3b82f6]" />
                 How to start the DevInterview Bot locally?
               </h4>
               <p className="text-[11px] text-slate-400 leading-relaxed">
@@ -732,13 +780,13 @@ function FocusDashboard() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-sm bg-[#0d1322] border border-[#00f5ff]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden"
+              className="w-full max-w-sm bg-[#0d1322] border border-[#3b82f6]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[#00f5ff]/5 rounded-full blur-2xl" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#3b82f6]/5 rounded-full blur-2xl" />
 
               <div className="flex items-center justify-between pb-3 border-b border-white/5 mb-4">
                 <h4 className="font-display font-extrabold text-sm text-white flex items-center gap-1.5">
-                  <Award className="h-4.5 w-4.5 text-[#00f5ff]" />
+                  <Award className="h-4.5 w-4.5 text-[#3b82f6]" />
                   Focus Sessions Completed Today
                 </h4>
                 <button onClick={() => setActiveModal(null)} className="text-muted-foreground hover:text-white transition">
@@ -784,7 +832,7 @@ function FocusDashboard() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-sm bg-[#0d1322] border border-[#00f5ff]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden"
+              className="w-full max-w-sm bg-[#0d1322] border border-[#3b82f6]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/5 rounded-full blur-2xl" />
 
@@ -805,7 +853,7 @@ function FocusDashboard() {
                     <button 
                       onClick={() => { setShieldActive(!shieldActive); showToast(`Distraction Shield toggled.`, ShieldAlert); }}
                       className={`px-3 py-1 rounded-lg font-mono text-[10px] font-bold transition ${
-                        shieldActive ? "bg-[#00f5ff] text-[#050816]" : "bg-white/10 text-slate-400"
+                        shieldActive ? "bg-[#3b82f6] text-[#050816]" : "bg-white/10 text-slate-400"
                       }`}
                     >
                       {shieldActive ? "ACTIVE" : "MUTED"}
@@ -834,9 +882,9 @@ function FocusDashboard() {
                     ].map((d, index) => (
                       <div key={index} className="flex flex-col items-center">
                         <div className={`h-8 w-8 rounded-lg flex items-center justify-center font-bold font-mono text-[10px] ${
-                          d.v === 5 ? "bg-[#00f5ff] text-[#050816] shadow-[0_0_8px_#00f5ff]" :
-                          d.v === 4 ? "bg-[#00f5ff]/60 text-white" :
-                          d.v === 3 ? "bg-[#00f5ff]/30 text-slate-300" :
+                          d.v === 5 ? "bg-[#3b82f6] text-[#050816] shadow-[0_0_8px_#3b82f6]" :
+                          d.v === 4 ? "bg-[#3b82f6]/60 text-white" :
+                          d.v === 3 ? "bg-[#3b82f6]/30 text-slate-300" :
                           "bg-white/5 text-slate-500"
                         }`}>
                           {d.v * 20}%
@@ -868,13 +916,13 @@ function FocusDashboard() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-sm bg-[#0d1322] border border-[#00f5ff]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden"
+              className="w-full max-w-sm bg-[#0d1322] border border-[#3b82f6]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[#8b5cf6]/5 rounded-full blur-2xl" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#6366f1]/5 rounded-full blur-2xl" />
 
               <div className="flex items-center justify-between pb-3 border-b border-white/5 mb-4">
                 <h4 className="font-display font-extrabold text-sm text-white flex items-center gap-1.5">
-                  <Info className="h-4.5 w-4.5 text-[#00f5ff]" />
+                  <Info className="h-4.5 w-4.5 text-[#3b82f6]" />
                   {activeModal === "social" && "Virtual Study Room Info"}
                   {activeModal === "lofi" && "LoFi Beats Mixer"}
                   {activeModal === "timer" && "Customizable Cycle Settings"}
@@ -895,12 +943,12 @@ function FocusDashboard() {
                 <div className="space-y-3.5 text-xs text-slate-300">
                   <p>Curated Chill beats matching your keyboard typing speed:</p>
                   <div className="bg-[#050816] p-3 rounded-xl border border-white/5 space-y-2 font-mono text-[10px]">
-                    <div className="flex justify-between"><span>Current Tempo:</span> <span className="text-[#00f5ff] font-bold">78 BPM</span></div>
+                    <div className="flex justify-between"><span>Current Tempo:</span> <span className="text-[#3b82f6] font-bold">78 BPM</span></div>
                     <div className="flex justify-between"><span>Active Track:</span> <span className="text-white">Midnight Coffee Coding</span></div>
                   </div>
                   <button 
                     onClick={() => { setActiveModal(null); showToast("Playing Midnight Coffee Coding...", Volume2); }}
-                    className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#00F5FF] to-[#8B5CF6] text-xs font-bold text-[#050816] transition hover:shadow-lg"
+                    className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#3b82f6] to-[#6366f1] text-xs font-bold text-[#050816] transition hover:shadow-lg"
                   >
                     Play Chill Beats
                   </button>
@@ -913,7 +961,7 @@ function FocusDashboard() {
                   <div className="space-y-2.5 bg-[#050816] p-3 rounded-xl border border-white/5">
                     <div className="flex justify-between items-center text-[10.5px]">
                       <span>Work Interval Duration:</span>
-                      <span className="font-bold text-[#00F5FF]">{Math.floor(activeDuration / 60)} minutes</span>
+                      <span className="font-bold text-[#3b82f6]">{Math.floor(activeDuration / 60)} minutes</span>
                     </div>
                     <div className="flex justify-between items-center text-[10.5px]">
                       <span>Rest Interval Duration:</span>
