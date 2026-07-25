@@ -23,7 +23,7 @@ MODEL_CREATIVE = os.getenv("OLLAMA_CREATIVE_MODEL", "gemma3")
 
 # Gemini API configuration
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
-GEMINI_MODEL   = os.getenv("GEMINI_MODEL", "gemini-1.5-flash").strip()
+GEMINI_MODEL   = os.getenv("GEMINI_MODEL", "gemini-2.5-flash").strip()
 
 _GEMINI_MODEL_MAP: dict[str, str] = {
     "tutor":     os.getenv("GEMINI_TUTOR_MODEL",     os.getenv("GEMINI_DEFAULT_MODEL", GEMINI_MODEL)).strip(),

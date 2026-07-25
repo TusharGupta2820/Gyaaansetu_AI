@@ -47,16 +47,15 @@ class TTSRequest(BaseModel):
 async def text_to_speech(req: TTSRequest):
     """
     Synthesize text → local Piper voice URL.
+    Returns null audio_url gracefully if Piper is not installed (cloud deployment).
     """
     try:
         tts_result = await piper_service.synthesize(req.text, req.language)
-        if tts_result.get("success"):
-            return {"audio_url": tts_result.get("audio_url")}
-        else:
-            raise HTTPException(status_code=500, detail=tts_result.get("error", "TTS failed"))
+        # Always return 200 — the frontend handles null audio_url by showing text only
+        return {"audio_url": tts_result.get("audio_url"), "success": tts_result.get("success", False)}
     except Exception as e:
-        logger.error(f"TTS endpoint error: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.warning(f"TTS not available (Piper not installed on this host): {e}")
+        return {"audio_url": None, "success": False}
 
 
 # ── Non-Streaming Text Chat (Simple JSON response) ───────────────────────────
