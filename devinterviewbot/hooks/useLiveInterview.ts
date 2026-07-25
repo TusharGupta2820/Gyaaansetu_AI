@@ -1,12 +1,11 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { LiveService } from '@/services/liveService';
 import type { CodeEditorHandle } from '@/components/CodeEditor';
 import type { AvatarInterviewerHandle } from '@/components/AvatarInterviewer';
 import type { ChatMessage, InterviewLanguage, InterviewProblem } from '@/types';
+import { generateChatMessage } from '@/services/geminiService';
 import {
   SYSTEM_INSTRUCTION_INTERVIEWER,
   CODE_DEBOUNCE_MS,
-  VIDEO_FRAME_INTERVAL_MS,
 } from '@/constants';
 
 interface UseLiveInterviewParams {
@@ -22,276 +21,360 @@ interface UseLiveInterviewParams {
 }
 
 /**
- * Manages the Gemini Live audio interview session.
+ * Manages the interview voice session using:
+ * - Web Speech API (SpeechRecognition) for mic input
+ * - Gemini text chat (generateChatMessage) for AI responses
+ * - Web Speech API (SpeechSynthesis) for voice output
+ *
+ * This approach works with all Gemini API key types (no Live WebSocket needed).
  */
 export function useLiveInterview({
   apiKey,
   currentProblem,
   language,
   code,
-  editorRef,
-  avatarRef,
   setMessages,
-  onUpdateContext,
-  onTypeCode,
 }: UseLiveInterviewParams) {
   const [isLiveConnected, setIsLiveConnected] = useState(false);
   const [isConnectingLive, setIsConnectingLive] = useState(false);
   const [volume, setVolume] = useState(0);
   const [speechLevel, setSpeechLevel] = useState(0);
   const [subtitles, setSubtitles] = useState('');
-  const [isMicMuted, setIsMicMuted] = useState(false);
+  const [isMicMuted, setIsMicMuted] = useState(true);
   const [isCameraEnabled, setIsCameraEnabled] = useState(true);
-  const [sessionTokens, setSessionTokens] = useState({ prompt: 0, candidates: 0, total: 0 });
+  const [sessionTokens] = useState({ prompt: 0, candidates: 0, total: 0 });
   const [agentState, setAgentState] = useState<'idle' | 'listening' | 'thinking' | 'speaking'>('idle');
 
-  const liveServiceRef = useRef<LiveService | null>(null);
-  const videoIntervalRef = useRef<number | null>(null);
-  const frameAlternatorRef = useRef(false);
-  const lastSentCodeRef = useRef<string>('');
-  const currentModelTurnIdRef = useRef<string | null>(null);
-  const isCameraEnabledRef = useRef(isCameraEnabled);
-  
-  const lastUserSpeechTime = useRef<number>(0);
-  const lastAISpeechTime = useRef<number>(0);
+  // Mock ref for UI binding compatibility
+  const liveServiceRef = useRef<any>(null);
 
-  // Refs for values read inside async callbacks — avoids stale closures
+  // Conversation history for multi-turn context
+  const historyRef = useRef<{ role: 'user' | 'model'; text: string }[]>([]);
+
+  // Web Speech API refs
+  const recognitionRef = useRef<any>(null);
+  const synthRef = useRef<SpeechSynthesis | null>(null);
+  const isListeningRef = useRef(false);
+  const isSpeakingRef = useRef(false);
+  const isConnectedRef = useRef(false);
+
+  // Refs for latest values in callbacks
   const currentProblemRef = useRef(currentProblem);
   const languageRef = useRef(language);
+  const codeRef = useRef(code);
+  const apiKeyRef = useRef(apiKey);
+
   useEffect(() => { currentProblemRef.current = currentProblem; }, [currentProblem]);
   useEffect(() => { languageRef.current = language; }, [language]);
-  useEffect(() => { isCameraEnabledRef.current = isCameraEnabled; }, [isCameraEnabled]);
+  useEffect(() => { codeRef.current = code; }, [code]);
+  useEffect(() => { apiKeyRef.current = apiKey; }, [apiKey]);
 
-  // Initialise LiveService once when apiKey is available
-  useEffect(() => {
-    if (apiKey && !liveServiceRef.current) {
-      liveServiceRef.current = new LiveService(apiKey);
-      liveServiceRef.current.onVolumeChange = (vol) => setVolume(vol);
-      liveServiceRef.current.onOutputLevelChange = (level) => setSpeechLevel(level);
+  // Speech synthesis animation loop
+  const speechAnimRafRef = useRef<number | null>(null);
+
+  const animateSpeechLevel = useCallback(() => {
+    if (!isSpeakingRef.current) {
+      setSpeechLevel(0);
+      return;
     }
-  }, [apiKey]);
-
-  // Cleanup on unmount — disconnect WebSocket and release microphone
-  useEffect(() => {
-    return () => {
-      if (liveServiceRef.current) liveServiceRef.current.disconnect();
-      if (videoIntervalRef.current) clearInterval(videoIntervalRef.current);
-    };
+    setSpeechLevel(Math.random() * 0.5 + 0.15);
+    speechAnimRafRef.current = requestAnimationFrame(animateSpeechLevel);
   }, []);
 
-  // Debounced code watcher — sends code updates during live sessions
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (isLiveConnected && liveServiceRef.current && code !== lastSentCodeRef.current) {
-        liveServiceRef.current.sendCodeContext(code);
-        lastSentCodeRef.current = code;
+  // Speak text using Web Speech Synthesis
+  const speak = useCallback((text: string, onDone?: () => void) => {
+    const synth = window.speechSynthesis;
+    synth.cancel(); // Stop any ongoing speech
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+    utterance.volume = 1.0;
+
+    // Pick a good English voice if available
+    const voices = synth.getVoices();
+    const preferred = voices.find(v =>
+      v.lang.startsWith('en') && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Premium'))
+    ) || voices.find(v => v.lang.startsWith('en')) || voices[0];
+    if (preferred) utterance.voice = preferred;
+
+    utterance.onstart = () => {
+      isSpeakingRef.current = true;
+      setAgentState('speaking');
+      setSubtitles(text);
+      speechAnimRafRef.current = requestAnimationFrame(animateSpeechLevel);
+    };
+
+    utterance.onend = () => {
+      isSpeakingRef.current = false;
+      setSpeechLevel(0);
+      if (speechAnimRafRef.current) {
+        cancelAnimationFrame(speechAnimRafRef.current);
       }
-    }, CODE_DEBOUNCE_MS);
+      if (isConnectedRef.current) {
+        onDone?.();
+      }
+    };
 
-    return () => clearTimeout(timer);
-  }, [code, isLiveConnected]);
+    utterance.onerror = () => {
+      isSpeakingRef.current = false;
+      setSpeechLevel(0);
+      if (isConnectedRef.current) {
+        onDone?.();
+      }
+    };
 
-  // Agent State Machine Tracker
-  useEffect(() => {
-    if (!isLiveConnected) {
-      setAgentState('idle');
+    synth.speak(utterance);
+  }, [animateSpeechLevel]);
+
+  // Process user speech and get AI response
+  const processUserInput = useCallback(async (transcript: string) => {
+    if (!isConnectedRef.current) return;
+
+    // Add user message
+    setMessages(prev => [...prev, {
+      id: Date.now().toString(),
+      role: 'user',
+      text: transcript,
+      timestamp: Date.now()
+    }]);
+
+    setAgentState('thinking');
+    setSubtitles('Thinking...');
+
+    try {
+      const problem = currentProblemRef.current;
+      const lang = languageRef.current;
+      const contextPrefix = `[Problem: ${problem.title} | Language: ${lang}]\n[Current Code]\n${codeRef.current.slice(0, 1000)}\n[End Code]\n\n`;
+
+      const response = await generateChatMessage(
+        apiKeyRef.current,
+        historyRef.current,
+        contextPrefix + transcript,
+        codeRef.current,
+        false
+      );
+
+      if (!response || !isConnectedRef.current) return;
+
+      // Update history
+      historyRef.current = [
+        ...historyRef.current,
+        { role: 'user', text: transcript },
+        { role: 'model', text: response }
+      ];
+      // Keep history bounded to last 10 turns
+      if (historyRef.current.length > 20) {
+        historyRef.current = historyRef.current.slice(-20);
+      }
+
+      // Add AI message to chat
+      setMessages(prev => [...prev, {
+        id: (Date.now() + 1).toString(),
+        role: 'model',
+        text: response,
+        timestamp: Date.now()
+      }]);
+
+      // Speak the response, then resume listening
+      speak(response, () => {
+        if (isConnectedRef.current && !isListeningRef.current) {
+          startListening();
+        }
+      });
+
+    } catch (err) {
+      console.error('[Interview] Gemini error:', err);
+      setSubtitles('⚠️ AI error. Please try again.');
+      setAgentState('listening');
+      if (isConnectedRef.current) startListening();
+    }
+  }, [setMessages, speak]);
+
+  // Start microphone listening via Web Speech API
+  const startListening = useCallback(() => {
+    if (!isConnectedRef.current || isListeningRef.current || isSpeakingRef.current) return;
+
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      setSubtitles('⚠️ Speech recognition not supported in this browser. Please use Chrome.');
       return;
     }
 
-    const interval = setInterval(() => {
-      const now = Date.now();
-      
-      if (speechLevel > 0.05) {
-        lastAISpeechTime.current = now;
-        setAgentState('speaking');
-      } else if (volume > 0.02 && !isMicMuted) {
-        lastUserSpeechTime.current = now;
-        setAgentState('listening');
+    const recognition = new SpeechRecognition();
+    recognitionRef.current = recognition;
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    recognition.lang = 'en-US';
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => {
+      isListeningRef.current = true;
+      setAgentState('listening');
+      setIsMicMuted(false);
+      setSubtitles('Listening...');
+      setVolume(0.5);
+    };
+
+    recognition.onresult = (event: any) => {
+      const result = event.results[event.results.length - 1];
+      const transcript = result[0].transcript.trim();
+      if (result.isFinal && transcript) {
+        isListeningRef.current = false;
+        setVolume(0);
+        setIsMicMuted(true);
+        recognition.stop();
+        processUserInput(transcript);
       } else {
-        // Neither is currently speaking actively.
-        // If the user spoke recently, and the AI hasn't spoken since, the AI is likely "thinking".
-        if (now - lastUserSpeechTime.current < 8000 && lastUserSpeechTime.current > lastAISpeechTime.current) {
-          // Wait 500ms after the user stops speaking before showing 'thinking' to avoid flickering
-          if (now - lastUserSpeechTime.current > 500) {
-            setAgentState('thinking');
-          }
-        } else {
-          // If no one has spoken for a while, go to idle
-          if (now - lastAISpeechTime.current > 1000 && now - lastUserSpeechTime.current > 1000) {
-            setAgentState('idle');
-          }
-        }
+        setSubtitles(transcript);
       }
-    }, 150);
+    };
 
-    return () => clearInterval(interval);
-  }, [isLiveConnected, volume, speechLevel, isMicMuted]);
+    recognition.onspeechend = () => {
+      recognition.stop();
+    };
 
-  // Log state changes for debugging
-  useEffect(() => {
-    if (isLiveConnected) {
-      console.log(`[Agent State Changed]: ${agentState.toUpperCase()}`);
+    recognition.onerror = (e: any) => {
+      console.warn('[Speech] Recognition error:', e.error);
+      isListeningRef.current = false;
+      setVolume(0);
+      setIsMicMuted(true);
+      if (isConnectedRef.current && e.error !== 'aborted') {
+        setTimeout(() => { if (isConnectedRef.current) startListening(); }, 1000);
+      }
+    };
+
+    recognition.onend = () => {
+      isListeningRef.current = false;
+      setVolume(0);
+      setIsMicMuted(true);
+    };
+
+    try {
+      recognition.start();
+    } catch (e) {
+      console.warn('[Speech] Could not start recognition:', e);
     }
-  }, [agentState, isLiveConnected]);
+  }, [processUserInput]);
 
+  // Code context debounce
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (isLiveConnected) {
+        codeRef.current = code;
+      }
+    }, CODE_DEBOUNCE_MS);
+    return () => clearTimeout(timer);
+  }, [code, isLiveConnected]);
+
+  // Connect: greet the user, then start listening
   const handleConnectLive = useCallback(async () => {
-    if (!apiKey || !liveServiceRef.current) return;
+    if (!apiKey) {
+      setSubtitles('⚠️ No Gemini API key configured. Add VITE_API_KEY to your environment.');
+      return;
+    }
+
+    setIsConnectingLive(true);
+    isConnectedRef.current = true;
+    historyRef.current = [];
 
     const problem = currentProblemRef.current;
     const lang = languageRef.current;
 
     try {
-      setIsConnectingLive(true);
+      // Generate greeting from Gemini
+      const greeting = await generateChatMessage(
+        apiKey,
+        [],
+        `Start the interview. Introduce yourself briefly and tell the candidate you'll be working on "${problem.title}" in ${lang}. Ask them to describe their approach. Keep it to 2-3 sentences.`,
+        '',
+        false
+      );
 
-      const sessionInstruction = `
-        ${SYSTEM_INSTRUCTION_INTERVIEWER}
-        CONTEXT: We are currently looking at problem: ${problem.title} (Difficulty: ${problem.difficulty}, Lang: ${lang})
-        Description: ${problem.description}
-        NOTE: Operate as an open voice companion. Wait for the user to speak first, or greet them casually.
-      `;
+      if (!greeting || !isConnectedRef.current) return;
 
-      await liveServiceRef.current.connect({
-        systemInstruction: sessionInstruction,
-        onMessage: (msg) => {
-          if (!currentModelTurnIdRef.current) {
-             currentModelTurnIdRef.current = Date.now().toString();
-             setSubtitles(''); // Clear subtitle at start of new turn
-          }
+      historyRef.current = [{ role: 'model', text: greeting }];
 
-          const turnId = currentModelTurnIdRef.current;
-
-          // Update Subtitles
-          setSubtitles((prev) => {
-            const newSub = prev + msg.text;
-            return newSub.length > 200 ? "..." + newSub.substring(newSub.length - 197) : newSub;
-          });
-
-          // Append to Chat Messages
-          setMessages((prev) => {
-            const newMessages = [...prev];
-            const lastMsgIndex = newMessages.findIndex(m => m.id === turnId);
-
-            if (lastMsgIndex >= 0) {
-              newMessages[lastMsgIndex] = {
-                ...newMessages[lastMsgIndex],
-                text: newMessages[lastMsgIndex].text + msg.text
-              };
-            } else {
-              newMessages.push({
-                id: turnId,
-                role: 'model',
-                text: msg.text,
-                timestamp: Date.now()
-              });
-            }
-            return newMessages;
-          });
-
-          // If turn is complete, reset the turn ID
-          if (!msg.partial) {
-             currentModelTurnIdRef.current = null;
-          }
-        },
-        onToolCall: (functionCall) => {
-          console.log('[Live] Tool call received:', functionCall);
-          if (functionCall.name === 'update_interview_context') {
-            const args = functionCall.args as any;
-            console.log('[Live] update_interview_context args:', args);
-            
-            const lang = args.language || 'python';
-            const title = args.problemTitle || 'Custom Problem';
-            const desc = args.problemDescription || 'Please solve the problem described by the interviewer.';
-            const code = args.starterCode || '# Your code here';
-
-            if (onUpdateContext) {
-              onUpdateContext(lang, title, desc, code);
-              // PREVENT echoing this new code back immediately!
-              lastSentCodeRef.current = code;
-            }
-            
-            liveServiceRef.current?.sendToolResponse([{
-              id: functionCall.id,
-              name: functionCall.name,
-              response: { result: `Context successfully updated to ${title} in ${lang}.` }
-            }]);
-          } else if (functionCall.name === 'type_code') {
-            const args = functionCall.args as any;
-            const newCode = args.code || '';
-            console.log('[Live] type_code args:', args);
-
-            if (onTypeCode) {
-              onTypeCode(newCode);
-              lastSentCodeRef.current = newCode;
-            }
-
-            liveServiceRef.current?.sendToolResponse([{
-              id: functionCall.id,
-              name: functionCall.name,
-              response: { result: `Code successfully typed into the editor.` }
-            }]);
-          }
-        },
-        onUsageUpdate: (usage) => {
-          setSessionTokens(prev => ({
-            prompt: prev.prompt + (usage.promptTokenCount || 0),
-            candidates: prev.candidates + (usage.candidatesTokenCount || 0),
-            total: prev.total + (usage.totalTokenCount || 0)
-          }));
-        }
-      });
+      setMessages(prev => [...prev, {
+        id: Date.now().toString(),
+        role: 'model',
+        text: greeting,
+        timestamp: Date.now()
+      }]);
 
       setIsLiveConnected(true);
 
-      // Visual confirmation in the transcript
-      setTimeout(() => {
-        setMessages(prev => [
-          ...prev,
-          {
-            id: Date.now().toString(),
-            role: 'user' as const,
-            text: 'Voice Session Connected',
-            timestamp: Date.now(),
-          },
-        ]);
-      }, 1000);
+      // Speak greeting then start listening
+      speak(greeting, () => {
+        if (isConnectedRef.current) startListening();
+      });
 
-      // Begin periodic video frame capture of the WebCam
-      videoIntervalRef.current = window.setInterval(async () => {
-        if (liveServiceRef.current && avatarRef.current && isCameraEnabledRef.current) {
-          const base64Frame = avatarRef.current.captureWebcamFrame();
-          if (base64Frame) {
-            await liveServiceRef.current.sendVideoFrame(base64Frame);
-          }
-        }
-      }, VIDEO_FRAME_INTERVAL_MS);
-    } catch {
-      // Connection failed
+    } catch (err) {
+      console.error('[Interview] Connect error:', err);
+      setSubtitles('⚠️ Failed to connect. Check your API key.');
+      isConnectedRef.current = false;
     } finally {
       setIsConnectingLive(false);
     }
-  }, [apiKey, editorRef, setMessages]);
+  }, [apiKey, setMessages, speak, startListening]);
 
-  const handleDisconnectLive = useCallback(async () => {
-    if (liveServiceRef.current) await liveServiceRef.current.disconnect();
-    if (videoIntervalRef.current) {
-      clearInterval(videoIntervalRef.current);
-      videoIntervalRef.current = null;
+  const handleDisconnectLive = useCallback(() => {
+    isConnectedRef.current = false;
+
+    // Stop recognition
+    if (recognitionRef.current) {
+      try { recognitionRef.current.abort(); } catch { /* ignore */ }
+      recognitionRef.current = null;
     }
+    isListeningRef.current = false;
+
+    // Stop speech
+    window.speechSynthesis?.cancel();
+    isSpeakingRef.current = false;
+    if (speechAnimRafRef.current) {
+      cancelAnimationFrame(speechAnimRafRef.current);
+    }
+
     setIsLiveConnected(false);
     setVolume(0);
     setSpeechLevel(0);
+    setIsMicMuted(true);
+    setAgentState('idle');
+    setSubtitles('');
+    historyRef.current = [];
   }, []);
 
   const toggleMic = useCallback(() => {
-    if (liveServiceRef.current) {
-      const currentMuted = liveServiceRef.current.isMicMuted;
-      liveServiceRef.current.setMicMuted(!currentMuted);
-      setIsMicMuted(!currentMuted);
+    if (isListeningRef.current) {
+      // Mute = stop listening
+      if (recognitionRef.current) {
+        try { recognitionRef.current.stop(); } catch { /* ignore */ }
+      }
+      isListeningRef.current = false;
+      setIsMicMuted(true);
+      setAgentState('idle');
+    } else {
+      // Unmute = start listening
+      startListening();
     }
-  }, []);
+  }, [startListening]);
 
   const toggleCamera = useCallback(() => {
     setIsCameraEnabled(prev => !prev);
+  }, []);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      isConnectedRef.current = false;
+      if (recognitionRef.current) {
+        try { recognitionRef.current.abort(); } catch { /* ignore */ }
+      }
+      window.speechSynthesis?.cancel();
+      if (speechAnimRafRef.current) {
+        cancelAnimationFrame(speechAnimRafRef.current);
+      }
+    };
   }, []);
 
   return {
