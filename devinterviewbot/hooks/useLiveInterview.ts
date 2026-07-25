@@ -87,15 +87,18 @@ export function useLiveInterview({
     synth.cancel(); // Stop any ongoing speech
 
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 1.0;
+    utterance.rate = 0.92;
     utterance.pitch = 1.0;
     utterance.volume = 1.0;
+    utterance.lang = 'hi-IN';
 
-    // Pick a good English voice if available
+    // Pick best Hindi voice available on this device
     const voices = synth.getVoices();
-    const preferred = voices.find(v =>
-      v.lang.startsWith('en') && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Premium'))
-    ) || voices.find(v => v.lang.startsWith('en')) || voices[0];
+    const preferred =
+      voices.find(v => v.lang === 'hi-IN' && v.name.includes('Google')) ||
+      voices.find(v => v.lang === 'hi-IN') ||
+      voices.find(v => v.lang.startsWith('hi')) ||
+      voices.find(v => v.lang.startsWith('en')); // fallback if no Hindi voice installed
     if (preferred) utterance.voice = preferred;
 
     utterance.onstart = () => {
@@ -140,12 +143,12 @@ export function useLiveInterview({
     }]);
 
     setAgentState('thinking');
-    setSubtitles('Thinking...');
+    setSubtitles('सोच रहा हूँ...');
 
     try {
       const problem = currentProblemRef.current;
       const lang = languageRef.current;
-      const contextPrefix = `[Problem: ${problem.title} | Language: ${lang}]\n[Current Code]\n${codeRef.current.slice(0, 1000)}\n[End Code]\n\n`;
+      const contextPrefix = `[निर्देश: कृपया हिंदी में जवाब दें।]\n[समस्या: ${problem.title} | भाषा: ${lang}]\n[वर्तमान कोड]\n${codeRef.current.slice(0, 1000)}\n[कोड समाप्त]\n\n`;
 
       const response = await generateChatMessage(
         apiKeyRef.current,
@@ -205,14 +208,14 @@ export function useLiveInterview({
     recognitionRef.current = recognition;
     recognition.continuous = false;
     recognition.interimResults = true;
-    recognition.lang = 'en-US';
+    recognition.lang = 'hi-IN'; // Hindi speech recognition
     recognition.maxAlternatives = 1;
 
     recognition.onstart = () => {
       isListeningRef.current = true;
       setAgentState('listening');
       setIsMicMuted(false);
-      setSubtitles('Listening...');
+      setSubtitles('सुन रहा हूँ...');
       setVolume(0.5);
     };
 
@@ -286,7 +289,7 @@ export function useLiveInterview({
       const greeting = await generateChatMessage(
         apiKey,
         [],
-        `Start the interview. Introduce yourself briefly and tell the candidate you'll be working on "${problem.title}" in ${lang}. Ask them to describe their approach. Keep it to 2-3 sentences.`,
+        `कृपया हिंदी में जवाब दें। इंटरव्यू शुरू करें। अपना संक्षिप्त परिचय दें और बताएं कि हम "${problem.title}" समस्या पर ${lang} में काम करेंगे। उम्मीदवार से उनका approach पूछें। 2-3 वाक्यों में रखें।`,
         '',
         false
       );
