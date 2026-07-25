@@ -33,6 +33,13 @@ export const saveActiveRoadmap = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { userId, title, matchScore, roadmapJson, skillsJson } = data;
     const { db, generateUUID } = await import("../db.server");
+    db.prepare("INSERT OR IGNORE INTO users (id, email, name, password_hash, salt) VALUES (?, ?, ?, ?, ?)").run(
+      userId,
+      `${userId}@example.com`,
+      "User",
+      "",
+      ""
+    );
     const id = generateUUID();
     db.prepare(`
       INSERT INTO career_roadmaps (id, user_id, target_title, match_score, roadmap_json, skills_json)

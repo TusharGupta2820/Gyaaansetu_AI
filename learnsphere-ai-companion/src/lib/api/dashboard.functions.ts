@@ -8,7 +8,18 @@ export const loadDashboardData = createServerFn({ method: "GET" })
   .handler(async ({ data }) => {
     const { userId } = data;
 
-    // 1. Fetch Stats
+    // 1. Fetch User Profile & Ensure User Exists First
+    const userStmt = db.prepare("SELECT * FROM users WHERE id = ?");
+    let user = userStmt.get(userId) as any;
+    if (!user) {
+      db.prepare(`
+        INSERT INTO users (id, email, name, password_hash, salt)
+        VALUES (?, ?, ?, '', '')
+      `).run(userId, `${userId}@gyaansetu.ai`, userId.charAt(0).toUpperCase() + userId.slice(1));
+      user = userStmt.get(userId) as any;
+    }
+
+    // 2. Fetch Stats
     const statsStmt = db.prepare("SELECT * FROM user_stats WHERE user_id = ?");
     let stats = statsStmt.get(userId) as any;
 
@@ -19,17 +30,6 @@ export const loadDashboardData = createServerFn({ method: "GET" })
         VALUES (?, 0.0, 0, 0, 999, 0, 0)
       `).run(userId);
       stats = statsStmt.get(userId) as any;
-    }
-
-    // 2. Fetch User Profile
-    const userStmt = db.prepare("SELECT * FROM users WHERE id = ?");
-    let user = userStmt.get(userId) as any;
-    if (!user) {
-      db.prepare(`
-        INSERT INTO users (id, email, name, password_hash, salt)
-        VALUES (?, ?, ?, '', '')
-      `).run(userId, `${userId}@gyaansetu.ai`, userId.charAt(0).toUpperCase() + userId.slice(1));
-      user = userStmt.get(userId) as any;
     }
 
     // 3. Fetch Tasks

@@ -197,7 +197,7 @@ async def check_ollama_health() -> bool:
 async def list_models() -> list[str]:
     """Returns a list of locally installed Ollama models, or Gemini models if configured."""
     if GEMINI_API_KEY:
-        return ["gemini-1.5-flash", "gemini-1.5-pro"]
+        return ["gemini-2.5-flash", "gemini-2.5-pro"]
     try:
         async with httpx.AsyncClient(timeout=5) as client:
             r = await client.get(f"{OLLAMA_BASE}/api/tags")
