@@ -6,8 +6,8 @@ import { InterviewProblem } from '@/types';
 //   STT             → Whisper (openai/whisper)     ~96% WER accuracy on en-US speech
 //   TTS             → Piper TTS                    fast, expressive, runs offline
 //
-// LIVE VOICE (requires VITE_API_KEY) — WebSocket real-time audio sessions MUST use native audio model:
-export const GEMINI_LIVE_MODEL = 'gemini-2.5-flash-preview-native-audio-dialog'; // Live WebSocket voice ONLY
+// LIVE VOICE (requires VITE_API_KEY) — bidi WebSocket MUST use gemini-live model:
+export const GEMINI_LIVE_MODEL = 'gemini-live-2.5-flash-preview'; // bidiGenerateContent WebSocket ONLY
 export const GEMINI_CHAT_MODEL = 'gemini-2.5-flash';    // text chat
 export const GEMINI_THINKING_MODEL = 'gemini-2.5-flash'; // reasoning
 export const GEMINI_TTS_MODEL = 'gemini-2.5-flash-preview-tts'; // standalone TTS
