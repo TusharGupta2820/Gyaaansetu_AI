@@ -7,11 +7,11 @@ import { InterviewProblem } from '@/types';
 //   TTS             → Piper TTS                    fast, expressive, runs offline
 //
 // LIVE VOICE FALLBACK (optional, requires VITE_API_KEY) — used only for real-time voice sessions:
-//   Live Voice      → gemini-2.5-flash-preview-native-audio-dialog
-export const GEMINI_LIVE_MODEL = 'gemini-2.5-flash-preview-native-audio-dialog'; // live voice only
-export const GEMINI_CHAT_MODEL = 'gemini-2.5-flash';    // unused — chat now uses local deepseek-r1
-export const GEMINI_THINKING_MODEL = 'gemini-2.5-pro';  // unused — reasoning uses local deepseek-r1
-export const GEMINI_TTS_MODEL = 'gemini-2.5-flash-preview-tts'; // unused — TTS uses local Piper
+//   Live Voice      → gemini-2.5-flash
+export const GEMINI_LIVE_MODEL = 'gemini-2.5-flash'; // live voice only
+export const GEMINI_CHAT_MODEL = 'gemini-2.5-flash';
+export const GEMINI_THINKING_MODEL = 'gemini-2.5-flash';
+export const GEMINI_TTS_MODEL = 'gemini-2.5-flash';
 
 // --- Audio Configuration ---
 export const INPUT_SAMPLE_RATE = 16000;
