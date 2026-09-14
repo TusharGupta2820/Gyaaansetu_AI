@@ -143,7 +143,7 @@ function VoiceNotesPage() {
             initial={{ opacity: 0, y: -50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.9 }}
-            className="fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border border-[#3b82f6]/30 shadow-2xl flex items-center gap-3 bg-[#0d1322] max-w-sm text-white"
+            className="fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border border-[#3b82f6]/30 shadow-2xl flex items-center gap-3 bg-white dark:bg-[#0d1322] max-w-sm text-white"
           >
             <div className="h-8 w-8 rounded-lg bg-[#3b82f6]/10 text-[#3b82f6] flex items-center justify-center shrink-0">
               <toast.icon className="h-4.5 w-4.5" />
@@ -165,20 +165,20 @@ function VoiceNotesPage() {
       <div className="grid lg:grid-cols-12 gap-6 items-stretch mb-6">
         {/* Left column: Recording status / Controls */}
         <div className="lg:col-span-5 flex flex-col">
-          <GlassCard className="flex-1 flex flex-col justify-between bg-[#0b1530] border border-blue-500/20 text-white shadow-lg p-6">
+          <GlassCard className="flex-1 flex flex-col justify-between shadow-lg p-6">
             <div className="space-y-4">
-              <div className="flex justify-between items-center pb-2 border-b border-white/5">
+              <div className="flex justify-between items-center pb-2 border-b border-sky-200/60 dark:border-white/5">
                 <span className="text-xs font-mono text-[#3b82f6] tracking-wider uppercase font-bold">Recording Console</span>
-                <span className="text-[9px] font-mono text-slate-400">Whisper Local STT</span>
+                <span className="text-[9px] font-mono text-slate-700 dark:text-slate-400">Whisper Local STT</span>
               </div>
 
               {/* Language selection */}
               <div className="space-y-1">
-                <label className="text-[10px] text-blue-200/60 font-mono uppercase font-bold">Transcription Language</label>
+                <label className="text-[10px] text-slate-600 dark:text-blue-200/60 font-mono uppercase font-bold">Transcription Language</label>
                 <select
                   value={language}
                   onChange={(e) => setLanguage(e.target.value)}
-                  className="w-full bg-[#070e20] border border-blue-500/20 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-[#3b82f6]/50 transition"
+                  className="w-full bg-[#070e20] border border-blue-500/20 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white outline-none focus:border-[#3b82f6]/50 transition"
                 >
                   <option value="English">English</option>
                   <option value="Hindi">Hindi (हिंदी)</option>
@@ -190,7 +190,7 @@ function VoiceNotesPage() {
               </div>
 
               {/* Audio Visualizer / Waveform State */}
-              <div className="h-32 bg-[#050816] rounded-2xl border border-white/5 flex flex-col items-center justify-center relative overflow-hidden">
+              <div className="h-32 bg-slate-100/90 dark:bg-[#050816] rounded-2xl border border-sky-200/60 dark:border-white/5 flex flex-col items-center justify-center relative overflow-hidden">
                 {recording ? (
                   <>
                     <div className="flex items-center gap-1">
@@ -208,17 +208,17 @@ function VoiceNotesPage() {
                 ) : (
                   <div className="text-center space-y-1.5 p-4">
                     <FileAudio className="h-8 w-8 text-slate-600 mx-auto" />
-                    <span className="text-[10px] text-slate-500 block font-mono">Microphone Idle</span>
+                    <span className="text-[10px] text-slate-600 dark:text-slate-500 block font-mono">Microphone Idle</span>
                   </div>
                 )}
               </div>
             </div>
 
-            <div className="space-y-2 mt-6 pt-4 border-t border-white/5">
+            <div className="space-y-2 mt-6 pt-4 border-t border-sky-200/60 dark:border-white/5">
               {recording ? (
                 <button
                   onClick={stopRecording}
-                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-red-500 hover:bg-red-600 py-3 text-xs font-bold text-white transition hover:shadow-lg"
+                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-red-500 hover:bg-red-600 py-3 text-xs font-bold text-slate-900 dark:text-white transition hover:shadow-lg"
                 >
                   <Square className="h-4 w-4" /> Stop Recording & Process
                 </button>
@@ -235,7 +235,7 @@ function VoiceNotesPage() {
               <button
                 onClick={handleUseSample}
                 disabled={recording || processing}
-                className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-white/5 border border-white/10 py-2.5 text-xs text-slate-300 font-bold hover:bg-white/10 transition"
+                className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-white/5 border border-sky-200/80 dark:border-white/10 py-2.5 text-xs text-slate-700 dark:text-slate-300 font-bold hover:bg-white/10 transition"
               >
                 <Volume2 className="h-3.5 w-3.5 text-blue-400" /> Use Sample Lecture Note
               </button>
@@ -245,11 +245,11 @@ function VoiceNotesPage() {
 
         {/* Right column: Results (Transcribed + Summary) */}
         <div className="lg:col-span-7 flex flex-col">
-          <GradientCard className="flex-1 bg-[#0b1530] border border-blue-500/20 text-white shadow-lg p-6 flex flex-col justify-between">
+          <GradientCard className="flex-1 shadow-lg p-6 flex flex-col justify-between">
             <div className="space-y-4 flex-1 flex flex-col">
-              <div className="flex justify-between items-center pb-2 border-b border-white/5">
+              <div className="flex justify-between items-center pb-2 border-b border-sky-200/60 dark:border-white/5">
                 <span className="text-xs font-mono text-[#6366f1] tracking-wider uppercase font-bold">Transcription Result</span>
-                <span className="text-[9px] font-mono text-slate-400">Step 2: AI Summary & Highlights</span>
+                <span className="text-[9px] font-mono text-slate-700 dark:text-slate-400">Step 2: AI Summary & Highlights</span>
               </div>
 
               <AnimatePresence mode="wait">
@@ -262,17 +262,17 @@ function VoiceNotesPage() {
                     className="space-y-4 flex-1 flex flex-col"
                   >
                     {/* Transcript block */}
-                    <div className="bg-[#050816]/60 p-4 rounded-2xl border border-white/5">
+                    <div className="bg-slate-100 dark:bg-[#050816] p-4 rounded-2xl border border-sky-200/60 dark:border-white/10">
                       <div className="text-[10px] text-blue-300 font-mono uppercase font-bold mb-1.5 flex items-center gap-1">
                         <FileText className="h-3.5 w-3.5 text-cyan-400" /> Transcribed Speech
                       </div>
-                      <p className="text-xs text-blue-100/90 leading-relaxed max-h-32 overflow-y-auto pr-1">
+                      <p className="text-xs text-slate-800 dark:text-blue-100/90 leading-relaxed max-h-32 overflow-y-auto pr-1">
                         "{result.transcript}"
                       </p>
                     </div>
 
                     {/* Summary / Concepts block */}
-                    <div className="bg-[#050816]/60 p-4 rounded-2xl border border-white/5 flex-1 max-h-80 overflow-y-auto pr-1">
+                    <div className="bg-slate-100 dark:bg-[#050816] p-4 rounded-2xl border border-sky-200/60 dark:border-white/10 flex-1 max-h-80 overflow-y-auto pr-1">
                       <div className="text-[10px] text-blue-300 font-mono uppercase font-bold mb-2 flex items-center gap-1">
                         <Sparkles className="h-3.5 w-3.5 text-purple-400" /> AI Key Points & Summary
                       </div>
@@ -282,11 +282,11 @@ function VoiceNotesPage() {
                     </div>
                   </motion.div>
                 ) : (
-                  <div className="flex-1 flex flex-col items-center justify-center text-center py-24 text-slate-500 italic">
+                  <div className="flex-1 flex flex-col items-center justify-center text-center py-24 text-slate-600 dark:text-slate-500 italic">
                     {processing ? (
                       <div className="space-y-3">
                         <RefreshCw className="h-8 w-8 text-[#3b82f6] animate-spin mx-auto" />
-                        <p className="text-xs text-blue-200/70 not-italic font-mono">Running Whisper STT + AI Summary...</p>
+                        <p className="text-xs text-slate-600 dark:text-blue-200/70 not-italic font-mono">Running Whisper STT + AI Summary...</p>
                       </div>
                     ) : (
                       <>
@@ -299,7 +299,7 @@ function VoiceNotesPage() {
               </AnimatePresence>
             </div>
 
-            <div className="mt-4 text-[10px] text-muted-foreground flex items-center gap-1.5 border-t border-white/5 pt-3">
+            <div className="mt-4 text-[10px] text-muted-foreground flex items-center gap-1.5 border-t border-sky-200/60 dark:border-white/5 pt-3">
               <Sparkles className="h-3.5 w-3.5 text-[#3b82f6]" />
               Offline Faster-Whisper local engine active.
             </div>

@@ -130,7 +130,7 @@ function TeachBackPage() {
             initial={{ opacity: 0, y: -50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.9 }}
-            className="fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border border-[#3b82f6]/30 shadow-2xl flex items-center gap-3 bg-[#0d1322] max-w-sm"
+            className="fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border border-[#3b82f6]/30 shadow-2xl flex items-center gap-3 bg-white dark:bg-[#0d1322] max-w-sm"
           >
             <div className="h-8 w-8 rounded-lg bg-[#3b82f6]/10 text-[#3b82f6] flex items-center justify-center shrink-0">
               <toast.icon className="h-4.5 w-4.5" />
@@ -152,29 +152,29 @@ function TeachBackPage() {
       <div className="grid lg:grid-cols-12 gap-6 items-stretch mb-6">
         {/* Left: Input explanation */}
         <div className="lg:col-span-6 flex flex-col">
-          <GlassCard className="flex-1 flex flex-col justify-between bg-[#0b1530] border border-blue-500/20 text-white shadow-lg p-6">
+          <GlassCard className="flex-1 flex flex-col justify-between shadow-lg p-6">
             <div className="space-y-4 flex-1 flex flex-col">
-              <div className="flex justify-between items-center pb-2 border-b border-white/5">
+              <div className="flex justify-between items-center pb-2 border-b border-sky-200/60 dark:border-white/5">
                 <span className="text-xs font-mono text-[#3b82f6] tracking-wider uppercase font-bold">Feynman Editor</span>
-                <span className="text-[9px] font-mono text-slate-400">Step 1: Explain it to a child</span>
+                <span className="text-[9px] font-mono text-slate-700 dark:text-slate-400">Step 1: Explain it to a child</span>
               </div>
 
               {/* Topic selection */}
               <div className="space-y-1">
-                <label className="text-[10px] text-blue-200/60 font-mono uppercase font-bold">Topic to Teach</label>
+                <label className="text-[10px] text-slate-600 dark:text-blue-200/60 font-mono uppercase font-bold">Topic to Teach</label>
                 <input
                   type="text"
                   value={topic}
                   onChange={(e) => setTopic(e.target.value)}
                   placeholder="e.g. Recursion, Photosynthesis, Gravity"
-                  className="w-full bg-[#070e20] border border-blue-500/20 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-[#3b82f6]/50 transition"
+                  className="w-full bg-[#070e20] border border-blue-500/20 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white outline-none focus:border-[#3b82f6]/50 transition"
                 />
               </div>
 
               {/* Explanation Textarea */}
               <div className="space-y-1 flex-1 flex flex-col">
                 <div className="flex justify-between items-center">
-                  <label className="text-[10px] text-blue-200/60 font-mono uppercase font-bold">Your Explanation</label>
+                  <label className="text-[10px] text-slate-600 dark:text-blue-200/60 font-mono uppercase font-bold">Your Explanation</label>
                   <button
                     onClick={handleDictate}
                     disabled={recording}
@@ -189,12 +189,12 @@ function TeachBackPage() {
                   value={explanation}
                   onChange={(e) => setExplanation(e.target.value)}
                   placeholder="Explain the topic as simply as possible, using metaphors and avoiding complex jargon..."
-                  className="w-full flex-1 min-h-[220px] bg-[#070e20] border border-blue-500/20 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]/50 resize-none font-sans"
+                  className="w-full flex-1 min-h-[220px] bg-[#070e20] border border-blue-500/20 rounded-xl p-3 text-xs text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]/50 resize-none font-sans"
                 />
               </div>
             </div>
 
-            <div className="mt-4 pt-3 border-t border-white/5">
+            <div className="mt-4 pt-3 border-t border-sky-200/60 dark:border-white/5">
               <button
                 onClick={handleAnalyze}
                 disabled={analyzing || !explanation.trim()}
@@ -216,11 +216,11 @@ function TeachBackPage() {
 
         {/* Right: Real-time clarity/accuracy gauge & results */}
         <div className="lg:col-span-6 flex flex-col">
-          <GradientCard className="flex-1 bg-[#0b1530] border border-blue-500/20 text-white shadow-lg p-6 flex flex-col justify-between">
+          <GradientCard className="flex-1 shadow-lg p-6 flex flex-col justify-between">
             <div className="space-y-4">
-              <div className="flex justify-between items-center pb-2 border-b border-white/5">
+              <div className="flex justify-between items-center pb-2 border-b border-sky-200/60 dark:border-white/5">
                 <span className="text-xs font-mono text-[#6366f1] tracking-wider uppercase font-bold">AI Clarity Evaluator</span>
-                <span className="text-[9px] font-mono text-slate-400">Step 2: Scorecard & Gaps</span>
+                <span className="text-[9px] font-mono text-slate-700 dark:text-slate-400">Step 2: Scorecard & Gaps</span>
               </div>
 
               <AnimatePresence mode="wait">
@@ -234,13 +234,13 @@ function TeachBackPage() {
                   >
                     {/* Scores row */}
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-[#050816]/60 p-4 rounded-2xl border border-white/5 flex flex-col items-center">
+                      <div className="bg-slate-100 dark:bg-[#050816] p-4 rounded-2xl border border-sky-200/60 dark:border-white/10 flex flex-col items-center">
                         <div className="text-3xl font-display font-extrabold text-[#3b82f6]">{result.clarity_score}/10</div>
-                        <div className="text-[10px] text-blue-200/60 uppercase font-mono tracking-wider mt-1">Clarity Score</div>
+                        <div className="text-[10px] text-slate-600 dark:text-blue-200/60 uppercase font-mono tracking-wider mt-1">Clarity Score</div>
                       </div>
-                      <div className="bg-[#050816]/60 p-4 rounded-2xl border border-white/5 flex flex-col items-center">
+                      <div className="bg-slate-100 dark:bg-[#050816] p-4 rounded-2xl border border-sky-200/60 dark:border-white/10 flex flex-col items-center">
                         <div className="text-3xl font-display font-extrabold text-[#6366f1]">{result.accuracy_score}/10</div>
-                        <div className="text-[10px] text-blue-200/60 uppercase font-mono tracking-wider mt-1">Accuracy Score</div>
+                        <div className="text-[10px] text-slate-600 dark:text-blue-200/60 uppercase font-mono tracking-wider mt-1">Accuracy Score</div>
                       </div>
                     </div>
 
@@ -277,7 +277,7 @@ function TeachBackPage() {
                       <div className="text-[10px] text-blue-300 font-mono uppercase font-bold">Suggested Revisions</div>
                       <div className="space-y-1.5">
                         {result.suggestions.map((sug: string, i: number) => (
-                          <div key={i} className="flex items-start gap-2 text-xs text-blue-200/80 bg-slate-800/40 p-2.5 rounded-xl">
+                          <div key={i} className="flex items-start gap-2 text-xs text-blue-200/80 bg-sky-50 dark:bg-slate-800/40 p-2.5 rounded-xl">
                             <span className="h-1.5 w-1.5 rounded-full bg-[#6366f1] mt-1.5 shrink-0" />
                             <span>{sug}</span>
                           </div>
@@ -288,12 +288,12 @@ function TeachBackPage() {
                 ) : (
                   <motion.div
                     key="empty"
-                    className="flex-1 flex flex-col items-center justify-center text-center py-20 text-slate-500 italic"
+                    className="flex-1 flex flex-col items-center justify-center text-center py-20 text-slate-600 dark:text-slate-500 italic"
                   >
                     {analyzing ? (
                       <div className="space-y-3">
                         <RefreshCw className="h-8 w-8 text-[#3b82f6] animate-spin mx-auto" />
-                        <p className="text-xs text-blue-200/70 not-italic font-mono">Running LLM Cognitive Breakdown...</p>
+                        <p className="text-xs text-slate-600 dark:text-blue-200/70 not-italic font-mono">Running LLM Cognitive Breakdown...</p>
                       </div>
                     ) : (
                       <>
@@ -307,7 +307,7 @@ function TeachBackPage() {
             </div>
 
             {/* Bottom branding footer */}
-            <div className="mt-4 text-[10px] text-muted-foreground flex items-center gap-1.5 border-t border-white/5 pt-3">
+            <div className="mt-4 text-[10px] text-muted-foreground flex items-center gap-1.5 border-t border-sky-200/60 dark:border-white/5 pt-3">
               <Sparkles className="h-3.5 w-3.5 text-[#3b82f6]" />
               Feynman evaluation uses zero-shot logical mapping models.
             </div>

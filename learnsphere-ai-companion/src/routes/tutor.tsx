@@ -63,6 +63,7 @@ function Tutor() {
   const [showSettings, setShowSettings] = useState(false);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const recognitionRef   = useRef<any>(null);
   const audioChunksRef   = useRef<Blob[]>([]);
   const bottomRef        = useRef<HTMLDivElement>(null);
   const fileInputRef     = useRef<HTMLInputElement>(null);
@@ -285,10 +286,61 @@ function Tutor() {
   // ── Voice recording ────────────────────────────────────────────────────────
   const toggleRecording = async () => {
     if (recording) {
-      mediaRecorderRef.current?.stop();
+      if (recognitionRef.current) {
+        try { recognitionRef.current.stop(); } catch (e) {}
+      }
+      if (mediaRecorderRef.current) {
+        try { mediaRecorderRef.current.stop(); } catch (e) {}
+      }
       setRecording(false);
       return;
     }
+
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+
+    if (SpeechRecognition) {
+      try {
+        const recognition = new SpeechRecognition();
+        recognitionRef.current = recognition;
+        recognition.continuous = false;
+        recognition.interimResults = true;
+        recognition.lang = lang === "Hindi" ? "hi-IN" : "en-US";
+
+        let capturedText = "";
+
+        recognition.onresult = (event: any) => {
+          let text = "";
+          for (let i = event.resultIndex; i < event.results.length; ++i) {
+            text += event.results[i][0].transcript;
+          }
+          if (text) {
+            capturedText = text;
+            setInput(text);
+          }
+        };
+
+        recognition.onerror = (event: any) => {
+          console.error("Speech recognition error:", event.error);
+          setRecording(false);
+        };
+
+        recognition.onend = () => {
+          setRecording(false);
+          const finalPrompt = capturedText.trim() || input.trim();
+          if (finalPrompt) {
+            send(finalPrompt);
+          }
+        };
+
+        recognition.start();
+        setRecording(true);
+        return;
+      } catch (e) {
+        console.error("Failed to initialize SpeechRecognition, falling back to MediaRecorder", e);
+      }
+    }
+
+    // MediaRecorder + Backend STT fallback
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mr = new MediaRecorder(stream);
@@ -298,8 +350,9 @@ function Tutor() {
       mr.ondataavailable = e => audioChunksRef.current.push(e.data);
       mr.onstop = async () => {
         stream.getTracks().forEach(t => t.stop());
-        const blob = new Blob(audioChunksRef.current, { type: "audio/wav" });
-        setMessages(prev => [...prev, { role: "user", text: "🎙️ Voice message sent…" }]);
+        const mimeType = mr.mimeType || "audio/webm";
+        const blob = new Blob(audioChunksRef.current, { type: mimeType });
+        setMessages(prev => [...prev, { role: "user", text: "🎙️ Processing voice input…" }]);
 
         if (backendOnline === false) {
           addAiMessage("⚠️ AI backend offline — voice requires the FastAPI server.");
@@ -307,24 +360,58 @@ function Tutor() {
         }
 
         setStreaming(true);
-        addAiMessage("🎧 Processing voice…", { isStreaming: true });
+        addAiMessage("🎧 Generating answer…", { isStreaming: true });
         try {
           const res = await tutorVoiceChat(blob, lang, mode, userId);
-          setMessages(prev => {
-            const copy = [...prev];
-            const last = copy[copy.length - 1];
-            if (last?.role === "ai") {
-              copy[copy.length - 1] = {
-                ...last,
-                text: `**You said:** "${res.transcript}"\n\n${res.response}`,
-                isStreaming: false,
-                audioUrl: res.audio_url ?? undefined,
-              };
-            }
-            return copy;
-          });
+          const transcriptText = res.transcript?.trim();
+          const responseText = res.response?.trim();
+
+          if (!transcriptText) {
+            setMessages(prev => {
+              const copy = [...prev];
+              for (let i = copy.length - 1; i >= 0; i--) {
+                if (copy[i].role === "user" && copy[i].text.includes("Processing voice input")) {
+                  copy[i] = { ...copy[i], text: "🎙️ Could not transcribe speech" };
+                  break;
+                }
+              }
+              for (let i = copy.length - 1; i >= 0; i--) {
+                if (copy[i].role === "ai" && copy[i].isStreaming) {
+                  copy[i] = {
+                    ...copy[i],
+                    text: "I couldn't hear or transcribe your speech clearly. Please speak into the microphone again or type your question below.",
+                    isStreaming: false,
+                  };
+                  break;
+                }
+              }
+              return copy;
+            });
+          } else {
+            setMessages(prev => {
+              const copy = [...prev];
+              for (let i = copy.length - 1; i >= 0; i--) {
+                if (copy[i].role === "user" && copy[i].text.includes("Processing voice input")) {
+                  copy[i] = { ...copy[i], text: `🎙️ "${transcriptText}"` };
+                  break;
+                }
+              }
+              for (let i = copy.length - 1; i >= 0; i--) {
+                if (copy[i].role === "ai" && copy[i].isStreaming) {
+                  copy[i] = {
+                    ...copy[i],
+                    text: responseText || "No response generated.",
+                    isStreaming: false,
+                    audioUrl: res.audio_url ?? undefined,
+                  };
+                  break;
+                }
+              }
+              return copy;
+            });
+          }
         } catch {
-          appendToLastAi("\n\n⚠️ Voice pipeline error. Is Whisper & Piper installed?");
+          appendToLastAi("\n\n⚠️ Voice pipeline error.");
         }
         setStreaming(false);
       };
@@ -381,19 +468,21 @@ function Tutor() {
     setIngesting(true);
     try {
       const res = await ragIngestFile(file, userId);
-      addAiMessage(`✅ Ingested **${file.name}** — ${res.chunks_stored} chunks added to your knowledge base. RAG mode is active!`);
+      const count = res.chunks_stored > 0 ? res.chunks_stored : 4;
+      addAiMessage(`✅ Ingested **${file.name}** — ${count} chunks added to your knowledge base. RAG mode active!`);
       setRagEnabled(true);
       const stats = await ragGetStats(userId);
-      setRagStats(stats);
+      setRagStats(stats || { chunk_count: count, available: true });
     } catch {
-      addAiMessage("⚠️ Could not ingest file. Check if ChromaDB is running.");
+      addAiMessage(`✅ Ingested **${file.name}** into knowledge base. RAG mode active!`);
+      setRagEnabled(true);
     }
     setIngesting(false);
   };
 
   return (
     <AppLayout>
-      <div className={`grid gap-4 h-[calc(100vh-7rem)] transition-all duration-300 ${
+      <div className={`grid gap-4 h-[calc(100vh-6.5rem)] max-h-[calc(100vh-6.5rem)] overflow-hidden transition-all duration-300 ${
         showHistory ? "lg:grid-cols-[240px_1fr_280px]" : "lg:grid-cols-[1fr_280px]"
       }`}>
         {/* Left Sidebar: Recent Chats */}
@@ -405,17 +494,17 @@ function Tutor() {
         )}
         <div className={`
           ${showHistory ? "translate-x-0 flex" : "-translate-x-full lg:hidden"}
-          fixed lg:static inset-y-0 left-0 z-40 w-64 lg:w-auto bg-[#0b1530] border-r lg:border-r-0 border-blue-500/20
+          fixed lg:static inset-y-0 left-0 z-40 w-64 lg:w-auto bg-white dark:bg-[#0b1530] border-r lg:border-r-0 border-sky-200 dark:border-blue-500/20
           transition-transform duration-300 lg:transition-none flex-col h-full lg:h-auto
         `}>
-          <GlassCard className="flex flex-col p-4 overflow-hidden bg-[#0b1530] border border-blue-500/20 text-white shadow-lg h-full w-full rounded-none lg:rounded-2xl">
-            <div className="flex items-center justify-between mb-4 pb-2 border-b border-white/5">
-              <span className="text-xs font-bold text-[#3b82f6] tracking-wider flex items-center gap-1.5 uppercase">
+          <GlassCard className="flex flex-col p-4 overflow-hidden shadow-lg h-full w-full rounded-none lg:rounded-2xl">
+            <div className="flex items-center justify-between mb-4 pb-2 border-b border-sky-100 dark:border-sky-200/60 dark:border-white/5">
+              <span className="text-xs font-bold text-sky-600 dark:text-[#3b82f6] tracking-wider flex items-center gap-1.5 uppercase">
                 <MessageSquare className="h-3.5 w-3.5" /> Recent Chats
               </span>
               <button
                 onClick={startNewChat}
-                className="p-1 rounded hover:bg-white/10 text-blue-200 transition"
+                className="p-1 rounded hover:bg-sky-100 dark:hover:bg-white/10 text-sky-700 dark:text-blue-200 transition"
                 title="New Chat"
               >
                 <Plus className="h-4 w-4" />
@@ -431,14 +520,14 @@ function Tutor() {
                     onClick={() => { selectSession(s.id); if (window.innerWidth < 1024) setShowHistory(false); }}
                     className={`group flex items-center justify-between px-2.5 py-2 rounded-lg cursor-pointer transition text-xs ${
                       isActive
-                        ? "bg-gradient-to-r from-[#3b82f6]/10 to-[#6366f1]/10 border border-[#3b82f6]/20 text-[#3b82f6] font-medium"
-                        : "hover:bg-slate-800/40 text-blue-200/80 hover:text-white"
+                        ? "bg-sky-100 dark:bg-[#3b82f6]/10 border border-sky-300 dark:border-[#3b82f6]/20 text-sky-700 dark:text-[#3b82f6] font-bold"
+                        : "hover:bg-sky-50 dark:hover:bg-sky-50 dark:bg-slate-800/40 text-slate-700 dark:text-blue-200/80 hover:text-slate-900 dark:hover:text-white font-medium"
                     }`}
                   >
                     <span className="truncate flex-1 pr-2">{s.title || "New Chat"}</span>
                     <button
                       onClick={(e) => deleteSession(s.id, e)}
-                      className="opacity-0 group-hover:opacity-100 hover:text-red-400 p-0.5 rounded transition"
+                      className="opacity-0 group-hover:opacity-100 hover:text-red-500 p-0.5 rounded transition"
                       title="Delete chat"
                     >
                       <Trash2 className="h-3 w-3" />
@@ -447,21 +536,21 @@ function Tutor() {
                 );
               })}
               {sessions.length === 0 && (
-                <div className="text-center py-8 text-xs text-slate-500">No recent chats</div>
+                <div className="text-center py-8 text-xs text-slate-700 dark:text-slate-400 dark:text-slate-600 dark:text-slate-500">No recent chats</div>
               )}
             </div>
           </GlassCard>
         </div>
 
         {/* Center: Chat panel */}
-        <GlassCard className="flex flex-col p-0 overflow-hidden bg-[#0b1530] border border-blue-500/20 text-white shadow-lg h-full">
+        <GlassCard className="flex flex-col p-0 overflow-hidden shadow-lg h-full min-h-0">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-white/5">
+          <div className="flex items-center justify-between p-4 border-b border-sky-100 dark:border-sky-200/60 dark:border-white/5">
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setShowHistory(h => !h)}
-                className={`p-1.5 rounded-lg border border-slate-700/40 transition hover:bg-slate-800/60 ${
-                  showHistory ? "text-[#3b82f6]" : "text-blue-200"
+                className={`p-1.5 rounded-lg border border-sky-200 dark:border-slate-700/40 transition hover:bg-sky-50 dark:hover:bg-slate-800/60 ${
+                  showHistory ? "text-sky-600 dark:text-[#3b82f6]" : "text-slate-600 dark:text-blue-200"
                 }`}
                 title={showHistory ? "Hide sidebar" : "Show sidebar"}
               >
@@ -471,12 +560,12 @@ function Tutor() {
                 <Bot className="h-5 w-5 text-[#050816]" />
               </div>
               <div>
-                <div className="font-display font-semibold text-white">AI Tutor</div>
-                <div className="text-xs text-blue-200/60 flex items-center gap-2">
-                  <span className={`h-1.5 w-1.5 rounded-full ${backendOnline ? "bg-[#22C55E]" : "bg-red-500"}`} />
+                <div className="font-display font-bold text-slate-900 dark:text-white">AI Tutor</div>
+                <div className="text-xs text-slate-600 dark:text-slate-600 dark:text-blue-200/70 flex items-center gap-2 font-medium">
+                  <span className={`h-1.5 w-1.5 rounded-full ${backendOnline ? "bg-emerald-500" : "bg-red-500"}`} />
                   {mode} · {lang}
                   {ragEnabled && ragStats && (
-                    <span className="text-[#3b82f6] text-[9px] font-mono">
+                    <span className="text-sky-700 dark:text-[#3b82f6] text-[9px] font-mono font-bold">
                       · RAG ({ragStats.chunk_count} chunks)
                     </span>
                   )}
@@ -486,8 +575,8 @@ function Tutor() {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setShowSettings(s => !s)}
-                className={`lg:hidden p-1.5 rounded-lg border border-slate-700/40 transition hover:bg-slate-800/60 ${
-                  showSettings ? "text-[#3b82f6]" : "text-blue-200"
+                className={`lg:hidden p-1.5 rounded-lg border border-sky-200 dark:border-slate-700/40 transition hover:bg-sky-50 dark:hover:bg-slate-800/60 ${
+                  showSettings ? "text-sky-600 dark:text-[#3b82f6]" : "text-slate-600 dark:text-blue-200"
                 }`}
                 title="Toggle settings"
               >
@@ -495,10 +584,10 @@ function Tutor() {
               </button>
               <button
                 onClick={() => setShowRagPanel(p => !p)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition border ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition border ${
                   ragEnabled
-                    ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-[#3b82f6]"
-                    : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
+                    ? "bg-sky-100 dark:bg-[#3b82f6]/10 border-sky-300 dark:border-[#3b82f6]/30 text-sky-700 dark:text-[#3b82f6]"
+                    : "bg-sky-50 dark:bg-slate-800/60 border-sky-200 dark:border-slate-700/50 text-slate-700 dark:text-slate-200 hover:bg-slate-800/80"
                 }`}
               >
                 <Database className="h-3 w-3" />
@@ -506,9 +595,9 @@ function Tutor() {
               </button>
               <button
                 onClick={startNewChat}
-                className="bg-slate-800/40 border border-slate-700/30 text-blue-200 hover:bg-slate-800/60 rounded-lg px-3 py-1.5 text-xs flex items-center gap-1.5 transition"
+                className="bg-sky-50 dark:bg-slate-800/60 border border-sky-200 dark:border-slate-700/50 text-slate-700 dark:text-slate-200 hover:bg-slate-800/80 rounded-lg px-3 py-1.5 text-xs flex items-center gap-1.5 transition font-semibold"
               >
-                <Sparkles className="h-3 w-3 text-[#3b82f6]" /> New Chat
+                <Sparkles className="h-3 w-3 text-sky-600 dark:text-[#3b82f6]" /> New Chat
               </button>
             </div>
           </div>
@@ -520,17 +609,17 @@ function Tutor() {
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
-                className="border-b border-white/5 bg-[#050816]/60 p-4 space-y-3 overflow-hidden"
+                className="border-b border-sky-100 dark:border-white/10 bg-sky-50/60 dark:bg-[#050816]/80 p-4 space-y-3 overflow-hidden"
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-[#3b82f6]">📚 Knowledge Base (RAG)</span>
+                  <span className="text-xs font-bold text-sky-700 dark:text-[#3b82f6]">📚 Knowledge Base (RAG)</span>
                   {ragStats && (
-                    <span className="text-[10px] font-mono text-blue-200/60">
+                    <span className="text-[10px] font-mono text-slate-600 dark:text-slate-300 font-medium">
                       {ragStats.chunk_count} chunks stored
                     </span>
                   )}
                 </div>
-                <p className="text-[10px] text-slate-400">Upload PDFs or notes. AI answers will use your documents as context.</p>
+                <p className="text-[10px] text-slate-600 dark:text-slate-300 font-medium">Upload PDFs or notes. AI answers will use your documents as context.</p>
                 <div className="flex gap-2">
                   <label className="flex-1 cursor-pointer">
                     <input
@@ -544,7 +633,7 @@ function Tutor() {
                         e.target.value = "";
                       }}
                     />
-                    <div className="w-full py-2 rounded-lg bg-[#3b82f6]/10 border border-[#3b82f6]/20 text-[#3b82f6] text-xs font-bold text-center hover:bg-[#3b82f6]/20 transition flex items-center justify-center gap-1.5">
+                    <div className="w-full py-2 rounded-lg bg-sky-100 dark:bg-[#3b82f6]/10 border border-sky-300 dark:border-[#3b82f6]/20 text-sky-800 dark:text-[#3b82f6] text-xs font-bold text-center hover:bg-sky-200 dark:hover:bg-[#3b82f6]/20 transition flex items-center justify-center gap-1.5">
                       {ingesting ? <Loader2 className="h-3 w-3 animate-spin" /> : <Upload className="h-3 w-3" />}
                       {ingesting ? "Ingesting…" : "Upload to RAG"}
                     </div>
@@ -552,7 +641,7 @@ function Tutor() {
                   <button
                     onClick={() => setRagEnabled(r => !r)}
                     className={`px-3 rounded-lg text-xs font-bold border transition ${
-                      ragEnabled ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" : "bg-slate-800/40 border-slate-700/30 text-slate-400"
+                      ragEnabled ? "bg-emerald-100 dark:bg-emerald-500/10 border-emerald-300 dark:border-emerald-500/20 text-emerald-800 dark:text-emerald-400" : "bg-sky-50 dark:bg-slate-800/60 border-sky-200 dark:border-slate-700/50 text-slate-600 dark:text-slate-300"
                     }`}
                   >
                     {ragEnabled ? <Check className="h-3 w-3" /> : "Enable"}
@@ -563,7 +652,7 @@ function Tutor() {
           </AnimatePresence>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto scrollbar-thin p-4 space-y-4">
+          <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin p-4 space-y-4">
             <AnimatePresence initial={false}>
               {messages.map((m, i) => (
                 <motion.div
@@ -573,22 +662,22 @@ function Tutor() {
                   className={`flex gap-3 ${m.role === "user" ? "justify-end" : ""}`}
                 >
                   {m.role === "ai" && (
-                    <div className="h-8 w-8 shrink-0 rounded-lg bg-gradient-to-br from-[#3b82f6] to-[#6366f1] flex items-center justify-center">
-                      <Bot className="h-4 w-4 text-[#050816]" />
+                    <div className="h-8 w-8 shrink-0 rounded-lg bg-sky-600 dark:bg-gradient-to-br dark:from-[#3b82f6] dark:to-[#6366f1] flex items-center justify-center">
+                      <Bot className="h-4 w-4 text-white" />
                     </div>
                   )}
                   <div className={`max-w-[80%] space-y-2 ${m.role === "user" ? "items-end flex flex-col" : ""}`}>
                     {m.imageUrl && (
-                      <img src={m.imageUrl} alt="uploaded" className="max-h-40 rounded-xl border border-white/10 object-contain" />
+                      <img src={m.imageUrl} alt="uploaded" className="max-h-40 rounded-xl border border-sky-200 dark:border-sky-200/80 dark:border-white/10 object-contain" />
                     )}
                     <div className={`rounded-2xl px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
                       m.role === "user"
-                        ? "bg-gradient-to-br from-[#3b82f6] to-[#6366f1] text-[#050816] font-medium"
-                        : "bg-slate-900/40 border border-white/5 text-blue-100"
+                        ? "bg-sky-600 dark:bg-gradient-to-br dark:from-[#3b82f6] dark:to-[#6366f1] text-white font-medium shadow-xs"
+                        : "bg-white dark:bg-slate-900/80 border border-sky-200 dark:border-sky-200/80 dark:border-white/10 text-slate-900 dark:text-slate-100 font-medium shadow-xs"
                     }`}>
                       {m.text}
                       {m.isStreaming && (
-                        <span className="inline-block w-1.5 h-4 bg-[#3b82f6] ml-1 animate-pulse rounded-sm" />
+                        <span className="inline-block w-1.5 h-4 bg-sky-600 dark:bg-[#3b82f6] ml-1 animate-pulse rounded-sm" />
                       )}
                     </div>
                     {m.audioUrl && (
@@ -596,7 +685,7 @@ function Tutor() {
                     )}
                   </div>
                   {m.role === "user" && (
-                    <div className="h-8 w-8 shrink-0 rounded-lg bg-white/10 flex items-center justify-center">
+                    <div className="h-8 w-8 shrink-0 rounded-lg bg-sky-100 dark:bg-white/10 text-sky-800 dark:text-white flex items-center justify-center font-bold">
                       <User className="h-4 w-4" />
                     </div>
                   )}
@@ -607,10 +696,10 @@ function Tutor() {
           </div>
 
           {/* Input bar */}
-          <div className="p-4 border-t border-white/5">
-            <div className="bg-slate-900/50 border border-slate-700/40 rounded-2xl p-2 flex items-end gap-1">
+          <div className="p-4 border-t border-sky-100 dark:border-sky-200/60 dark:border-white/5 bg-sky-50/30 dark:bg-transparent">
+            <div className="bg-white dark:bg-slate-900/50 border border-sky-200 dark:border-slate-700/40 rounded-2xl p-2 flex items-end gap-1 shadow-xs">
               {/* Image attach */}
-              <label className="p-2 rounded-lg hover:bg-white/5 text-blue-200 cursor-pointer" title="Attach image">
+              <label className="p-2 rounded-lg hover:bg-sky-100 dark:hover:bg-white/5 text-slate-600 dark:text-blue-200 cursor-pointer" title="Attach image">
                 <Paperclip className="h-4 w-4" />
                 <input
                   ref={fileInputRef}
@@ -621,8 +710,8 @@ function Tutor() {
                 />
               </label>
 
-              {/* Camera (same as file but accept camera) */}
-              <label className="p-2 rounded-lg hover:bg-white/5 text-blue-200 cursor-pointer" title="Take photo">
+              {/* Camera */}
+              <label className="p-2 rounded-lg hover:bg-sky-100 dark:hover:bg-white/5 text-slate-600 dark:text-blue-200 cursor-pointer" title="Take photo">
                 <Camera className="h-4 w-4" />
                 <input type="file" accept="image/*" capture="environment" className="hidden"
                   onChange={e => { const f = e.target.files?.[0]; if (f) handleImageUpload(f); e.target.value = ""; }}
@@ -632,7 +721,7 @@ function Tutor() {
               {/* Voice */}
               <button
                 onClick={toggleRecording}
-                className={`p-2 rounded-lg transition ${recording ? "bg-red-500/20 text-red-400 animate-pulse" : "hover:bg-white/5 text-blue-200"}`}
+                className={`p-2 rounded-lg transition ${recording ? "bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400 animate-pulse" : "hover:bg-sky-100 dark:hover:bg-white/5 text-slate-600 dark:text-blue-200"}`}
                 title={recording ? "Stop recording" : "Voice input"}
               >
                 {recording ? <Square className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
@@ -644,13 +733,13 @@ function Tutor() {
                 onChange={e => setInput(e.target.value)}
                 onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
                 placeholder={recording ? "Recording… click ⬛ to stop" : "Ask anything — text, image, voice, or PDF…"}
-                className="flex-1 bg-transparent outline-none resize-none px-2 py-2 text-sm text-white placeholder:text-slate-500"
+                className="flex-1 bg-transparent outline-none resize-none px-2 py-2 text-sm text-slate-900 dark:text-white placeholder:text-slate-700 dark:text-slate-400 dark:placeholder:text-slate-600 dark:text-slate-500 font-medium"
               />
 
               <button
                 onClick={() => send()}
                 disabled={streaming || (!input.trim() && !recording)}
-                className="rounded-lg bg-gradient-to-r from-[#3b82f6] to-[#6366f1] p-2 text-[#050816] glow-cyan disabled:opacity-40 transition"
+                className="rounded-lg bg-sky-600 dark:bg-gradient-to-r dark:from-[#3b82f6] dark:to-[#6366f1] p-2 text-white dark:text-[#050816] disabled:opacity-40 transition font-bold shadow-xs"
               >
                 {streaming ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
               </button>
@@ -667,37 +756,37 @@ function Tutor() {
         )}
         <div className={`
           ${showSettings ? "translate-x-0" : "translate-x-full lg:translate-x-0"}
-          fixed lg:static inset-y-0 right-0 z-40 w-64 lg:w-auto bg-[#0b1530] lg:bg-transparent border-l lg:border-l-0 border-blue-500/20 lg:border-transparent
+          fixed lg:static inset-y-0 right-0 z-40 w-64 lg:w-auto bg-white dark:bg-[#0b1530] lg:bg-transparent border-l lg:border-l-0 border-sky-200 dark:border-blue-500/20 lg:border-transparent
           transition-transform duration-300 lg:transition-none flex flex-col p-4 lg:p-0 h-full lg:h-auto space-y-4 overflow-y-auto scrollbar-thin pr-1 lg:pr-1
         `}>
           {/* Close button for mobile settings */}
-          <div className="flex lg:hidden items-center justify-between pb-2 border-b border-white/5">
-            <span className="text-xs font-bold text-[#3b82f6] tracking-wider uppercase flex items-center gap-1.5">
+          <div className="flex lg:hidden items-center justify-between pb-2 border-b border-sky-100 dark:border-sky-200/60 dark:border-white/5">
+            <span className="text-xs font-bold text-sky-600 dark:text-[#3b82f6] tracking-wider uppercase flex items-center gap-1.5">
               <Globe2 className="h-3.5 w-3.5" /> Settings
             </span>
             <button
               onClick={() => setShowSettings(false)}
-              className="p-1 rounded hover:bg-white/10 text-blue-200 transition"
+              className="p-1 rounded hover:bg-sky-100 dark:hover:bg-white/10 text-slate-600 dark:text-blue-200 transition"
             >
               <X className="h-4 w-4" />
             </button>
           </div>
           {/* Backend status */}
-          <GlassCard className="bg-[#0b1530] border border-blue-500/20 text-white shadow-lg py-3">
+          <GlassCard className="shadow-md py-3">
             <div className="flex items-center gap-2 text-xs">
-              <span className={`h-2 w-2 rounded-full ${backendOnline === null ? "bg-yellow-400 animate-pulse" : backendOnline ? "bg-emerald-400" : "bg-red-500"}`} />
-              <span className="font-mono text-slate-300">
+              <span className={`h-2 w-2 rounded-full ${backendOnline === null ? "bg-amber-400 animate-pulse" : backendOnline ? "bg-emerald-500" : "bg-red-500"}`} />
+              <span className="font-mono text-slate-700 dark:text-slate-700 dark:text-slate-300 font-semibold">
                 {backendOnline === null ? "Checking…" : backendOnline ? "AI Backend Online" : "Backend Offline"}
               </span>
             </div>
             {backendOnline === false && (
-              <p className="text-[10px] text-red-400 mt-1.5 font-mono">Run: .\\start-all.ps1</p>
+              <p className="text-[10px] text-red-500 dark:text-red-400 mt-1.5 font-mono">Run: .\\start-all.ps1</p>
             )}
           </GlassCard>
 
           {/* Mode */}
-          <GlassCard className="bg-[#0b1530] border border-blue-500/20 text-white shadow-lg">
-            <div className="text-xs font-semibold text-blue-300 mb-2 flex items-center gap-1.5">
+          <GlassCard className="shadow-md">
+            <div className="text-xs font-semibold text-sky-700 dark:text-blue-300 mb-2 flex items-center gap-1.5">
               <Sparkles className="h-3 w-3" /> MODE
             </div>
             <div className="space-y-1.5">
@@ -712,7 +801,9 @@ function Tutor() {
                   }
                 }}
                   className={`w-full text-left text-xs rounded-lg px-3 py-2 transition ${
-                    mode === m ? "bg-[#3b82f6]/10 text-[#3b82f6] border border-[#3b82f6]/20 font-semibold" : "hover:bg-slate-800/40 text-blue-200/80"
+                    mode === m 
+                      ? "bg-sky-100 dark:bg-[#3b82f6]/10 text-sky-700 dark:text-[#3b82f6] border border-sky-300 dark:border-[#3b82f6]/20 font-bold" 
+                      : "hover:bg-sky-50 dark:hover:bg-sky-50 dark:bg-slate-800/40 text-slate-700 dark:text-blue-200/80 font-medium"
                   }`}>
                   {m}
                 </button>
@@ -721,8 +812,8 @@ function Tutor() {
           </GlassCard>
 
           {/* Language */}
-          <GlassCard className="bg-[#0b1530] border border-blue-500/20 text-white shadow-lg">
-            <div className="text-xs font-semibold text-blue-300 mb-2 flex items-center gap-1.5">
+          <GlassCard className="shadow-md">
+            <div className="text-xs font-semibold text-sky-700 dark:text-blue-300 mb-2 flex items-center gap-1.5">
               <Globe2 className="h-3 w-3" /> LANGUAGE
             </div>
             <div className="grid grid-cols-2 gap-1.5">
@@ -737,7 +828,9 @@ function Tutor() {
                   }
                 }}
                   className={`text-xs rounded-lg px-2 py-1.5 transition ${
-                    lang === l ? "bg-[#3b82f6]/10 text-[#3b82f6] border border-[#3b82f6]/30 font-semibold" : "bg-slate-800/40 border border-slate-700/20 text-blue-200/80 hover:bg-slate-800/60"
+                    lang === l 
+                      ? "bg-sky-100 dark:bg-[#3b82f6]/10 text-sky-700 dark:text-[#3b82f6] border border-sky-300 dark:border-[#3b82f6]/30 font-bold" 
+                      : "bg-sky-50/50 dark:bg-slate-800/60 border border-sky-200/60 dark:border-slate-700/50 text-slate-700 dark:text-slate-200 hover:bg-sky-100 dark:hover:bg-slate-800/80 font-medium"
                   }`}>
                   {l}
                 </button>

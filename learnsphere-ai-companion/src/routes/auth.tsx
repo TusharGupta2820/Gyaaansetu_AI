@@ -38,13 +38,13 @@ function AuthPage() {
    }, [navigate]);
  
    const handleDemoLogin = () => {
-     setEmail("student@gyaansetu.ai");
-     setPassword("password123");
-     setName("Aarav Sharma");
-     setIsLogin(true);
-     setError("");
-     setSuccess("");
-   };
+    setEmail("student@gyaansetuai.com");
+    setPassword("student2026");
+    setName("Aarav Sharma");
+    setIsLogin(true);
+    setError("");
+    setSuccess("");
+  };
  
    const handleSubmit = async (e: React.FormEvent) => {
      e.preventDefault();
@@ -111,7 +111,7 @@ function AuthPage() {
    };
  
    return (
-     <div className="bg-[#050816] text-[#dde2f8] min-h-screen font-sans selection:bg-[#3b82f6]/20 selection:text-[#e9feff] flex items-center justify-center p-6 relative overflow-hidden">
+     <div className="bg-slate-100/90 dark:bg-[#050816] text-[#dde2f8] min-h-screen font-sans selection:bg-[#3b82f6]/20 selection:text-slate-900 dark:text-[#e9feff] flex items-center justify-center p-6 relative overflow-hidden">
  
        {/* Background Decorative Glows */}
        <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -132,18 +132,18 @@ function AuthPage() {
              alt="GyaanSetu AI"
              className="h-20 w-20 object-contain mb-3 drop-shadow-[0_0_20px_rgba(59,130,246,0.35)]"
            />
-           <h2 className="font-display font-extrabold text-2xl text-[#e9feff]">GyaanSetu AI</h2>
+           <h2 className="font-display font-extrabold text-2xl text-slate-900 dark:text-[#e9feff]">GyaanSetu AI</h2>
            <p className="text-xs text-muted-foreground mt-1">Bridging Knowledge Through Personalized Learning</p>
          </div>
  
          {/* Auth Card */}
-         <div className="glass rounded-[28px] p-8 border border-white/10 shadow-2xl relative overflow-hidden bg-[#0d1322]/40">
+         <div className="glass rounded-[28px] p-8 border border-sky-200/80 dark:border-white/10 shadow-2xl relative overflow-hidden bg-white dark:bg-[#0d1322]/40">
  
            {/* Header tabs */}
-           <div className="flex border-b border-white/5 pb-4 mb-6">
+           <div className="flex border-b border-sky-200/60 dark:border-white/5 pb-4 mb-6">
              <button
                onClick={() => { setIsLogin(true); setError(""); setSuccess(""); }}
-               className={`flex-1 text-center py-2 text-sm font-semibold transition-all relative ${isLogin ? "text-[#e9feff]" : "text-muted-foreground hover:text-white"
+               className={`flex-1 text-center py-2 text-sm font-semibold transition-all relative ${isLogin ? "text-slate-900 dark:text-[#e9feff]" : "text-muted-foreground hover:text-white"
                  }`}
              >
                Sign In
@@ -156,7 +156,7 @@ function AuthPage() {
              </button>
              <button
                onClick={() => { setIsLogin(false); setError(""); setSuccess(""); }}
-               className={`flex-1 text-center py-2 text-sm font-semibold transition-all relative ${!isLogin ? "text-[#e9feff]" : "text-muted-foreground hover:text-white"
+               className={`flex-1 text-center py-2 text-sm font-semibold transition-all relative ${!isLogin ? "text-slate-900 dark:text-[#e9feff]" : "text-muted-foreground hover:text-white"
                  }`}
              >
                Register
@@ -205,7 +205,7 @@ function AuthPage() {
             {!isLogin && (
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-muted-foreground">Full Name</label>
-                <div className="glass rounded-xl flex items-center px-3.5 py-3 border-white/5 focus-within:border-[#3b82f6]/40 transition-colors">
+                <div className="glass rounded-xl flex items-center px-3.5 py-3 border-sky-200/60 dark:border-white/5 focus-within:border-[#3b82f6]/40 transition-colors">
                   <User className="h-4.5 w-4.5 text-muted-foreground mr-3" />
                   <input
                     type="text"
@@ -221,7 +221,7 @@ function AuthPage() {
             {/* Email Input */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-muted-foreground">Email Address</label>
-              <div className="glass rounded-xl flex items-center px-3.5 py-3 border-white/5 focus-within:border-[#3b82f6]/40 transition-colors">
+              <div className="glass rounded-xl flex items-center px-3.5 py-3 border-sky-200/60 dark:border-white/5 focus-within:border-[#3b82f6]/40 transition-colors">
                 <Mail className="h-4.5 w-4.5 text-muted-foreground mr-3" />
                 <input
                   type="email"
@@ -243,7 +243,7 @@ function AuthPage() {
                   </button>
                 )}
               </div>
-              <div className="glass rounded-xl flex items-center px-3.5 py-3 border-white/5 focus-within:border-[#3b82f6]/40 transition-colors">
+              <div className="glass rounded-xl flex items-center px-3.5 py-3 border-sky-200/60 dark:border-white/5 focus-within:border-[#3b82f6]/40 transition-colors">
                 <Lock className="h-4.5 w-4.5 text-muted-foreground mr-3" />
                 <input
                   type={showPassword ? "text" : "password"}
@@ -268,7 +268,7 @@ function AuthPage() {
                 <input
                   type="checkbox"
                   required
-                  className="rounded border-white/10 bg-white/5 text-[#3b82f6] focus:ring-0 mt-0.5"
+                  className="rounded border-sky-200/80 dark:border-white/10 bg-white/5 text-[#3b82f6] focus:ring-0 mt-0.5"
                 />
                 <span className="text-[10px] text-muted-foreground leading-snug">
                   I agree to the <span className="text-[#3b82f6] hover:underline">Terms of Service</span> and <span className="text-[#3b82f6] hover:underline">Privacy Policy</span>.
@@ -303,20 +303,20 @@ function AuthPage() {
           <div className="grid grid-cols-2 gap-3">
             <button
               onClick={() => handleSocialLogin("Google")}
-              className="glass rounded-xl py-2.5 text-xs font-semibold hover:bg-white/5 flex items-center justify-center gap-2 border-white/5 transition"
+              className="glass rounded-xl py-2.5 text-xs font-semibold hover:bg-white/5 flex items-center justify-center gap-2 border-sky-200/60 dark:border-white/5 transition"
             >
               <Chrome className="h-4 w-4 text-[#3b82f6]" /> Google
             </button>
             <button
               onClick={() => handleSocialLogin("GitHub")}
-              className="glass rounded-xl py-2.5 text-xs font-semibold hover:bg-white/5 flex items-center justify-center gap-2 border-white/5 transition"
+              className="glass rounded-xl py-2.5 text-xs font-semibold hover:bg-white/5 flex items-center justify-center gap-2 border-sky-200/60 dark:border-white/5 transition"
             >
               <Github className="h-4 w-4 text-[#ffafd2]" /> GitHub
             </button>
           </div>
 
           {/* Fast Demo Login Panel */}
-          <div className="mt-6 border-t border-white/5 pt-4">
+          <div className="mt-6 border-t border-sky-200/60 dark:border-white/5 pt-4">
             <button
               onClick={handleDemoLogin}
               type="button"

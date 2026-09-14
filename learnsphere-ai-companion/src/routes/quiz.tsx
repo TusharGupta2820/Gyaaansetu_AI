@@ -235,7 +235,7 @@ function QuizMakerPage() {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="fixed top-6 right-6 z-50 bg-[#0b1530] text-[#3b82f6] border border-[#3b82f6]/25 px-4 py-3 rounded-xl flex items-center gap-2.5 shadow-2xl backdrop-blur-md text-xs font-mono font-semibold"
+              className="fixed top-6 right-6 z-50 bg-white dark:bg-[#0b1530] text-[#3b82f6] border border-[#3b82f6]/25 px-4 py-3 rounded-xl flex items-center gap-2.5 shadow-2xl backdrop-blur-md text-xs font-mono font-semibold"
             >
               <span className="h-2 w-2 rounded-full bg-[#3b82f6] animate-ping" />
               <span>{toast.message}</span>
@@ -255,8 +255,8 @@ function QuizMakerPage() {
                   <Sparkles className="h-3 w-3 text-[#3b82f6]" />
                   Powered by DeepSeek-R1 AI
                 </div>
-                <h1 className="mt-3 text-xl lg:text-2xl font-display font-bold text-white">Quiz Maker & Adaptive Assessment</h1>
-                <p className="mt-2 text-slate-300 max-w-xl text-xs leading-relaxed">
+                <h1 className="mt-3 text-xl lg:text-2xl font-display font-bold text-slate-900 dark:text-white">Quiz Maker & Adaptive Assessment</h1>
+                <p className="mt-2 text-slate-700 dark:text-slate-300 max-w-xl text-xs leading-relaxed">
                   Generate adaptive MCQs, subjective question rubrics, coding evaluations, and aptitude placement assessments customized by topic.
                 </p>
               </div>
@@ -271,28 +271,28 @@ function QuizMakerPage() {
 
         {/* Metrics Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-[#0b1530] border border-blue-500/20 text-white shadow-md p-4.5 rounded-2xl">
-            <div className="text-[10px] text-blue-200/70 uppercase font-mono tracking-wider">Quizzes Taken</div>
+          <div className="bg-white dark:bg-[#0b1530] border border-sky-200/80 dark:border-blue-500/20 text-slate-900 dark:text-white shadow-md p-4.5 rounded-2xl">
+            <div className="text-[10px] text-slate-600 dark:text-blue-200/70 uppercase font-mono tracking-wider">Quizzes Taken</div>
             <div className="text-xl font-bold text-[#3b82f6] mt-1.5 leading-none">{quizzesTaken}</div>
-            <div className="text-[9px] text-blue-200/60 mt-2">Comprehensive syllabus tested</div>
+            <div className="text-[9px] text-slate-600 dark:text-blue-200/60 mt-2">Comprehensive syllabus tested</div>
           </div>
           
-          <div className="bg-[#0b1530] border border-blue-500/20 text-white shadow-md p-4.5 rounded-2xl">
-            <div className="text-[10px] text-blue-200/70 uppercase font-mono tracking-wider">Avg Score</div>
-            <div className="text-xl font-bold text-white mt-1.5 leading-none">{avgScore}%</div>
-            <div className="text-[9px] text-blue-200/60 mt-2">Total score efficiency</div>
+          <div className="bg-white dark:bg-[#0b1530] border border-sky-200/80 dark:border-blue-500/20 text-slate-900 dark:text-white shadow-md p-4.5 rounded-2xl">
+            <div className="text-[10px] text-slate-600 dark:text-blue-200/70 uppercase font-mono tracking-wider">Avg Score</div>
+            <div className="text-xl font-bold text-slate-900 dark:text-white mt-1.5 leading-none">{avgScore}%</div>
+            <div className="text-[9px] text-slate-600 dark:text-blue-200/60 mt-2">Total score efficiency</div>
           </div>
           
-          <div className="bg-[#0b1530] border border-blue-500/20 text-white shadow-md p-4.5 rounded-2xl">
-            <div className="text-[10px] text-blue-200/70 uppercase font-mono tracking-wider">Best Subject</div>
+          <div className="bg-white dark:bg-[#0b1530] border border-sky-200/80 dark:border-blue-500/20 text-slate-900 dark:text-white shadow-md p-4.5 rounded-2xl">
+            <div className="text-[10px] text-slate-600 dark:text-blue-200/70 uppercase font-mono tracking-wider">Best Subject</div>
             <div className="text-xl font-bold text-amber-400 mt-1.5 leading-none">{bestSubject}</div>
-            <div className="text-[9px] text-blue-200/60 mt-2">Optimal mastery subject</div>
+            <div className="text-[9px] text-slate-600 dark:text-blue-200/60 mt-2">Optimal mastery subject</div>
           </div>
           
-          <div className="bg-[#0b1530] border border-blue-500/20 text-white shadow-md p-4.5 rounded-2xl">
-            <div className="text-[10px] text-blue-200/70 uppercase font-mono tracking-wider">Time Saved</div>
+          <div className="bg-white dark:bg-[#0b1530] border border-sky-200/80 dark:border-blue-500/20 text-slate-900 dark:text-white shadow-md p-4.5 rounded-2xl">
+            <div className="text-[10px] text-slate-600 dark:text-blue-200/70 uppercase font-mono tracking-wider">Time Saved</div>
             <div className="text-xl font-bold text-[#6366f1] mt-1.5 leading-none">{timeSaved}h</div>
-            <div className="text-[9px] text-blue-200/60 mt-2">Automated test calibration</div>
+            <div className="text-[9px] text-slate-600 dark:text-blue-200/60 mt-2">Automated test calibration</div>
           </div>
         </div>
 
@@ -301,13 +301,13 @@ function QuizMakerPage() {
           
           {/* Main Action Console */}
           <div className="lg:col-span-8 flex flex-col">
-            <GlassCard id="setup-quiz" className="flex-1 bg-[#0b1530] border border-blue-500/20 text-white shadow-lg p-6 min-h-[420px] flex flex-col justify-between">
+            <GlassCard id="setup-quiz" className="flex-1 shadow-lg p-6 min-h-[420px] flex flex-col justify-between">
               
               {/* SETUP STEP */}
               {step === 'setup' && (
                 <div className="space-y-5 flex-1 flex flex-col justify-between">
                   <div>
-                    <h3 className="font-display font-extrabold text-base text-white flex items-center gap-2">
+                    <h3 className="font-display font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
                       <Brain className="h-5 w-5 text-[#3b82f6]" /> Design Your DeepSeek-R1 Assessment
                     </h3>
                     <p className="text-[11px] text-muted-foreground mt-0.5">Select a category on the right or explore modes below to construct blueprints.</p>
@@ -315,22 +315,22 @@ function QuizMakerPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-[10px] text-slate-400 font-mono">QUIZ SYLLABUS / TOPIC</label>
+                      <label className="text-[10px] text-slate-700 dark:text-slate-400 font-mono">QUIZ SYLLABUS / TOPIC</label>
                       <input
                         type="text"
                         value={topic}
                         onChange={(e) => setTopic(e.target.value)}
                         placeholder="E.g. React Hooks, DSA Trees, Autonomic Nervous"
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-black/35 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-[#3b82f6]/50 transition"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-black/35 border border-slate-700 text-xs text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-[#3b82f6]/50 transition"
                       />
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-[10px] text-slate-400 font-mono">ASSESSMENT CATEGORY</label>
+                      <label className="text-[10px] text-slate-700 dark:text-slate-400 font-mono">ASSESSMENT CATEGORY</label>
                       <select
                         value={quizType}
                         onChange={(e) => setQuizType(e.target.value)}
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#0e172e] border border-slate-700 text-xs text-white focus:outline-none focus:ring-1 focus:ring-[#3b82f6]/50 transition"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#0e172e] border border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-[#3b82f6]/50 transition"
                       >
                         <option value="mcq">MCQ Generator</option>
                         <option value="subjective">Subjective Evaluation</option>
@@ -340,7 +340,7 @@ function QuizMakerPage() {
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-[10px] text-slate-400 font-mono">DIFFICULTY TUNING</label>
+                      <label className="text-[10px] text-slate-700 dark:text-slate-400 font-mono">DIFFICULTY TUNING</label>
                       <div className="flex gap-2">
                         {["Easy", "Medium", "Hard"].map((lvl) => (
                           <button
@@ -349,7 +349,7 @@ function QuizMakerPage() {
                             className={`flex-1 py-2 rounded-xl text-xs border font-medium transition ${
                               difficulty === lvl
                                 ? "bg-[#3b82f6]/15 border-[#3b82f6]/45 text-[#3b82f6]"
-                                : "bg-slate-900/40 border-slate-800 text-slate-400 hover:text-white"
+                                : "bg-slate-900/40 border-slate-800 text-slate-700 dark:text-slate-400 hover:text-white"
                             }`}
                           >
                             {lvl}
@@ -360,7 +360,7 @@ function QuizMakerPage() {
 
                     <div className="space-y-1.5 flex flex-col justify-end">
                       <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/35 border border-slate-800">
-                        <span className="text-[10px] text-slate-300 font-mono">ADAPTIVE DIFFICULTY TUNING</span>
+                        <span className="text-[10px] text-slate-700 dark:text-slate-300 font-mono">ADAPTIVE DIFFICULTY TUNING</span>
                         <input
                           type="checkbox"
                           checked={adaptiveTuning}
@@ -401,11 +401,11 @@ function QuizMakerPage() {
                   {/* RUNNING MCQ / APTITUDE */}
                   {(quizType === 'mcq' || quizType === 'aptitude') && (
                     <div className="space-y-4 flex-1 flex flex-col justify-between">
-                      <div className="flex justify-between items-center pb-2 border-b border-white/5">
+                      <div className="flex justify-between items-center pb-2 border-b border-sky-200/60 dark:border-white/5">
                         <span className="text-[9px] font-mono font-bold text-[#3b82f6] bg-[#3b82f6]/10 px-2.5 py-0.5 rounded border border-[#3b82f6]/20 shadow-sm uppercase">
                           Question {currentQuestionIdx + 1} of {totalQuestions}
                         </span>
-                        <span className="text-[9px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">
+                        <span className="text-[9px] font-mono text-slate-700 dark:text-slate-400 bg-slate-800 px-2 py-0.5 rounded">
                           {difficulty} level
                         </span>
                       </div>
@@ -424,7 +424,7 @@ function QuizMakerPage() {
                               className={`w-full text-left p-3 rounded-xl border transition text-xs flex items-center justify-between ${
                                 isSelected
                                   ? "bg-[#3b82f6]/10 border-[#3b82f6]/40 text-white"
-                                  : "bg-slate-900/30 border-slate-800 text-slate-300 hover:bg-slate-800/60"
+                                  : "bg-slate-900/30 border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-800/60"
                               }`}
                             >
                               <span>{opt}</span>
@@ -434,11 +434,11 @@ function QuizMakerPage() {
                         })}
                       </div>
 
-                      <div className="flex justify-between items-center pt-3 border-t border-white/5">
+                      <div className="flex justify-between items-center pt-3 border-t border-sky-200/60 dark:border-white/5">
                         <button
                           disabled={currentQuestionIdx === 0}
                           onClick={() => setCurrentQuestionIdx(prev => prev - 1)}
-                          className="px-3.5 py-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white transition disabled:opacity-30 text-xs flex items-center gap-1"
+                          className="px-3.5 py-2 rounded-xl bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-white transition disabled:opacity-30 text-xs flex items-center gap-1"
                         >
                           <ChevronLeft className="h-4 w-4" /> Previous
                         </button>
@@ -465,17 +465,17 @@ function QuizMakerPage() {
                   {/* RUNNING SUBJECTIVE */}
                   {quizType === 'subjective' && (
                     <div className="space-y-4 flex-1 flex flex-col justify-between">
-                      <div className="flex justify-between items-center pb-2 border-b border-white/5">
+                      <div className="flex justify-between items-center pb-2 border-b border-sky-200/60 dark:border-white/5">
                         <span className="text-[9px] font-mono font-bold text-[#6366f1] bg-[#6366f1]/10 px-2.5 py-0.5 rounded border border-[#6366f1]/20 shadow-sm uppercase">
                           Subjective Evaluation
                         </span>
-                        <span className="text-[9px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">
+                        <span className="text-[9px] font-mono text-slate-700 dark:text-slate-400 bg-slate-800 px-2 py-0.5 rounded">
                           {difficulty} level
                         </span>
                       </div>
 
                       <div className="my-2 space-y-1.5">
-                        <h4 className="text-xs font-mono text-slate-400">QUESTION STATEMENT</h4>
+                        <h4 className="text-xs font-mono text-slate-700 dark:text-slate-400">QUESTION STATEMENT</h4>
                         <p className="text-sm font-semibold text-slate-200 leading-relaxed">{currentQuizData.question}</p>
                       </div>
 
@@ -483,40 +483,40 @@ function QuizMakerPage() {
                         <div className="p-4 rounded-xl bg-slate-900/70 border border-slate-800 space-y-3 max-h-[260px] overflow-y-auto pr-1">
                           <div className="flex justify-between items-center">
                             <span className="text-[10px] text-emerald-400 font-mono">GRADING COMPLETE</span>
-                            <span className="text-xs font-bold text-white bg-[#3b82f6]/10 border border-[#3b82f6]/20 px-2.5 py-0.5 rounded">
+                            <span className="text-xs font-bold text-slate-900 dark:text-white bg-[#3b82f6]/10 border border-[#3b82f6]/20 px-2.5 py-0.5 rounded">
                               Score: {subjectiveResult.score} / {subjectiveResult.max_score}
                             </span>
                           </div>
                           
                           <div className="space-y-1 text-xs">
                             <span className="font-mono text-[9px] text-[#3b82f6]">STRENGTHS:</span>
-                            <p className="text-slate-300 leading-relaxed">{subjectiveResult.strengths}</p>
+                            <p className="text-slate-700 dark:text-slate-300 leading-relaxed">{subjectiveResult.strengths}</p>
                           </div>
                           <div className="space-y-1 text-xs">
                             <span className="font-mono text-[9px] text-amber-400">IMPROVEMENTS:</span>
-                            <p className="text-slate-300 leading-relaxed">{subjectiveResult.improvements}</p>
+                            <p className="text-slate-700 dark:text-slate-300 leading-relaxed">{subjectiveResult.improvements}</p>
                           </div>
-                          <div className="space-y-1 text-xs pt-1.5 border-t border-white/5">
+                          <div className="space-y-1 text-xs pt-1.5 border-t border-sky-200/60 dark:border-white/5">
                             <span className="font-mono text-[9px] text-emerald-400">MODEL HIGH-SCORE ANSWER:</span>
-                            <p className="text-slate-400 italic leading-relaxed">{subjectiveResult.ideal_answer}</p>
+                            <p className="text-slate-700 dark:text-slate-400 italic leading-relaxed">{subjectiveResult.ideal_answer}</p>
                           </div>
                         </div>
                       ) : (
                         <div className="space-y-1.5">
-                          <label className="text-[10px] text-slate-400 font-mono">WRITE YOUR DETAILED ANSWER</label>
+                          <label className="text-[10px] text-slate-700 dark:text-slate-400 font-mono">WRITE YOUR DETAILED ANSWER</label>
                           <textarea
                             value={subjectiveAnswer}
                             onChange={(e) => setSubjectiveAnswer(e.target.value)}
                             placeholder="Type your explanation or solution here..."
-                            className="w-full h-32 p-3 rounded-xl bg-black/35 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-[#6366f1]/50 transition resize-none"
+                            className="w-full h-32 p-3 rounded-xl bg-black/35 border border-slate-700 text-xs text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-[#6366f1]/50 transition resize-none"
                           />
                         </div>
                       )}
 
-                      <div className="flex justify-between items-center pt-3 border-t border-white/5">
+                      <div className="flex justify-between items-center pt-3 border-t border-sky-200/60 dark:border-white/5">
                         <button
                           onClick={() => setStep('setup')}
-                          className="px-3.5 py-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white transition text-xs"
+                          className="px-3.5 py-2 rounded-xl bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-white transition text-xs"
                         >
                           Cancel
                         </button>
@@ -544,11 +544,11 @@ function QuizMakerPage() {
                   {/* RUNNING CODING */}
                   {quizType === 'coding' && (
                     <div className="space-y-4 flex-1 flex flex-col justify-between">
-                      <div className="flex justify-between items-center pb-2 border-b border-white/5">
+                      <div className="flex justify-between items-center pb-2 border-b border-sky-200/60 dark:border-white/5">
                         <span className="text-[9px] font-mono font-bold text-amber-500 bg-amber-500/10 px-2.5 py-0.5 rounded border border-amber-500/20 shadow-sm uppercase">
                           Coding Challenge
                         </span>
-                        <span className="text-[9px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">
+                        <span className="text-[9px] font-mono text-slate-700 dark:text-slate-400 bg-slate-800 px-2 py-0.5 rounded">
                           {difficulty} level
                         </span>
                       </div>
@@ -556,17 +556,17 @@ function QuizMakerPage() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
                         <div className="space-y-2.5 max-h-[220px] overflow-y-auto pr-1">
                           <div>
-                            <h4 className="text-[9px] font-mono text-slate-400">PROBLEM STATEMENT</h4>
+                            <h4 className="text-[9px] font-mono text-slate-700 dark:text-slate-400">PROBLEM STATEMENT</h4>
                             <p className="text-xs text-slate-200 leading-relaxed font-sans">{currentQuizData.problem_statement}</p>
                           </div>
-                          <div className="grid grid-cols-2 gap-2 pt-2 border-t border-white/5 text-[10px] font-mono">
+                          <div className="grid grid-cols-2 gap-2 pt-2 border-t border-sky-200/60 dark:border-white/5 text-[10px] font-mono">
                             <div>
-                              <span className="text-slate-400">SAMPLE INPUT:</span>
-                              <pre className="bg-black/30 p-1.5 rounded mt-0.5 text-slate-300 truncate">{currentQuizData.sample_input}</pre>
+                              <span className="text-slate-700 dark:text-slate-400">SAMPLE INPUT:</span>
+                              <pre className="bg-black/30 p-1.5 rounded mt-0.5 text-slate-700 dark:text-slate-300 truncate">{currentQuizData.sample_input}</pre>
                             </div>
                             <div>
-                              <span className="text-slate-400">SAMPLE OUTPUT:</span>
-                              <pre className="bg-black/30 p-1.5 rounded mt-0.5 text-slate-300 truncate">{currentQuizData.sample_output}</pre>
+                              <span className="text-slate-700 dark:text-slate-400">SAMPLE OUTPUT:</span>
+                              <pre className="bg-black/30 p-1.5 rounded mt-0.5 text-slate-700 dark:text-slate-300 truncate">{currentQuizData.sample_output}</pre>
                             </div>
                           </div>
                         </div>
@@ -583,15 +583,15 @@ function QuizMakerPage() {
                               </span>
                               <span className="font-mono text-[9px] text-[#3b82f6]">{codingResult.complexity_analysis}</span>
                             </div>
-                            <p className="text-slate-300 leading-relaxed">{codingResult.feedback}</p>
-                            <div className="pt-2 border-t border-white/5">
+                            <p className="text-slate-700 dark:text-slate-300 leading-relaxed">{codingResult.feedback}</p>
+                            <div className="pt-2 border-t border-sky-200/60 dark:border-white/5">
                               <span className="text-[9px] text-emerald-400 font-mono">CORRECT SOLUTION:</span>
-                              <pre className="bg-black/40 p-2 rounded mt-1 font-mono text-[10px] text-slate-400 overflow-x-auto">{codingResult.correct_version}</pre>
+                              <pre className="bg-black/40 p-2 rounded mt-1 font-mono text-[10px] text-slate-700 dark:text-slate-400 overflow-x-auto">{codingResult.correct_version}</pre>
                             </div>
                           </div>
                         ) : (
                           <div className="space-y-1.5 flex flex-col">
-                            <label className="text-[10px] text-slate-400 font-mono">PYTHON 3 SOLUTION EDITOR</label>
+                            <label className="text-[10px] text-slate-700 dark:text-slate-400 font-mono">PYTHON 3 SOLUTION EDITOR</label>
                             <textarea
                               value={codingSolution}
                               onChange={(e) => setCodingSolution(e.target.value)}
@@ -601,10 +601,10 @@ function QuizMakerPage() {
                         )}
                       </div>
 
-                      <div className="flex justify-between items-center pt-3 border-t border-white/5">
+                      <div className="flex justify-between items-center pt-3 border-t border-sky-200/60 dark:border-white/5">
                         <button
                           onClick={() => setStep('setup')}
-                          className="px-3.5 py-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white transition text-xs"
+                          className="px-3.5 py-2 rounded-xl bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-white transition text-xs"
                         >
                           Cancel
                         </button>
@@ -640,14 +640,14 @@ function QuizMakerPage() {
                       <Award className="h-8 w-8" />
                     </div>
                     <div>
-                      <h3 className="font-display font-extrabold text-base text-white">Assessment Complete!</h3>
+                      <h3 className="font-display font-extrabold text-base text-slate-900 dark:text-white">Assessment Complete!</h3>
                       <p className="text-[11px] text-muted-foreground mt-0.5">Your responses have been processed by GyaanSetu AI evaluation engines.</p>
                     </div>
 
                     <div className="inline-block bg-[#3b82f6]/5 border border-[#3b82f6]/10 rounded-2xl p-4 mt-2">
-                      <div className="text-[10px] text-slate-400 uppercase font-mono">Final Score</div>
+                      <div className="text-[10px] text-slate-700 dark:text-slate-400 uppercase font-mono">Final Score</div>
                       <div className="text-3xl font-extrabold text-[#3b82f6] mt-1">
-                        {quizScore} <span className="text-sm text-slate-500 font-normal">/ {totalQuestions}</span>
+                        {quizScore} <span className="text-sm text-slate-600 dark:text-slate-500 font-normal">/ {totalQuestions}</span>
                       </div>
                     </div>
                   </div>
@@ -668,9 +668,9 @@ function QuizMakerPage() {
           <div className="lg:col-span-4 space-y-6 flex flex-col justify-between">
             
             {/* Leaderboard Panel */}
-            <GlassCard className="p-6 bg-[#0b1530] border border-blue-500/20 text-white shadow-lg space-y-4">
+            <GlassCard className="p-6 shadow-lg space-y-4">
               <div>
-                <h3 className="font-display font-extrabold text-base text-white flex items-center gap-2">
+                <h3 className="font-display font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
                   <Trophy className="h-5 w-5 text-amber-400" /> Focus Leaderboard
                 </h3>
                 <p className="text-[11px] text-muted-foreground mt-0.5">Compete with friends and study groups globally</p>
@@ -685,7 +685,7 @@ function QuizMakerPage() {
                       className={`flex items-center justify-between p-2.5 rounded-xl border transition ${
                         isUser 
                           ? 'bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white' 
-                          : 'bg-slate-900/30 border-slate-800/60 text-slate-300'
+                          : 'bg-slate-900/30 border-slate-800/60 text-slate-700 dark:text-slate-300'
                       }`}
                     >
                       <div className="flex items-center gap-2.5 truncate">
@@ -693,13 +693,13 @@ function QuizMakerPage() {
                           item.rank === 1 ? 'bg-amber-400 text-[#050816]' :
                           item.rank === 2 ? 'bg-slate-300 text-[#050816]' :
                           item.rank === 3 ? 'bg-amber-700 text-white' :
-                          'bg-slate-800 text-slate-400'
+                          'bg-slate-800 text-slate-700 dark:text-slate-400'
                         }`}>
                           {item.rank}
                         </span>
                         <div className="truncate">
                           <div className="text-xs font-semibold truncate">{item.name}</div>
-                          <span className="text-[8px] font-mono text-slate-500">{item.subject}</span>
+                          <span className="text-[8px] font-mono text-slate-600 dark:text-slate-500">{item.subject}</span>
                         </div>
                       </div>
                       <span className="text-xs font-bold font-mono">{item.score}%</span>
@@ -710,10 +710,10 @@ function QuizMakerPage() {
             </GlassCard>
 
             {/* Information / Domain Tags */}
-            <GlassCard className="p-6 bg-[#0b1530] border border-blue-500/20 text-white shadow-lg space-y-3">
+            <GlassCard className="p-6 shadow-lg space-y-3">
               <div>
-                <h4 className="font-display font-extrabold text-xs text-white">Active Assessment Domains</h4>
-                <p className="text-[10px] text-slate-400 leading-normal">DeepSeek-R1 supports all 4 structured assessment domains below.</p>
+                <h4 className="font-display font-extrabold text-xs text-slate-900 dark:text-white">Active Assessment Domains</h4>
+                <p className="text-[10px] text-slate-700 dark:text-slate-400 leading-normal">DeepSeek-R1 supports all 4 structured assessment domains below.</p>
               </div>
               
               <div className="grid grid-cols-2 gap-2">
@@ -724,7 +724,7 @@ function QuizMakerPage() {
                     className={`p-2.5 rounded-xl border text-left cursor-pointer transition ${
                       quizType === domain.id
                         ? 'bg-[#3b82f6]/5 border-[#3b82f6]/20 text-[#3b82f6]'
-                        : 'bg-slate-900/25 border-slate-800 text-slate-400 hover:text-slate-200'
+                        : 'bg-slate-900/25 border-slate-800 text-slate-700 dark:text-slate-400 hover:text-slate-200'
                     }`}
                   >
                     <div className="text-[10px] font-bold flex items-center justify-between">

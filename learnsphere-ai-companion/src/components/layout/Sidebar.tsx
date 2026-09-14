@@ -1,7 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  LayoutDashboard, Bot, User, Compass, Home, HeartPulse, BookOpen, Search,
+  LayoutDashboard, Bot, Compass, Home, HeartPulse, BookOpen, Search,
   Smile, TrendingUp, FolderKanban, FileQuestion, Radar, Swords, GraduationCap,
   Calendar, Network, Mic, LogOut, Menu, X, Award
 } from "lucide-react";
@@ -9,7 +9,6 @@ import { useState, useEffect } from "react";
 
 const nav = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/avatar", label: "Avatar", icon: User },
   { to: "/career", label: "Career Path", icon: Compass },
   { to: "/vault", label: "Certificate Vault", icon: Award },
   { to: "/tutor", label: "Doubt Solver", icon: Bot },
@@ -32,9 +31,10 @@ const nav = [
 interface SidebarProps {
   open?: boolean;
   onClose?: () => void;
+  theme?: "dark" | "light";
 }
 
-export function Sidebar({ open: mobileOpen = false, onClose }: SidebarProps) {
+export function Sidebar({ open: mobileOpen = false, onClose, theme = "dark" }: SidebarProps) {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
   const [userName, setUserName] = useState("Student");
   const [streakDays, setStreakDays] = useState(0);
@@ -67,6 +67,8 @@ export function Sidebar({ open: mobileOpen = false, onClose }: SidebarProps) {
     }
   }, []);
 
+  const isLight = theme === "light";
+
   return (
     <>
       <AnimatePresence>
@@ -82,27 +84,38 @@ export function Sidebar({ open: mobileOpen = false, onClose }: SidebarProps) {
       </AnimatePresence>
 
       <aside
-        className={`fixed lg:sticky top-0 left-0 z-50 h-screen w-64 flex flex-col bg-[#0b1530] border-r border-blue-500/20 transition-transform duration-300 shadow-2xl ${mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-          }`}
+        className={`fixed lg:sticky top-0 left-0 z-50 h-screen w-64 flex flex-col transition-all duration-300 shadow-2xl ${
+          isLight
+            ? "bg-white border-r border-sky-200/80 text-slate-800"
+            : "bg-[#0b1530] border-r border-blue-500/20 text-white"
+        } ${mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
       >
         {/* Logo / Brand */}
-        <div className="flex items-center justify-between px-5 py-5 border-b border-blue-500/20">
+        <div className={`flex items-center justify-between px-5 py-5 border-b ${
+          isLight ? "border-sky-200/80" : "border-blue-500/20"
+        }`}>
           <Link to="/" className="flex items-center gap-3" onClick={() => onClose?.()}>
             <img
               src="/Gyaansetu AI logo.png"
               alt="GyaanSetu AI"
-              className="h-9 w-9 rounded-xl object-contain bg-white p-0.5 shadow-md shrink-0"
+              className="h-9 w-9 rounded-xl object-contain bg-white p-0.5 shadow-md shrink-0 border border-slate-100"
             />
             <div>
-              <div className="font-display font-bold text-sm leading-none text-white tracking-wide">
+              <div className={`font-display font-bold text-sm leading-none tracking-wide ${
+                isLight ? "text-slate-900" : "text-white"
+              }`}>
                 GyaanSetu AI
               </div>
-              <div className="text-[8px] text-blue-300/60 mt-1 uppercase font-mono tracking-widest">
+              <div className={`text-[8px] mt-1 uppercase font-mono tracking-widest ${
+                isLight ? "text-sky-600 font-bold" : "text-blue-300/60"
+              }`}>
                 Personalized Learning
               </div>
             </div>
           </Link>
-          <button onClick={() => onClose?.()} className="lg:hidden p-1 text-blue-300 hover:text-white transition">
+          <button onClick={() => onClose?.()} className={`lg:hidden p-1 transition ${
+            isLight ? "text-slate-500 hover:text-slate-800" : "text-blue-300 hover:text-white"
+          }`}>
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -117,21 +130,31 @@ export function Sidebar({ open: mobileOpen = false, onClose }: SidebarProps) {
                 key={item.to}
                 to={item.to}
                 onClick={() => onClose?.()}
-                className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 ${active
-                    ? "bg-[#3b82f6]/10 border border-[#3b82f6]/25 text-white font-semibold shadow-[0_0_12px_rgba(59,130,246,0.08)]"
-                    : "text-blue-200/60 hover:text-white hover:bg-white/5 border border-transparent"
-                  }`}
+                className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 ${
+                  active
+                    ? isLight
+                      ? "bg-sky-100 border border-sky-300 text-sky-900 font-bold shadow-sm"
+                      : "bg-[#3b82f6]/10 border border-[#3b82f6]/25 text-white font-semibold shadow-[0_0_12px_rgba(59,130,246,0.08)]"
+                    : isLight
+                      ? "text-slate-600 hover:text-sky-900 hover:bg-sky-50 border border-transparent"
+                      : "text-slate-200 hover:text-white hover:bg-white/10 border border-transparent"
+                }`}
               >
                 {/* Active indicator bar */}
                 {active && (
                   <motion.div
                     layoutId="sidebar-active"
-                    className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 rounded-full bg-[#3b82f6]"
+                    className={`absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 rounded-full ${
+                      isLight ? "bg-sky-600" : "bg-[#3b82f6]"
+                    }`}
                   />
                 )}
                 <Icon
-                  className={`h-4 w-4 shrink-0 transition-colors ${active ? "text-[#3b82f6]" : "text-blue-300/50 group-hover:text-blue-200"
-                    }`}
+                  className={`h-4 w-4 shrink-0 transition-colors ${
+                    active
+                      ? isLight ? "text-sky-600" : "text-[#3b82f6]"
+                      : isLight ? "text-slate-400 group-hover:text-sky-600" : "text-blue-300/50 group-hover:text-blue-200"
+                  }`}
                 />
                 <span className="font-medium truncate">{item.label}</span>
               </Link>
@@ -140,19 +163,23 @@ export function Sidebar({ open: mobileOpen = false, onClose }: SidebarProps) {
         </nav>
 
         {/* User card */}
-        <div className="p-3 border-t border-blue-500/20">
-          <div className="bg-[#050d1f] border border-blue-500/20 rounded-2xl p-3.5">
+        <div className={`p-3 border-t ${isLight ? "border-sky-200/80" : "border-blue-500/20"}`}>
+          <div className={`rounded-2xl p-3.5 border transition-all ${
+            isLight
+              ? "bg-sky-50/80 border-sky-200/80 text-slate-800 shadow-sm"
+              : "bg-[#050d1f] border-blue-500/20 text-white"
+          }`}>
             <div className="flex items-center gap-3">
               <div className="relative shrink-0">
-                <div className="h-9 w-9 rounded-full bg-gradient-to-br from-[#3b82f6] to-[#6366f1] flex items-center justify-center font-bold text-sm text-[#050816] shadow-md">
+                <div className="h-9 w-9 rounded-full bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center font-bold text-sm text-white shadow-md">
                   {userName.charAt(0).toUpperCase()}
                 </div>
-                <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-[#22C55E] border-2 border-[#0b1530]" />
+                <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-emerald-500 border-2 border-white" />
               </div>
               <div className="min-w-0 flex-1">
-                <div className="text-sm font-semibold truncate text-white">{userName}</div>
-                <div className="text-[10px] text-blue-300/60 flex items-center gap-1 mt-0.5">
-                  <span className="text-amber-400">🔥</span>
+                <div className={`text-sm font-semibold truncate ${isLight ? "text-slate-900" : "text-white"}`}>{userName}</div>
+                <div className={`text-[10px] flex items-center gap-1 mt-0.5 ${isLight ? "text-slate-500" : "text-blue-300/60"}`}>
+                  <span className="text-amber-500">🔥</span>
                   <span>{streakDays} day streak</span>
                 </div>
               </div>
@@ -163,7 +190,7 @@ export function Sidebar({ open: mobileOpen = false, onClose }: SidebarProps) {
                   document.cookie = "gyaansetu_user_id=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
                   window.location.href = "/";
                 }}
-                className="text-blue-300/40 hover:text-red-400 transition"
+                className={`transition ${isLight ? "text-slate-400 hover:text-red-500" : "text-blue-300/40 hover:text-red-400"}`}
                 aria-label="Logout"
               >
                 <LogOut className="h-4 w-4" />
@@ -172,15 +199,15 @@ export function Sidebar({ open: mobileOpen = false, onClose }: SidebarProps) {
 
             {/* XP Progress Bar */}
             <div className="mt-3 flex items-center justify-between text-[10px] mb-1.5">
-              <span className="text-blue-300/50 font-mono">Level {level}</span>
-              <span className="text-[#3b82f6] font-mono font-bold">{xp.toLocaleString()} XP</span>
+              <span className={`font-mono ${isLight ? "text-slate-500" : "text-blue-300/50"}`}>Level {level}</span>
+              <span className={`font-mono font-bold ${isLight ? "text-sky-600" : "text-[#3b82f6]"}`}>{xp.toLocaleString()} XP</span>
             </div>
-            <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
+            <div className={`h-1.5 rounded-full overflow-hidden ${isLight ? "bg-sky-200/60" : "bg-white/5"}`}>
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${(xp % 1000) / 10}%` }}
                 transition={{ duration: 1.2, ease: "easeOut" }}
-                className="h-full rounded-full bg-gradient-to-r from-[#3b82f6] to-[#6366f1]"
+                className="h-full rounded-full bg-gradient-to-r from-sky-400 to-blue-600"
               />
             </div>
           </div>

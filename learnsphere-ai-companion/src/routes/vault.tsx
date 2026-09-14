@@ -190,7 +190,7 @@ function CertificateVault() {
             initial={{ opacity: 0, y: -50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.9 }}
-            className="fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border border-[#3b82f6]/30 shadow-2xl flex items-center gap-3 bg-[#0d1322] max-w-sm"
+            className="fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border border-[#3b82f6]/30 shadow-2xl flex items-center gap-3 bg-white dark:bg-[#0d1322] max-w-sm"
           >
             <div className="h-8 w-8 rounded-lg bg-[#3b82f6]/10 text-[#3b82f6] flex items-center justify-center shrink-0">
               <toast.icon className="h-4.5 w-4.5" />
@@ -210,14 +210,14 @@ function CertificateVault() {
       />
 
       {/* AI Sync Hub */}
-      <GlassCard className="mb-6 bg-[#0b1530] border border-blue-500/20 text-white shadow-lg">
+      <GlassCard className="mb-6 shadow-md">
         <div className="flex flex-col gap-4">
-          <div className="flex justify-between items-center pb-2 border-b border-white/5">
+          <div className="flex justify-between items-center pb-2 border-b border-sky-100 dark:border-sky-200/60 dark:border-white/5">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-4.5 w-4.5 text-[#3b82f6]" />
-              <span className="font-display font-bold text-sm text-white">AI Credentials Parser</span>
+              <Sparkles className="h-4.5 w-4.5 text-sky-600 dark:text-[#3b82f6]" />
+              <span className="font-display font-bold text-sm text-slate-900 dark:text-white">AI Credentials Parser</span>
             </div>
-            <span className="text-[9px] font-mono text-blue-300 uppercase tracking-wider">Autofill Cards from Files/Dictation</span>
+            <span className="text-[9px] font-mono text-sky-600 dark:text-blue-300 uppercase tracking-wider font-bold">Autofill Cards from Files/Dictation</span>
           </div>
 
           <div className="grid md:grid-cols-3 gap-3">
@@ -228,12 +228,14 @@ function CertificateVault() {
                 setVoiceText("");
               }}
               className={`flex items-center justify-between p-3 rounded-xl border transition text-left ${
-                hubMode === "voice" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
+                hubMode === "voice" 
+                  ? "bg-sky-100 dark:bg-[#3b82f6]/10 border-sky-300 dark:border-[#3b82f6]/30 text-sky-800 dark:text-white font-bold" 
+                  : "bg-sky-50/60 dark:bg-slate-800/60 border-sky-200/80 dark:border-slate-700/50 text-slate-700 dark:text-slate-200 hover:bg-slate-800/80 font-semibold"
               }`}
             >
               <div className="flex items-center gap-2">
-                <Mic className="h-4 w-4 text-[#3b82f6]" />
-                <span className="text-xs font-semibold">Dictate Credentials</span>
+                <Mic className="h-4 w-4 text-sky-600 dark:text-[#3b82f6]" />
+                <span className="text-xs">Dictate Credentials</span>
               </div>
               <ChevronRight className="h-3.5 w-3.5" />
             </button>
@@ -245,12 +247,14 @@ function CertificateVault() {
                 setSelectedFile(null);
               }}
               className={`flex items-center justify-between p-3 rounded-xl border transition text-left ${
-                hubMode === "upload" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
+                hubMode === "upload" 
+                  ? "bg-sky-100 dark:bg-[#3b82f6]/10 border-sky-300 dark:border-[#3b82f6]/30 text-sky-800 dark:text-white font-bold" 
+                  : "bg-sky-50/60 dark:bg-slate-800/60 border-sky-200/80 dark:border-slate-700/50 text-slate-700 dark:text-slate-200 hover:bg-slate-800/80 font-semibold"
               }`}
             >
               <div className="flex items-center gap-2">
-                <Paperclip className="h-4 w-4 text-[#3b82f6]" />
-                <span className="text-xs font-semibold">Drop Certificate File</span>
+                <Paperclip className="h-4 w-4 text-sky-600 dark:text-[#3b82f6]" />
+                <span className="text-xs">Drop Certificate File</span>
               </div>
               <ChevronRight className="h-3.5 w-3.5" />
             </button>
@@ -262,12 +266,14 @@ function CertificateVault() {
                 setPastedText("");
               }}
               className={`flex items-center justify-between p-3 rounded-xl border transition text-left ${
-                hubMode === "text" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
+                hubMode === "text" 
+                  ? "bg-sky-100 dark:bg-[#3b82f6]/10 border-sky-300 dark:border-[#3b82f6]/30 text-sky-800 dark:text-white font-bold" 
+                  : "bg-sky-50/60 dark:bg-slate-800/60 border-sky-200/80 dark:border-slate-700/50 text-slate-700 dark:text-slate-200 hover:bg-slate-800/80 font-semibold"
               }`}
             >
               <div className="flex items-center gap-2">
-                <FileText className="h-4 w-4 text-[#3b82f6]" />
-                <span className="text-xs font-semibold">Paste Verification Code</span>
+                <FileText className="h-4 w-4 text-sky-600 dark:text-[#3b82f6]" />
+                <span className="text-xs">Paste Verification Code</span>
               </div>
               <ChevronRight className="h-3.5 w-3.5" />
             </button>
@@ -276,21 +282,21 @@ function CertificateVault() {
           {/* Conditional Input Areas */}
           <AnimatePresence>
             {hubMode === "voice" && (
-              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="p-3 bg-[#050816] rounded-xl border border-white/5 space-y-3 overflow-hidden">
+              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="p-3 bg-sky-50/80 dark:bg-[#050816] rounded-xl border border-sky-200 dark:border-white/10 space-y-3 overflow-hidden">
                 <div className="flex justify-between items-center">
-                  <span className="text-[10px] font-mono text-slate-400">Microphone Input</span>
+                  <span className="text-[10px] font-mono text-slate-600 dark:text-slate-400">Microphone Input</span>
                   {recording && <span className="h-2 w-2 rounded-full bg-red-500 animate-ping" />}
                 </div>
                 {recording ? (
                   <div className="flex items-center justify-center gap-1.5 py-4">
                     {[1,2,3,4,5].map(i => (
-                      <motion.span key={i} animate={{ height: [6, 20, 6] }} transition={{ duration: 0.5 + i*0.1, repeat: Infinity }} className="w-0.5 bg-red-400 rounded-full" />
+                      <motion.span key={i} animate={{ height: [6, 20, 6] }} transition={{ duration: 0.5 + i*0.1, repeat: Infinity }} className="w-0.5 bg-red-500 rounded-full" />
                     ))}
                   </div>
                 ) : voiceText ? (
-                  <p className="text-xs text-white leading-relaxed font-mono">"{voiceText}"</p>
+                  <p className="text-xs text-slate-900 dark:text-white leading-relaxed font-mono">"{voiceText}"</p>
                 ) : (
-                  <p className="text-xs text-muted-foreground italic">Click Start Recording to dictate your credential details...</p>
+                  <p className="text-xs text-slate-600 dark:text-muted-foreground italic">Click Start Recording to dictate your credential details...</p>
                 )}
                 <div className="flex gap-2">
                   <button
@@ -309,7 +315,7 @@ function CertificateVault() {
                         }, 2500);
                       }
                     }}
-                    className="px-3 py-1.5 rounded-lg bg-red-500/20 text-red-400 border border-red-500/30 text-[10px] font-bold hover:bg-red-500/30 transition"
+                    className="px-3 py-1.5 rounded-lg bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-500/30 text-[10px] font-bold hover:bg-red-200 dark:hover:bg-red-500/30 transition"
                   >
                     {recording ? "Stop Dictation" : "Start Recording"}
                   </button>
@@ -340,7 +346,7 @@ function CertificateVault() {
                           setHubMode("none");
                         }
                       }}
-                      className="px-3 py-1.5 rounded-lg bg-[#3b82f6] text-[#050816] text-[10px] font-bold hover:scale-105 transition ml-auto"
+                      className="px-3 py-1.5 rounded-lg bg-sky-600 dark:bg-[#3b82f6] text-white dark:text-[#050816] text-[10px] font-bold hover:scale-105 transition ml-auto"
                     >
                       {submittingHub ? "Parsing..." : "Add to Vault"}
                     </button>
@@ -350,18 +356,18 @@ function CertificateVault() {
             )}
 
             {hubMode === "upload" && (
-              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="p-3 bg-[#050816] rounded-xl border border-white/5 space-y-3 overflow-hidden">
-                <div className="border border-dashed border-white/10 rounded-xl p-4 flex flex-col items-center justify-center hover:border-[#3b82f6]/40 transition cursor-pointer"
+              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="p-3 bg-sky-50/80 dark:bg-[#050816] rounded-xl border border-sky-200 dark:border-white/10 space-y-3 overflow-hidden">
+                <div className="border border-dashed border-sky-300 dark:border-white/10 rounded-xl p-4 flex flex-col items-center justify-center hover:border-sky-500 dark:hover:border-[#3b82f6]/40 transition cursor-pointer"
                   onClick={() => {
                     setSelectedFile("aws_cloud_practitioner.pdf");
                     showToast("Uploaded aws_cloud_practitioner.pdf", FileUp);
                   }}
                 >
-                  <FileUp className="h-6 w-6 text-[#3b82f6] mb-1.5" />
+                  <FileUp className="h-6 w-6 text-sky-600 dark:text-[#3b82f6] mb-1.5" />
                   {selectedFile ? (
-                    <span className="text-[10px] text-white font-mono font-bold">{selectedFile}</span>
+                    <span className="text-[10px] text-slate-900 dark:text-white font-mono font-bold">{selectedFile}</span>
                   ) : (
-                    <span className="text-[9px] text-muted-foreground text-center">Drag & drop certificate image/PDF, or click to browse</span>
+                    <span className="text-[9px] text-slate-600 dark:text-muted-foreground text-center font-medium">Drag & drop certificate image/PDF, or click to browse</span>
                   )}
                 </div>
                 {selectedFile && (
@@ -390,7 +396,7 @@ function CertificateVault() {
                         setHubMode("none");
                       }
                     }}
-                    className="w-full py-2 rounded-lg bg-[#3b82f6] text-[#050816] text-[10px] font-bold hover:scale-[1.01] transition"
+                    className="w-full py-2 rounded-lg bg-sky-600 dark:bg-[#3b82f6] text-white dark:text-[#050816] text-[10px] font-bold hover:scale-[1.01] transition"
                   >
                     {submittingHub ? "AI parsing metadata..." : "Generate Vault Card"}
                   </button>
@@ -399,12 +405,12 @@ function CertificateVault() {
             )}
 
             {hubMode === "text" && (
-              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="p-3 bg-[#050816] rounded-xl border border-white/5 space-y-3 overflow-hidden">
+              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="p-3 bg-sky-50/80 dark:bg-[#050816] rounded-xl border border-sky-200 dark:border-white/10 space-y-3 overflow-hidden">
                 <textarea
                   value={pastedText}
                   onChange={(e) => setPastedText(e.target.value)}
                   placeholder="Paste credential serial number, verification url, or signature hashes..."
-                  className="w-full h-20 bg-black/40 border border-white/10 rounded-lg p-2 text-[10px] text-white placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]/40 font-mono"
+                  className="w-full h-20 bg-white dark:bg-black/40 border border-sky-200 dark:border-sky-200/80 dark:border-white/10 rounded-lg p-2 text-[10px] text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-sky-500 font-mono"
                 />
                 <div className="flex justify-end">
                   <button
@@ -434,7 +440,7 @@ function CertificateVault() {
                       }
                     }}
                     disabled={!pastedText}
-                    className="px-3 py-1.5 rounded-lg bg-[#3b82f6] text-[#050816] text-[10px] font-bold hover:scale-105 transition disabled:opacity-50"
+                    className="px-3 py-1.5 rounded-lg bg-sky-600 dark:bg-[#3b82f6] text-white dark:text-[#050816] text-[10px] font-bold hover:scale-105 transition disabled:opacity-50"
                   >
                     {submittingHub ? "Verifying..." : "Verify & Sync"}
                   </button>
@@ -447,12 +453,12 @@ function CertificateVault() {
 
       {/* Main vault controls */}
       <div className="mb-6 flex justify-between items-center">
-        <div className="text-xs text-slate-400">
-          Showing <span className="text-[#3b82f6] font-bold font-mono">{certs.length}</span> active certificates
+        <div className="text-xs text-slate-600 dark:text-slate-500 dark:text-slate-700 dark:text-slate-400 font-medium">
+          Showing <span className="text-sky-600 dark:text-[#3b82f6] font-bold font-mono">{certs.length}</span> active certificates
         </div>
         <button
           onClick={handleOpenAdd}
-          className="inline-flex items-center gap-1.5 bg-gradient-to-r from-[#3b82f6] to-[#6366f1] text-[#050816] px-4 py-2 rounded-xl text-xs font-bold hover:scale-105 transition-all shadow-md"
+          className="inline-flex items-center gap-1.5 bg-sky-600 dark:bg-gradient-to-r dark:from-[#3b82f6] dark:to-[#6366f1] text-white dark:text-[#050816] px-4 py-2 rounded-xl text-xs font-bold hover:scale-105 transition-all shadow-sm"
         >
           <Plus className="h-4 w-4" /> Add Certificate
         </button>
@@ -460,10 +466,10 @@ function CertificateVault() {
 
       {/* Grid of Cards */}
       {certs.length === 0 ? (
-        <div className="text-center py-16 bg-[#0b1530] border border-blue-500/20 rounded-3xl p-6 shadow-md text-white">
-          <Award className="h-12 w-12 text-blue-300/40 mx-auto mb-3" />
-          <p className="text-sm font-semibold text-white">Your Certificate Vault is empty</p>
-          <p className="text-xs text-blue-200/60 mt-1">Use the upload tool above or click 'Add Certificate' to populate.</p>
+        <div className="text-center py-16 bg-white dark:bg-[#0b1530] border border-sky-200 dark:border-blue-500/20 rounded-3xl p-6 shadow-xs dark:shadow-md text-slate-900 dark:text-white">
+          <Award className="h-12 w-12 text-sky-500/40 dark:text-blue-300/40 mx-auto mb-3" />
+          <p className="text-sm font-bold text-slate-900 dark:text-white">Your Certificate Vault is empty</p>
+          <p className="text-xs text-slate-600 dark:text-slate-500 dark:text-slate-600 dark:text-blue-200/60 mt-1 font-medium">Use the upload tool above or click 'Add Certificate' to populate.</p>
         </div>
       ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -474,23 +480,23 @@ function CertificateVault() {
               onClick={() => handleOpenView(c)}
               className="cursor-pointer"
             >
-              <div className="bg-[#0b1530] border border-blue-500/20 p-5 rounded-3xl shadow-md hover:shadow-xl transition-all h-full flex flex-col justify-between text-white">
+              <div className="bg-white dark:bg-[#0b1530] border border-sky-200 dark:border-blue-500/20 p-5 rounded-3xl shadow-xs dark:shadow-md hover:shadow-md transition-all h-full flex flex-col justify-between text-slate-900 dark:text-white">
                 <div>
                   <div className="flex items-start justify-between mb-3">
-                    <div className="h-9 w-9 rounded-xl bg-blue-500/10 text-white flex items-center justify-center">
-                      <Award className="h-5 w-5 text-[#3b82f6]" />
+                    <div className="h-9 w-9 rounded-xl bg-sky-100 dark:bg-blue-500/10 text-sky-600 dark:text-white flex items-center justify-center">
+                      <Award className="h-5 w-5 text-sky-600 dark:text-[#3b82f6]" />
                     </div>
                     <div className="flex gap-1">
                       <button
                         onClick={(e) => handleOpenEdit(c, e)}
-                        className="p-1.5 rounded-lg hover:bg-white/10 text-blue-200 hover:text-white transition"
+                        className="p-1.5 rounded-lg hover:bg-sky-100 dark:hover:bg-white/10 text-slate-600 dark:text-slate-500 dark:text-blue-200 hover:text-slate-900 dark:hover:text-white transition"
                         title="Edit Certificate"
                       >
                         <Edit2 className="h-3.5 w-3.5" />
                       </button>
                       <button
                         onClick={(e) => handleDelete(c.id, e)}
-                        className="p-1.5 rounded-lg hover:bg-red-500/20 text-blue-200 hover:text-red-400 transition"
+                        className="p-1.5 rounded-lg hover:bg-red-100 dark:hover:bg-red-500/20 text-slate-600 dark:text-slate-500 dark:text-blue-200 hover:text-red-600 dark:hover:text-red-400 transition"
                         title="Delete Certificate"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
@@ -498,30 +504,30 @@ function CertificateVault() {
                     </div>
                   </div>
 
-                  <h3 className="font-display font-extrabold text-sm text-white leading-tight mb-1">{c.title}</h3>
-                  <div className="text-[10px] font-mono text-[#3b82f6] uppercase font-bold mb-3">{c.event}</div>
+                  <h3 className="font-display font-extrabold text-sm text-slate-900 dark:text-white leading-tight mb-1">{c.title}</h3>
+                  <div className="text-[10px] font-mono text-sky-600 dark:text-[#3b82f6] uppercase font-bold mb-3">{c.event}</div>
 
-                  <div className="space-y-2 mt-4 text-[11px] text-blue-200/80 bg-slate-900/40 p-3 rounded-2xl border border-white/5">
+                  <div className="space-y-2 mt-4 text-[11px] text-slate-600 dark:text-blue-200/80 bg-sky-50/60 dark:bg-slate-900/40 p-3 rounded-2xl border border-sky-200/60 dark:border-sky-200/60 dark:border-white/5 font-medium">
                     <div className="flex justify-between">
                       <span>Issuer:</span>
-                      <span className="font-bold text-white">{c.issuer}</span>
+                      <span className="font-bold text-slate-900 dark:text-white">{c.issuer}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Date Earned:</span>
-                      <span className="font-mono text-white">{c.date}</span>
+                      <span className="font-mono text-slate-900 dark:text-slate-900 dark:text-white font-bold">{c.date}</span>
                     </div>
                     {c.grade && (
                       <div className="flex justify-between">
                         <span>Metrics:</span>
-                        <span className="font-bold text-white">{c.grade}</span>
+                        <span className="font-bold text-slate-900 dark:text-white">{c.grade}</span>
                       </div>
                     )}
                   </div>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between">
-                  <span className="text-[10px] font-mono text-blue-300/60 truncate max-w-[150px]">{c.fileName}</span>
-                  <span className="text-[9px] font-bold text-[#3b82f6] hover:underline flex items-center gap-1 font-mono uppercase">
+                <div className="mt-4 pt-3 border-t border-sky-100 dark:border-sky-200/60 dark:border-white/5 flex items-center justify-between">
+                  <span className="text-[10px] font-mono text-slate-600 dark:text-slate-500 dark:text-blue-300/60 truncate max-w-[150px]">{c.fileName}</span>
+                  <span className="text-[9px] font-bold text-sky-600 dark:text-[#3b82f6] hover:underline flex items-center gap-1 font-mono uppercase">
                     View Doc <ChevronRight className="h-3 w-3" />
                   </span>
                 </div>
@@ -537,91 +543,91 @@ function CertificateVault() {
         {(modalMode === "add" || modalMode === "edit") && (
           <div 
             onClick={() => setModalMode("none")}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
           >
             <motion.div
               onClick={(e) => e.stopPropagation()}
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-md bg-[#0d1322] border border-[#3b82f6]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden text-white"
+              className="w-full max-w-md bg-white dark:bg-[#0b1530] dark:bg-[#0d1322] border border-sky-300 dark:border-[#3b82f6]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden text-slate-900 dark:text-white"
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[#3b82f6]/5 rounded-full blur-2xl pointer-events-none" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-sky-500/10 dark:bg-[#3b82f6]/5 rounded-full blur-2xl pointer-events-none" />
 
-              <div className="flex items-center justify-between pb-3 border-b border-white/5 mb-4">
-                <h4 className="font-display font-extrabold text-sm text-white flex items-center gap-1.5">
-                  <Award className="h-4.5 w-4.5 text-[#3b82f6]" />
+              <div className="flex items-center justify-between pb-3 border-b border-sky-100 dark:border-sky-200/60 dark:border-white/5 mb-4">
+                <h4 className="font-display font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
+                  <Award className="h-4.5 w-4.5 text-sky-600 dark:text-[#3b82f6]" />
                   {modalMode === "add" ? "Add New Certificate" : "Edit Certificate Record"}
                 </h4>
-                <button onClick={() => setModalMode("none")} className="text-slate-400 hover:text-white transition">
+                <button onClick={() => setModalMode("none")} className="text-slate-700 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white transition">
                   <X className="h-5 w-5" />
                 </button>
               </div>
 
               <form onSubmit={handleSave} className="space-y-3 text-xs">
                 <div>
-                  <label className="block text-[10px] text-blue-300 uppercase font-mono mb-1 font-bold">Certificate / Credential Title</label>
+                  <label className="block text-[10px] text-sky-700 dark:text-blue-300 uppercase font-mono mb-1 font-bold">Certificate / Credential Title</label>
                   <input
                     type="text"
                     required
                     value={formTitle}
                     onChange={(e) => setFormTitle(e.target.value)}
                     placeholder="e.g. Advanced Machine Learning"
-                    className="w-full p-2.5 bg-slate-900/60 border border-white/10 rounded-xl focus:outline-none focus:border-[#3b82f6]/60 text-white placeholder-slate-500"
+                    className="w-full p-2.5 bg-sky-50/60 dark:bg-slate-900/60 border border-sky-200 dark:border-sky-200/80 dark:border-white/10 rounded-xl focus:outline-none focus:border-sky-500 text-slate-900 dark:text-white placeholder-slate-400 font-medium"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[10px] text-blue-300 uppercase font-mono mb-1 font-bold">Event Name / Context</label>
+                  <label className="block text-[10px] text-sky-700 dark:text-blue-300 uppercase font-mono mb-1 font-bold">Event Name / Context</label>
                   <input
                     type="text"
                     required
                     value={formEvent}
                     onChange={(e) => setFormEvent(e.target.value)}
                     placeholder="e.g. GyaanSetu Hackathon 2026"
-                    className="w-full p-2.5 bg-slate-900/60 border border-white/10 rounded-xl focus:outline-none focus:border-[#3b82f6]/60 text-white placeholder-slate-500"
+                    className="w-full p-2.5 bg-sky-50/60 dark:bg-slate-900/60 border border-sky-200 dark:border-sky-200/80 dark:border-white/10 rounded-xl focus:outline-none focus:border-sky-500 text-slate-900 dark:text-white placeholder-slate-400 font-medium"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-[10px] text-blue-300 uppercase font-mono mb-1 font-bold">Date Earned</label>
+                    <label className="block text-[10px] text-sky-700 dark:text-blue-300 uppercase font-mono mb-1 font-bold">Date Earned</label>
                     <input
                       type="date"
                       value={formDate}
                       onChange={(e) => setFormDate(e.target.value)}
-                      className="w-full p-2.5 bg-slate-900/60 border border-white/10 rounded-xl focus:outline-none focus:border-[#3b82f6]/60 text-white font-mono"
+                      className="w-full p-2.5 bg-sky-50/60 dark:bg-slate-900/60 border border-sky-200 dark:border-sky-200/80 dark:border-white/10 rounded-xl focus:outline-none focus:border-sky-500 text-slate-900 dark:text-white font-mono"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] text-blue-300 uppercase font-mono mb-1 font-bold">Issuer / Sponsor</label>
+                    <label className="block text-[10px] text-sky-700 dark:text-blue-300 uppercase font-mono mb-1 font-bold">Issuer / Sponsor</label>
                     <input
                       type="text"
                       value={formIssuer}
                       onChange={(e) => setFormIssuer(e.target.value)}
                       placeholder="e.g. Google Cloud"
-                      className="w-full p-2.5 bg-slate-900/60 border border-white/10 rounded-xl focus:outline-none focus:border-[#3b82f6]/60 text-white placeholder-slate-500"
+                      className="w-full p-2.5 bg-sky-50/60 dark:bg-slate-900/60 border border-sky-200 dark:border-sky-200/80 dark:border-white/10 rounded-xl focus:outline-none focus:border-sky-500 text-slate-900 dark:text-white placeholder-slate-400 font-medium"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-[10px] text-blue-300 uppercase font-mono mb-1 font-bold">Performance / Grade</label>
+                    <label className="block text-[10px] text-sky-700 dark:text-blue-300 uppercase font-mono mb-1 font-bold">Performance / Grade</label>
                     <input
                       type="text"
                       value={formGrade}
                       onChange={(e) => setFormGrade(e.target.value)}
                       placeholder="e.g. Pass / Score 95%"
-                      className="w-full p-2.5 bg-slate-900/60 border border-white/10 rounded-xl focus:outline-none focus:border-[#3b82f6]/60 text-white placeholder-slate-500"
+                      className="w-full p-2.5 bg-sky-50/60 dark:bg-slate-900/60 border border-sky-200 dark:border-sky-200/80 dark:border-white/10 rounded-xl focus:outline-none focus:border-sky-500 text-slate-900 dark:text-white placeholder-slate-400 font-medium"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] text-blue-300 uppercase font-mono mb-1 font-bold">File Format</label>
+                    <label className="block text-[10px] text-sky-700 dark:text-blue-300 uppercase font-mono mb-1 font-bold">File Format</label>
                     <select
                       value={formFileType}
                       onChange={(e) => setFormFileType(e.target.value as any)}
-                      className="w-full p-2.5 bg-slate-900/60 border border-white/10 rounded-xl focus:outline-none focus:border-[#3b82f6]/60 text-white"
+                      className="w-full p-2.5 bg-sky-50/60 dark:bg-slate-900/60 border border-sky-200 dark:border-sky-200/80 dark:border-white/10 rounded-xl focus:outline-none focus:border-sky-500 text-slate-900 dark:text-white font-medium"
                     >
                       <option value="pdf">PDF Document</option>
                       <option value="image">Image File</option>
@@ -630,17 +636,17 @@ function CertificateVault() {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] text-blue-300 uppercase font-mono mb-1 font-bold">Document Attachment</label>
+                  <label className="block text-[10px] text-sky-700 dark:text-blue-300 uppercase font-mono mb-1 font-bold">Document Attachment</label>
                   <div className="flex gap-2">
                     <input
                       type="text"
                       value={formFileName}
                       onChange={(e) => setFormFileName(e.target.value)}
                       placeholder="e.g. verified_certificate_hash.pdf"
-                      className="flex-1 p-2.5 bg-slate-900/60 border border-white/10 rounded-xl focus:outline-none focus:border-[#3b82f6]/60 text-white placeholder-slate-500 font-mono"
+                      className="flex-1 p-2.5 bg-sky-50/60 dark:bg-slate-900/60 border border-sky-200 dark:border-sky-200/80 dark:border-white/10 rounded-xl focus:outline-none focus:border-sky-500 text-slate-900 dark:text-white placeholder-slate-400 font-mono"
                     />
-                    <label className="cursor-pointer shrink-0 bg-white/10 hover:bg-white/15 border border-white/10 rounded-xl px-4 flex items-center justify-center text-[11px] font-bold text-white transition">
-                      <Upload className="h-4 w-4 mr-1.5 text-[#3b82f6]" />
+                    <label className="cursor-pointer shrink-0 bg-sky-100 dark:bg-white/10 hover:bg-sky-200 border border-sky-300 dark:border-sky-200/80 dark:border-white/10 rounded-xl px-4 flex items-center justify-center text-[11px] font-bold text-sky-800 dark:text-white transition">
+                      <Upload className="h-4 w-4 mr-1.5 text-sky-600 dark:text-[#3b82f6]" />
                       Upload
                       <input
                         type="file"
@@ -658,7 +664,7 @@ function CertificateVault() {
 
                 <button
                   type="submit"
-                  className="w-full mt-4 py-3 rounded-xl bg-gradient-to-r from-[#3b82f6] to-[#6366f1] text-[#050816] font-bold transition hover:shadow-lg glow-cyan"
+                  className="w-full mt-4 py-3 rounded-xl bg-sky-600 dark:bg-gradient-to-r dark:from-[#3b82f6] dark:to-[#6366f1] text-white dark:text-[#050816] font-bold transition hover:shadow-md"
                 >
                   {modalMode === "add" ? "Register Certificate" : "Update Records"}
                 </button>
@@ -671,44 +677,43 @@ function CertificateVault() {
         {modalMode === "view" && selectedCert && (
           <div 
             onClick={() => setModalMode("none")}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
           >
             <motion.div
               onClick={(e) => e.stopPropagation()}
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-lg bg-[#0d1322] border border-[#3b82f6]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden text-white"
+              className="w-full max-w-lg bg-white dark:bg-[#0b1530] dark:bg-[#0d1322] border border-sky-300 dark:border-[#3b82f6]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden text-slate-900 dark:text-white"
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[#3b82f6]/5 rounded-full blur-2xl pointer-events-none" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-sky-500/10 dark:bg-[#3b82f6]/5 rounded-full blur-2xl pointer-events-none" />
 
-              <div className="flex items-center justify-between pb-3 border-b border-white/5 mb-4">
-                <h4 className="font-display font-extrabold text-sm text-white flex items-center gap-1.5">
-                  <Bookmark className="h-4.5 w-4.5 text-[#3b82f6]" />
+              <div className="flex items-center justify-between pb-3 border-b border-sky-100 dark:border-sky-200/60 dark:border-white/5 mb-4">
+                <h4 className="font-display font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
+                  <Bookmark className="h-4.5 w-4.5 text-sky-600 dark:text-[#3b82f6]" />
                   Credential Verification
                 </h4>
-                <button onClick={() => setModalMode("none")} className="text-slate-400 hover:text-white transition">
+                <button onClick={() => setModalMode("none")} className="text-slate-700 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white transition">
                   <X className="h-5 w-5" />
                 </button>
               </div>
 
               {/* Mock Certificate Visual representation */}
-              <div className="border-2 border-dashed border-[#3b82f6]/20 p-8 text-center bg-[#050816]/60 rounded-2xl relative overflow-hidden mb-5">
-                <div className="absolute inset-0 bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:16px_16px] opacity-5 pointer-events-none" />
-                <Award className="h-14 w-14 text-amber-400 mx-auto mb-2" />
-                <div className="font-serif text-[10px] tracking-widest text-blue-300 uppercase">Certificate of Accomplishment</div>
-                <div className="font-serif text-white text-lg font-bold mt-4 leading-tight">{selectedCert.title}</div>
-                <p className="text-[10px] text-blue-200/60 mt-2">awarded to student member of GyaanSetu</p>
-                <div className="font-mono text-[9px] text-[#3b82f6] mt-4">Verified at: {selectedCert.event}</div>
-                <div className="flex justify-between items-center mt-6 pt-4 border-t border-white/5 text-[9px] font-mono text-blue-200/60">
+              <div className="border-2 border-dashed border-sky-300 dark:border-[#3b82f6]/30 p-8 text-center bg-sky-50/60 dark:bg-[#050816] rounded-2xl relative overflow-hidden mb-5">
+                <Award className="h-14 w-14 text-amber-500 dark:text-amber-400 mx-auto mb-2" />
+                <div className="font-serif text-[10px] tracking-widest text-sky-700 dark:text-blue-300 uppercase font-bold">Certificate of Accomplishment</div>
+                <div className="font-serif text-slate-900 dark:text-white text-lg font-bold mt-4 leading-tight">{selectedCert.title}</div>
+                <p className="text-[10px] text-slate-600 dark:text-slate-600 dark:text-blue-200/60 mt-2 font-medium">awarded to student member of GyaanSetu</p>
+                <div className="font-mono text-[9px] text-sky-600 dark:text-[#3b82f6] mt-4 font-bold">Verified at: {selectedCert.event}</div>
+                <div className="flex justify-between items-center mt-6 pt-4 border-t border-sky-200 dark:border-sky-200/60 dark:border-white/5 text-[9px] font-mono text-slate-600 dark:text-slate-600 dark:text-blue-200/60 font-medium">
                   <span>Date: {selectedCert.date}</span>
                   <span>Sponsor: {selectedCert.issuer}</span>
                 </div>
               </div>
 
               <div className="flex justify-between items-center">
-                <span className="text-[10px] text-blue-300 font-mono flex items-center gap-1">
-                  <FileText className="h-3.5 w-3.5 text-[#6366f1]" /> {selectedCert.fileName}
+                <span className="text-[10px] text-sky-700 dark:text-blue-300 font-mono flex items-center gap-1 font-bold">
+                  <FileText className="h-3.5 w-3.5 text-indigo-600 dark:text-[#6366f1]" /> {selectedCert.fileName}
                 </span>
                 <div className="flex gap-2">
                   <button
@@ -716,13 +721,13 @@ function CertificateVault() {
                       showToast("Document download initialized!", Download);
                       setModalMode("none");
                     }}
-                    className="px-4 py-2 bg-white/10 hover:bg-white/15 rounded-xl text-white text-xs font-bold transition flex items-center gap-1"
+                    className="px-4 py-2 bg-sky-100 dark:bg-white/10 hover:bg-sky-200 border border-sky-300 dark:border-sky-200/80 dark:border-white/10 rounded-xl text-sky-800 dark:text-white text-xs font-bold transition flex items-center gap-1"
                   >
                     <Download className="h-3.5 w-3.5" /> Download
                   </button>
                   <button
                     onClick={() => setModalMode("none")}
-                    className="px-4 py-2 bg-[#3b82f6] text-[#050816] rounded-xl text-xs font-bold transition hover:scale-[1.02]"
+                    className="px-4 py-2 bg-sky-600 dark:bg-[#3b82f6] text-white dark:text-[#050816] rounded-xl text-xs font-bold transition hover:scale-[1.02]"
                   >
                     Done
                   </button>

@@ -47,7 +47,7 @@ function PerformanceDashboard() {
             initial={{ opacity: 0, y: -50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.9 }}
-            className="fixed top-20 right-6 z-50 px-5 py-3 rounded-xl border border-[#3b82f6]/30 shadow-2xl bg-[#0d1322] text-xs text-white font-semibold"
+            className="fixed top-20 right-6 z-50 px-5 py-3 rounded-xl border border-[#3b82f6]/30 shadow-2xl bg-white dark:bg-[#0d1322] text-xs text-slate-900 dark:text-white font-semibold"
           >
             {toast}
           </motion.div>
@@ -62,15 +62,15 @@ function PerformanceDashboard() {
 
       {/* Top Banner */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-        <GradientCard className="overflow-hidden relative bg-[#0b1530] border border-blue-500/20 text-white shadow-lg p-6">
+        <GradientCard className="overflow-hidden relative shadow-lg p-6">
           <div className="grid lg:grid-cols-[1fr_auto] gap-6 items-center">
             <div>
               <div className="inline-flex items-center gap-1.5 bg-[#3b82f6]/10 text-[#3b82f6] border border-[#3b82f6]/20 rounded-full px-3 py-1 text-xs font-semibold">
                 <Sparkles className="h-3 w-3 text-[#3b82f6]" />
                 Cognitive Growth Engine
               </div>
-              <h1 className="mt-3 text-2xl font-display font-bold text-white">Your Weekly Learning Output</h1>
-              <p className="mt-2 text-blue-200/60 max-w-xl text-xs leading-relaxed">
+              <h1 className="mt-3 text-2xl font-display font-bold text-slate-900 dark:text-white">Your Weekly Learning Output</h1>
+              <p className="mt-2 text-slate-600 dark:text-blue-200/60 max-w-xl text-xs leading-relaxed">
                 Analysis of study sessions shows an 8% increase in long-term memory retrieval accuracy compared to last week.
               </p>
             </div>
@@ -91,39 +91,39 @@ function PerformanceDashboard() {
         <button
           onClick={() => setActiveMetric("accuracy")}
           className={`p-5 rounded-3xl shadow-md text-left transition hover:scale-[1.02] border text-white ${
-            activeMetric === "accuracy" ? "bg-[#0b1530] border-[#3b82f6]/40" : "bg-[#0b1530]/50 border-blue-500/10"
+            activeMetric === "accuracy" ? "bg-white dark:bg-[#0b1530] border-[#3b82f6]/40" : "bg-white dark:bg-[#0b1530]/50 border-blue-500/10"
           }`}
         >
           <div className="text-[10px] text-blue-300 uppercase font-mono tracking-wider font-semibold">Test Accuracy</div>
-          <div className="text-xl font-extrabold text-white mt-1.5 leading-none">88%</div>
+          <div className="text-xl font-extrabold text-slate-900 dark:text-white mt-1.5 leading-none">88%</div>
           <div className="text-[9px] text-[#3b82f6] mt-2 font-mono">Select to view graph</div>
         </button>
 
         <button
           onClick={() => setActiveMetric("focus")}
           className={`p-5 rounded-3xl shadow-md text-left transition hover:scale-[1.02] border text-white ${
-            activeMetric === "focus" ? "bg-[#0b1530] border-[#6366f1]/40" : "bg-[#0b1530]/50 border-blue-500/10"
+            activeMetric === "focus" ? "bg-white dark:bg-[#0b1530] border-[#6366f1]/40" : "bg-white dark:bg-[#0b1530]/50 border-blue-500/10"
           }`}
         >
           <div className="text-[10px] text-blue-300 uppercase font-mono tracking-wider font-semibold">Focus Health</div>
-          <div className="text-xl font-extrabold text-white mt-1.5 leading-none">92/100</div>
+          <div className="text-xl font-extrabold text-slate-900 dark:text-white mt-1.5 leading-none">92/100</div>
           <div className="text-[9px] text-[#6366f1] mt-2 font-mono">Select to view graph</div>
         </button>
 
         <button
           onClick={() => setActiveMetric("time")}
           className={`p-5 rounded-3xl shadow-md text-left transition hover:scale-[1.02] border text-white ${
-            activeMetric === "time" ? "bg-[#0b1530] border-emerald-500/40" : "bg-[#0b1530]/50 border-blue-500/10"
+            activeMetric === "time" ? "bg-white dark:bg-[#0b1530] border-emerald-500/40" : "bg-white dark:bg-[#0b1530]/50 border-blue-500/10"
           }`}
         >
           <div className="text-[10px] text-blue-300 uppercase font-mono tracking-wider font-semibold">Study Duration</div>
-          <div className="text-xl font-extrabold text-white mt-1.5 leading-none">28.3 hrs</div>
+          <div className="text-xl font-extrabold text-slate-900 dark:text-white mt-1.5 leading-none">28.3 hrs</div>
           <div className="text-[9px] text-emerald-400 mt-2 font-mono">Select to view graph</div>
         </button>
 
-        <div className="bg-[#0b1530] border border-blue-500/20 p-5 rounded-3xl shadow-md text-left text-white">
+        <div className="bg-white dark:bg-[#0b1530] border border-sky-200/80 dark:border-blue-500/20 text-slate-900 dark:text-white p-5 rounded-3xl shadow-md text-left text-white">
           <div className="text-[10px] text-blue-300 uppercase font-mono tracking-wider font-semibold">Global Ranking</div>
-          <div className="text-xl font-extrabold text-white mt-1.5 leading-none">#284</div>
+          <div className="text-xl font-extrabold text-slate-900 dark:text-white mt-1.5 leading-none">#284</div>
           <div className="text-[9px] text-amber-500 mt-2 font-mono">Top 2% of platform</div>
         </div>
       </div>
@@ -132,18 +132,18 @@ function PerformanceDashboard() {
       <div className="grid lg:grid-cols-12 gap-6 items-stretch mb-6">
         {/* Left: Recharts graph */}
         <div className="lg:col-span-8">
-          <GradientCard className="bg-[#0b1530] border border-blue-500/20 text-white shadow-lg p-6 h-full flex flex-col justify-between">
-            <div className="flex justify-between items-center pb-3 border-b border-white/5 mb-4">
+          <GradientCard className="shadow-lg p-6 h-full flex flex-col justify-between">
+            <div className="flex justify-between items-center pb-3 border-b border-sky-200/60 dark:border-white/5 mb-4">
               <div>
                 <span className="text-xs font-mono text-[#3b82f6] tracking-wider uppercase font-bold">
                   {activeMetric.toUpperCase()} Trend Analysis
                 </span>
-                <span className="text-[9px] font-mono text-slate-400 ml-3">Interval: Last 7 Days</span>
+                <span className="text-[9px] font-mono text-slate-700 dark:text-slate-400 ml-3">Interval: Last 7 Days</span>
               </div>
             </div>
 
             {/* Recharts Container */}
-            <div className="h-[280px] w-full bg-black/25 rounded-2xl border border-white/5 p-4">
+            <div className="h-[280px] w-full bg-black/25 rounded-2xl border border-sky-200/60 dark:border-white/5 p-4">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={PERFORMANCE_DATA}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
@@ -168,12 +168,12 @@ function PerformanceDashboard() {
 
         {/* Right: Growth Insights */}
         <div className="lg:col-span-4">
-          <GlassCard className="bg-[#0b1530] border border-blue-500/20 text-white shadow-lg p-6 h-full flex flex-col justify-between">
+          <GlassCard className="shadow-lg p-6 h-full flex flex-col justify-between">
             <div className="space-y-4">
-              <h3 className="font-display font-extrabold text-sm text-white flex items-center gap-1.5">
+              <h3 className="font-display font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
                 <Target className="h-4.5 w-4.5 text-[#3b82f6]" /> Performance Metrics
               </h3>
-              <p className="text-[11px] text-blue-200/60 leading-relaxed">
+              <p className="text-[11px] text-slate-600 dark:text-blue-200/60 leading-relaxed">
                 Subjective evaluations verify core competencies:
               </p>
 
@@ -196,7 +196,7 @@ function PerformanceDashboard() {
               </div>
             </div>
 
-            <div className="mt-6 bg-[#3b82f6]/5 border border-[#3b82f6]/10 p-3 rounded-xl text-[10px] text-slate-300 leading-relaxed font-mono">
+            <div className="mt-6 bg-[#3b82f6]/5 border border-[#3b82f6]/10 p-3 rounded-xl text-[10px] text-slate-700 dark:text-slate-300 leading-relaxed font-mono">
               Asha suggests focusing on System Design review logs before executing upcoming coding trials.
             </div>
           </GlassCard>

@@ -277,7 +277,7 @@ function MoodAssistantPage() {
               className={`fixed top-6 right-6 z-50 px-4 py-3 rounded-xl border flex items-center gap-2.5 shadow-2xl backdrop-blur-md text-xs font-mono font-semibold ${
                 toast.type === 'success' ? 'bg-emerald-950/80 text-emerald-400 border-emerald-500/25' :
                 toast.type === 'error' ? 'bg-rose-950/80 text-rose-400 border-rose-500/25' :
-                'bg-[#0b1530]/85 text-[#3b82f6] border-[#3b82f6]/25'
+                'bg-white dark:bg-[#0b1530]/85 text-[#3b82f6] border-[#3b82f6]/25'
               }`}
             >
               <span className="h-2 w-2 rounded-full bg-current animate-ping" />
@@ -299,15 +299,15 @@ function MoodAssistantPage() {
                   <Sparkles className="h-3 w-3 text-[#3b82f6]" />
                   Empathetic Wellness Engine Active
                 </div>
-                <h1 className="mt-3 text-xl lg:text-2xl font-display font-bold text-white">Mood Assistant & AI Wellness</h1>
-                <p className="mt-2 text-slate-300 max-w-xl text-xs leading-relaxed">
+                <h1 className="mt-3 text-xl lg:text-2xl font-display font-bold text-slate-900 dark:text-white">Mood Assistant & AI Wellness</h1>
+                <p className="mt-2 text-slate-700 dark:text-slate-300 max-w-xl text-xs leading-relaxed">
                   Analyze your emotional focus logs, practice interactive bio-adaptive breathing guides, and consult your mental health assistant Asha.
                 </p>
               </div>
               <div className="flex gap-2">
                 <button 
                   onClick={() => handleChatSend("Asha, give me a quick 1-minute positive affirmation.")}
-                  className="inline-flex items-center gap-2 rounded-lg bg-slate-800 border border-slate-700 px-4 py-2.5 text-xs font-bold text-slate-300 hover:text-white transition"
+                  className="inline-flex items-center gap-2 rounded-lg bg-slate-800 border border-slate-700 px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-white transition"
                 >
                   Affirmation <ChevronRight className="h-3.5 w-3.5" />
                 </button>
@@ -324,31 +324,31 @@ function MoodAssistantPage() {
 
         {/* Top Metrics Cards Row */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-[#0b1530] border border-blue-500/20 text-white shadow-md p-4.5 rounded-2xl flex flex-col justify-between">
-            <div className="text-[10px] text-blue-200/70 uppercase font-mono tracking-wider">Mood Today</div>
-            <div className="text-lg font-bold text-white mt-1.5 leading-none flex items-center gap-1.5">
+          <div className="bg-white dark:bg-[#0b1530] border border-sky-200/80 dark:border-blue-500/20 text-slate-900 dark:text-white shadow-md p-4.5 rounded-2xl flex flex-col justify-between">
+            <div className="text-[10px] text-slate-600 dark:text-blue-200/70 uppercase font-mono tracking-wider">Mood Today</div>
+            <div className="text-lg font-bold text-slate-900 dark:text-white mt-1.5 leading-none flex items-center gap-1.5">
               <span className="text-xl shrink-0">{moodToday.split(" ")[0]}</span>
               <span className="truncate">{moodToday.split(" ").slice(1).join(" ") || "Calm"}</span>
             </div>
-            <div className="text-[9px] text-blue-200/60 mt-2">Current focus feeling</div>
+            <div className="text-[9px] text-slate-600 dark:text-blue-200/60 mt-2">Current focus feeling</div>
           </div>
           
-          <div className="bg-[#0b1530] border border-blue-500/20 text-white shadow-md p-4.5 rounded-2xl flex flex-col justify-between">
-            <div className="text-[10px] text-blue-200/70 uppercase font-mono tracking-wider">Stress Index</div>
+          <div className="bg-white dark:bg-[#0b1530] border border-sky-200/80 dark:border-blue-500/20 text-slate-900 dark:text-white shadow-md p-4.5 rounded-2xl flex flex-col justify-between">
+            <div className="text-[10px] text-slate-600 dark:text-blue-200/70 uppercase font-mono tracking-wider">Stress Index</div>
             <div className={`text-lg font-bold mt-1.5 leading-none ${
               stressLevel === "High" ? "text-rose-400" :
               stressLevel === "Moderate" ? "text-amber-400" :
               stressLevel === "Calm" ? "text-emerald-400 animate-pulse" :
               "text-[#3b82f6]"
             }`}>{stressLevel}</div>
-            <div className="text-[9px] text-blue-200/60 mt-2">Autonomic nervous state</div>
+            <div className="text-[9px] text-slate-600 dark:text-blue-200/60 mt-2">Autonomic nervous state</div>
           </div>
           
-          <div className="bg-[#0b1530] border border-blue-500/20 text-white shadow-md p-4.5 rounded-2xl flex flex-col justify-between">
-            <div className="text-[10px] text-blue-200/70 uppercase font-mono tracking-wider">Focus Health Index</div>
-            <div className="text-lg font-bold text-white mt-1.5 leading-none flex items-baseline gap-1">
+          <div className="bg-white dark:bg-[#0b1530] border border-sky-200/80 dark:border-blue-500/20 text-slate-900 dark:text-white shadow-md p-4.5 rounded-2xl flex flex-col justify-between">
+            <div className="text-[10px] text-slate-600 dark:text-blue-200/70 uppercase font-mono tracking-wider">Focus Health Index</div>
+            <div className="text-lg font-bold text-slate-900 dark:text-white mt-1.5 leading-none flex items-baseline gap-1">
               <span className="text-xl font-extrabold text-[#3b82f6]">{focusIndex}</span>
-              <span className="text-[10px] text-slate-400">/100</span>
+              <span className="text-[10px] text-slate-700 dark:text-slate-400">/100</span>
             </div>
             <div className="w-full bg-white/5 h-1 rounded-full overflow-hidden mt-2">
               <div 
@@ -358,13 +358,13 @@ function MoodAssistantPage() {
             </div>
           </div>
           
-          <div className="bg-[#0b1530] border border-blue-500/20 text-white shadow-md p-4.5 rounded-2xl flex flex-col justify-between">
-            <div className="text-[10px] text-blue-200/70 uppercase font-mono tracking-wider">Weekly Streak</div>
+          <div className="bg-white dark:bg-[#0b1530] border border-sky-200/80 dark:border-blue-500/20 text-slate-900 dark:text-white shadow-md p-4.5 rounded-2xl flex flex-col justify-between">
+            <div className="text-[10px] text-slate-600 dark:text-blue-200/70 uppercase font-mono tracking-wider">Weekly Streak</div>
             <div className="text-lg font-bold text-[#6366f1] mt-1.5 leading-none flex items-center gap-1.5">
               <Zap className="h-4.5 w-4.5 fill-[#6366f1] text-transparent" />
               <span>{streak} Days</span>
             </div>
-            <div className="text-[9px] text-blue-200/60 mt-2">Consistent wellness syncing</div>
+            <div className="text-[9px] text-slate-600 dark:text-blue-200/60 mt-2">Consistent wellness syncing</div>
           </div>
         </div>
 
@@ -375,9 +375,9 @@ function MoodAssistantPage() {
           <div className="lg:col-span-7 space-y-6 flex flex-col">
             
             {/* Daily Mood Check-In Card */}
-            <GlassCard className="p-6 bg-[#0b1530] border border-blue-500/20 text-white shadow-lg space-y-4">
+            <GlassCard className="p-6 shadow-lg space-y-4">
               <div>
-                <h3 className="font-display font-extrabold text-base text-white flex items-center gap-2">
+                <h3 className="font-display font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
                   <Smile className="h-5 w-5 text-[#3b82f6]" /> Daily Mood Check-in
                 </h3>
                 <p className="text-[11px] text-muted-foreground mt-0.5">How is your mental wellness and learning productivity today?</p>
@@ -392,7 +392,7 @@ function MoodAssistantPage() {
                     className={`flex-1 py-3 px-1 rounded-xl border transition flex flex-col items-center gap-1 hover:scale-[1.03] ${
                       selectedEmoji === m.emoji 
                         ? `${m.color} border-current ring-1 ring-offset-2 ring-offset-[#0b1530] ring-current`
-                        : "border-slate-800 bg-slate-900/30 text-slate-400 hover:text-white"
+                        : "border-slate-800 bg-slate-900/30 text-slate-700 dark:text-slate-400 hover:text-white"
                     }`}
                   >
                     <span className="text-xl">{m.emoji}</span>
@@ -403,12 +403,12 @@ function MoodAssistantPage() {
 
               {/* Description Text Input */}
               <div className="space-y-1.5">
-                <label className="text-[10px] text-slate-400 font-mono">DESCRIBE HOW YOU FEEL</label>
+                <label className="text-[10px] text-slate-700 dark:text-slate-400 font-mono">DESCRIBE HOW YOU FEEL</label>
                 <textarea
                   value={feelingText}
                   onChange={(e) => setFeelingText(e.target.value)}
                   placeholder="E.g. Feeling a bit tired and anxious about my React coding exam tomorrow..."
-                  className="w-full h-20 p-3 rounded-xl bg-black/35 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-[#3b82f6]/50 transition resize-none"
+                  className="w-full h-20 p-3 rounded-xl bg-black/35 border border-slate-700 text-xs text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-[#3b82f6]/50 transition resize-none"
                 />
               </div>
 
@@ -438,9 +438,9 @@ function MoodAssistantPage() {
             </GlassCard>
 
             {/* Interactive Breathing Visualizer */}
-            <GlassCard className="p-6 bg-[#0b1530] border border-blue-500/20 text-white shadow-lg space-y-4 flex-1 flex flex-col justify-between">
+            <GlassCard className="p-6 shadow-lg space-y-4 flex-1 flex flex-col justify-between">
               <div>
-                <h3 className="font-display font-extrabold text-base text-white flex items-center gap-2">
+                <h3 className="font-display font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
                   <Wind className="h-5 w-5 text-[#6366f1]" /> Bio-Adaptive Breathing visualizer
                 </h3>
                 <p className="text-[11px] text-muted-foreground mt-0.5">Control focus and lower stress with guided respiratory timing sessions.</p>
@@ -458,11 +458,11 @@ function MoodAssistantPage() {
                     className={`flex-1 p-2.5 rounded-xl border text-left transition ${
                       activeTechniqueIdx === idx
                         ? "bg-[#6366f1]/10 border-[#6366f1]/30 text-white"
-                        : "bg-slate-900/30 border-slate-800 text-slate-400 hover:text-slate-200"
+                        : "bg-slate-900/30 border-slate-800 text-slate-700 dark:text-slate-400 hover:text-slate-200"
                     }`}
                   >
                     <div className="text-[10px] font-bold">{tech.name}</div>
-                    <div className="text-[8px] mt-1 text-slate-400 leading-relaxed truncate">{tech.desc}</div>
+                    <div className="text-[8px] mt-1 text-slate-700 dark:text-slate-400 leading-relaxed truncate">{tech.desc}</div>
                   </button>
                 ))}
               </div>
@@ -482,11 +482,11 @@ function MoodAssistantPage() {
                       </div>
                     </div>
                   ) : (
-                    <Wind className="h-10 w-10 text-slate-500" />
+                    <Wind className="h-10 w-10 text-slate-600 dark:text-slate-500" />
                   )}
                 </div>
                 {breathingActive && (
-                  <div className="mt-4 text-[10px] text-slate-400 font-mono">
+                  <div className="mt-4 text-[10px] text-slate-700 dark:text-slate-400 font-mono">
                     Cycle {breathCycleCount}/3 • Relax your shoulders and follow the rhythm
                   </div>
                 )}
@@ -517,9 +517,9 @@ function MoodAssistantPage() {
           <div className="lg:col-span-5 space-y-6 flex flex-col">
             
             {/* Asha AI Companion Chat Panel */}
-            <GlassCard className="p-6 bg-[#0b1530] border border-blue-500/20 text-white shadow-lg flex-1 flex flex-col justify-between min-h-[350px]">
+            <GlassCard className="p-6 shadow-lg flex-1 flex flex-col justify-between min-h-[350px]">
               <div>
-                <div className="flex items-center justify-between pb-3 border-b border-white/5">
+                <div className="flex items-center justify-between pb-3 border-b border-sky-200/60 dark:border-white/5">
                   <div className="flex items-center gap-2">
                     <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-[#3b82f6] to-[#6366f1] flex items-center justify-center shadow-md">
                       <Sparkles className="h-4 w-4 text-[#050816]" />
@@ -550,8 +550,8 @@ function MoodAssistantPage() {
                       </div>
                       <div className={`p-2.5 rounded-2xl ${
                         msg.role === 'user'
-                          ? 'bg-[#6366f1]/10 border border-[#6366f1]/20 text-[#e9feff] rounded-tr-none'
-                          : 'bg-slate-800/40 border border-slate-700/30 text-slate-200 rounded-tl-none'
+                          ? 'bg-[#6366f1]/10 border border-[#6366f1]/20 text-slate-900 dark:text-[#e9feff] rounded-tr-none'
+                          : 'bg-sky-50 dark:bg-slate-800/40 border border-sky-200 dark:border-slate-700/30 text-slate-200 rounded-tl-none'
                       }`}>
                         {msg.content}
                       </div>
@@ -562,7 +562,7 @@ function MoodAssistantPage() {
                       <div className="h-6 w-6 rounded-full bg-[#6366f1]/20 text-[#6366f1] flex items-center justify-center text-[9px]">
                         A
                       </div>
-                      <div className="p-2.5 rounded-2xl bg-slate-800/40 border border-slate-700/30 text-slate-400 rounded-tl-none flex items-center gap-1.5">
+                      <div className="p-2.5 rounded-2xl bg-sky-50 dark:bg-slate-800/40 border border-sky-200 dark:border-slate-700/30 text-slate-700 dark:text-slate-400 rounded-tl-none flex items-center gap-1.5">
                         <RefreshCw className="h-3 w-3 animate-spin text-[#6366f1]" />
                         thinking...
                       </div>
@@ -573,23 +573,23 @@ function MoodAssistantPage() {
               </div>
 
               {/* Preset prompts & Input Controls */}
-              <div className="space-y-3 pt-2 border-t border-white/5">
+              <div className="space-y-3 pt-2 border-t border-sky-200/60 dark:border-white/5">
                 <div className="flex gap-1.5 overflow-x-auto pb-1 no-scrollbar">
                   <button 
                     onClick={() => handleChatSend("I'm feeling very stressed and burnt out today.")}
-                    className="shrink-0 px-2 py-1 rounded-full bg-slate-800 text-slate-300 hover:text-white border border-slate-700 text-[8px] transition"
+                    className="shrink-0 px-2 py-1 rounded-full bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-white border border-slate-700 text-[8px] transition"
                   >
                     😫 Feeling stressed
                   </button>
                   <button 
                     onClick={() => handleChatSend("What are some quick focus tips for study sessions?")}
-                    className="shrink-0 px-2 py-1 rounded-full bg-slate-800 text-slate-300 hover:text-white border border-slate-700 text-[8px] transition"
+                    className="shrink-0 px-2 py-1 rounded-full bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-white border border-slate-700 text-[8px] transition"
                   >
                     🧠 Focus tips
                   </button>
                   <button 
                     onClick={() => handleChatSend("Help me calm down before my exam starts.")}
-                    className="shrink-0 px-2 py-1 rounded-full bg-slate-800 text-slate-300 hover:text-white border border-slate-700 text-[8px] transition"
+                    className="shrink-0 px-2 py-1 rounded-full bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-white border border-slate-700 text-[8px] transition"
                   >
                     🍀 Pre-exam panic
                   </button>
@@ -601,7 +601,7 @@ function MoodAssistantPage() {
                     onChange={(e) => setChatInput(e.target.value)}
                     onKeyDown={(e) => { if (e.key === 'Enter') handleChatSend(); }}
                     placeholder="Chat with Asha..."
-                    className="flex-1 px-3 py-2 rounded-xl bg-black/35 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-[#6366f1]/50 transition"
+                    className="flex-1 px-3 py-2 rounded-xl bg-black/35 border border-slate-700 text-xs text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-[#6366f1]/50 transition"
                   />
                   <button
                     onClick={() => handleChatSend()}
@@ -615,9 +615,9 @@ function MoodAssistantPage() {
             </GlassCard>
 
             {/* Sync daily wellness metrics manually */}
-            <GlassCard className="p-6 bg-[#0b1530] border border-blue-500/20 text-white shadow-lg space-y-4">
+            <GlassCard className="p-6 shadow-lg space-y-4">
               <div>
-                <h3 className="font-display font-extrabold text-base text-white flex items-center gap-2">
+                <h3 className="font-display font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
                   <Activity className="h-5 w-5 text-[#3b82f6]" /> Wellness Metrics Sync
                 </h3>
                 <p className="text-[11px] text-muted-foreground mt-0.5">Input your daily tracking numbers to calculate the index.</p>
@@ -626,9 +626,9 @@ function MoodAssistantPage() {
               <div className="space-y-3">
                 {/* Screen Time Hours */}
                 <div className="space-y-1">
-                  <div className="flex justify-between text-[10px] font-mono text-slate-400">
+                  <div className="flex justify-between text-[10px] font-mono text-slate-700 dark:text-slate-400">
                     <span>SCREEN TIME HOURS</span>
-                    <span className="text-white font-bold">{screenHours}h</span>
+                    <span className="text-slate-900 dark:text-white font-bold">{screenHours}h</span>
                   </div>
                   <input 
                     type="range" 
@@ -643,9 +643,9 @@ function MoodAssistantPage() {
 
                 {/* Water cups */}
                 <div className="space-y-1">
-                  <div className="flex justify-between text-[10px] font-mono text-slate-400">
+                  <div className="flex justify-between text-[10px] font-mono text-slate-700 dark:text-slate-400">
                     <span>WATER CUPS DRUNK</span>
-                    <span className="text-white font-bold flex items-center gap-0.5">
+                    <span className="text-slate-900 dark:text-white font-bold flex items-center gap-0.5">
                       <Droplet className="h-3.5 w-3.5 text-blue-400 fill-blue-400/20" />
                       {waterCups}/8 cups
                     </span>
@@ -663,9 +663,9 @@ function MoodAssistantPage() {
 
                 {/* Sleep hours */}
                 <div className="space-y-1">
-                  <div className="flex justify-between text-[10px] font-mono text-slate-400">
+                  <div className="flex justify-between text-[10px] font-mono text-slate-700 dark:text-slate-400">
                     <span>SLEEP DURATION</span>
-                    <span className="text-white font-bold">{sleepHours}h</span>
+                    <span className="text-slate-900 dark:text-white font-bold">{sleepHours}h</span>
                   </div>
                   <input 
                     type="range" 

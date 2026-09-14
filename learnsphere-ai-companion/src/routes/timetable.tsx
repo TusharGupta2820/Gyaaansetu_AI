@@ -166,7 +166,7 @@ function TimetableDashboard() {
             initial={{ opacity: 0, y: -50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.9 }}
-            className="fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border border-[#3b82f6]/30 shadow-2xl flex items-center gap-3 bg-[#0d1322] max-w-sm text-white"
+            className="fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border border-[#3b82f6]/30 shadow-2xl flex items-center gap-3 bg-white dark:bg-[#0d1322] max-w-sm text-white"
           >
             <div className="h-8 w-8 rounded-lg bg-[#3b82f6]/10 text-[#3b82f6] flex items-center justify-center shrink-0">
               <toast.icon className="h-4.5 w-4.5" />
@@ -189,18 +189,18 @@ function TimetableDashboard() {
         {/* Left Column: AI Scheduler Panel */}
         <div className="lg:col-span-4 flex flex-col gap-4">
           {/* AI Generator Panel */}
-          <GlassCard className="bg-[#0b1530] border border-blue-500/20 text-white shadow-lg p-6">
-            <h3 className="font-display font-extrabold text-sm text-white mb-2 flex items-center gap-1.5">
+          <GlassCard className="shadow-lg p-6">
+            <h3 className="font-display font-extrabold text-sm text-slate-900 dark:text-white mb-2 flex items-center gap-1.5">
               <Sparkles className="h-4.5 w-4.5 text-[#3b82f6]" /> AI Study Planner
             </h3>
-            <p className="text-[11px] text-blue-200/60 mb-4 leading-relaxed">
+            <p className="text-[11px] text-slate-600 dark:text-blue-200/60 mb-4 leading-relaxed">
               Describe your study objectives, exam dates, or weekly tasks. The AI context engine compiles an optimized calendar.
             </p>
             <textarea
               value={goalsInput}
               onChange={(e) => setGoalsInput(e.target.value)}
               placeholder="e.g., I have a Physics exam next Wednesday and I want to complete 3 math revision modules this week."
-              className="w-full h-24 bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]/40 outline-none transition"
+              className="w-full h-24 bg-black/40 border border-sky-200/80 dark:border-white/10 rounded-xl p-3 text-xs text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]/40 outline-none transition"
             />
             <button
               onClick={handleGenerateAI}
@@ -220,9 +220,9 @@ function TimetableDashboard() {
           </GlassCard>
 
           {/* Add Manual Form */}
-          <GlassCard className="bg-[#0b1530] border border-blue-500/20 text-white shadow-lg p-6">
+          <GlassCard className="shadow-lg p-6">
             <div className="flex justify-between items-center mb-3">
-              <h3 className="font-display font-extrabold text-sm text-white">Manual Study Slot</h3>
+              <h3 className="font-display font-extrabold text-sm text-slate-900 dark:text-white">Manual Study Slot</h3>
               <button
                 onClick={() => setShowAddForm(!showAddForm)}
                 className="text-[10px] text-blue-300 font-semibold underline"
@@ -234,24 +234,24 @@ function TimetableDashboard() {
             {showAddForm && (
               <form onSubmit={handleAddManual} className="space-y-3.5">
                 <div>
-                  <label className="text-[9px] font-mono text-slate-400 uppercase">Event Title</label>
+                  <label className="text-[9px] font-mono text-slate-700 dark:text-slate-400 uppercase">Event Title</label>
                   <input
                     type="text"
                     required
                     value={newTitle}
                     onChange={(e) => setNewTitle(e.target.value)}
                     placeholder="Math Lecture revision"
-                    className="w-full bg-[#050816] border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#3b82f6]/40"
+                    className="w-full bg-slate-100/90 dark:bg-[#050816] border border-sky-200/80 dark:border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#3b82f6]/40"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="text-[9px] font-mono text-slate-400 uppercase">Category</label>
+                    <label className="text-[9px] font-mono text-slate-700 dark:text-slate-400 uppercase">Category</label>
                     <select
                       value={newCategory}
                       onChange={(e) => setNewCategory(e.target.value)}
-                      className="w-full bg-[#050816] border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none"
+                      className="w-full bg-slate-100/90 dark:bg-[#050816] border border-sky-200/80 dark:border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 dark:text-white focus:outline-none"
                     >
                       {CATEGORIES.map((c) => (
                         <option key={c} value={c}>
@@ -261,11 +261,11 @@ function TimetableDashboard() {
                     </select>
                   </div>
                   <div>
-                    <label className="text-[9px] font-mono text-slate-400 uppercase">Priority</label>
+                    <label className="text-[9px] font-mono text-slate-700 dark:text-slate-400 uppercase">Priority</label>
                     <select
                       value={newPriority}
                       onChange={(e) => setNewPriority(e.target.value)}
-                      className="w-full bg-[#050816] border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none"
+                      className="w-full bg-slate-100/90 dark:bg-[#050816] border border-sky-200/80 dark:border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 dark:text-white focus:outline-none"
                     >
                       <option value="Low">Low</option>
                       <option value="Medium">Medium</option>
@@ -276,11 +276,11 @@ function TimetableDashboard() {
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="text-[9px] font-mono text-slate-400 uppercase">Day</label>
+                    <label className="text-[9px] font-mono text-slate-700 dark:text-slate-400 uppercase">Day</label>
                     <select
                       value={newDay}
                       onChange={(e) => setNewDay(e.target.value)}
-                      className="w-full bg-[#050816] border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none"
+                      className="w-full bg-slate-100/90 dark:bg-[#050816] border border-sky-200/80 dark:border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 dark:text-white focus:outline-none"
                     >
                       {DAYS.map((d) => (
                         <option key={d} value={d}>
@@ -290,12 +290,12 @@ function TimetableDashboard() {
                     </select>
                   </div>
                   <div>
-                    <label className="text-[9px] font-mono text-slate-400 uppercase">Time</label>
+                    <label className="text-[9px] font-mono text-slate-700 dark:text-slate-400 uppercase">Time</label>
                     <input
                       type="time"
                       value={newTime}
                       onChange={(e) => setNewTime(e.target.value)}
-                      className="w-full bg-[#050816] border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none"
+                      className="w-full bg-slate-100/90 dark:bg-[#050816] border border-sky-200/80 dark:border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 dark:text-white focus:outline-none"
                     />
                   </div>
                 </div>
@@ -313,15 +313,15 @@ function TimetableDashboard() {
 
         {/* Right Column: Timetable Grid */}
         <div className="lg:col-span-8 flex flex-col">
-          <GradientCard className="flex-1 bg-[#0b1530] border border-blue-500/20 text-white shadow-lg p-6 flex flex-col justify-between">
+          <GradientCard className="flex-1 shadow-lg p-6 flex flex-col justify-between">
             <div className="space-y-4 flex-1 flex flex-col">
-              <div className="flex justify-between items-center pb-2 border-b border-white/5">
+              <div className="flex justify-between items-center pb-2 border-b border-sky-200/60 dark:border-white/5">
                 <span className="text-xs font-mono text-[#3b82f6] tracking-wider uppercase font-bold">Weekly Study Blocks</span>
-                <span className="text-[9px] font-mono text-slate-400">13th July - 19th July 2026</span>
+                <span className="text-[9px] font-mono text-slate-700 dark:text-slate-400">13th July - 19th July 2026</span>
               </div>
 
               {loading ? (
-                <div className="flex-1 flex flex-col items-center justify-center py-24 text-slate-500">
+                <div className="flex-1 flex flex-col items-center justify-center py-24 text-slate-600 dark:text-slate-500">
                   <RefreshCw className="h-8 w-8 text-[#3b82f6] animate-spin mb-3" />
                   <p className="text-xs font-mono">Loading timetable slots...</p>
                 </div>
@@ -330,10 +330,10 @@ function TimetableDashboard() {
                   {DAYS.map((day) => {
                     const dayEvents = getEventsForDay(day);
                     return (
-                      <div key={day} className="bg-[#050816]/60 p-4 rounded-2xl border border-white/5 space-y-2">
+                      <div key={day} className="bg-slate-100 dark:bg-[#050816] p-4 rounded-2xl border border-sky-200/60 dark:border-white/10 space-y-2">
                         <div className="text-[10px] text-blue-300 font-mono uppercase font-bold flex justify-between">
                           <span>{day}</span>
-                          <span className="text-slate-500">{dayEvents.length} events scheduled</span>
+                          <span className="text-slate-600 dark:text-slate-500">{dayEvents.length} events scheduled</span>
                         </div>
                         {dayEvents.length > 0 ? (
                           <div className="space-y-2">
@@ -343,7 +343,7 @@ function TimetableDashboard() {
                                 className={`p-3 rounded-xl border flex items-center justify-between transition-all ${
                                   ev.completed
                                     ? "bg-emerald-500/5 border-emerald-500/20 opacity-60"
-                                    : "bg-slate-900/40 border-white/5 hover:border-blue-500/30"
+                                    : "bg-slate-900/40 border-sky-200/60 dark:border-white/5 hover:border-blue-500/30"
                                 }`}
                               >
                                 <div className="flex items-center gap-3">
@@ -358,7 +358,7 @@ function TimetableDashboard() {
                                     {ev.completed && <Check className="h-3 w-3" />}
                                   </button>
                                   <div>
-                                    <div className={`text-xs font-bold text-white ${ev.completed ? "line-through text-slate-500" : ""}`}>
+                                    <div className={`text-xs font-bold text-slate-900 dark:text-white ${ev.completed ? "line-through text-slate-600 dark:text-slate-500" : ""}`}>
                                       {ev.title}
                                     </div>
                                     <div className="flex items-center gap-2 mt-1">
@@ -370,7 +370,7 @@ function TimetableDashboard() {
                                       }`}>
                                         {ev.priority}
                                       </span>
-                                      <span className="text-[8px] font-mono text-slate-500 flex items-center gap-1">
+                                      <span className="text-[8px] font-mono text-slate-600 dark:text-slate-500 flex items-center gap-1">
                                         <Clock className="h-2.5 w-2.5" />
                                         {ev.dueAt.substring(11, 16)}
                                       </span>

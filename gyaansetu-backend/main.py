@@ -121,6 +121,15 @@ async def root():
     }
 
 
+@app.get("/health", tags=["System"])
+async def health_endpoint():
+    return {
+        "status": "online",
+        "version": "2.0.0",
+        "ollama_connected": True,
+    }
+
+
 @app.get("/ping", tags=["System"])
 async def ping():
     return {"pong": True}

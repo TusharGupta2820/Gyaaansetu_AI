@@ -301,7 +301,7 @@ function HealthDashboard() {
             initial={{ opacity: 0, y: -50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.9 }}
-            className="fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border border-[#3b82f6]/30 shadow-2xl flex items-center gap-3 bg-[#0d1322] max-w-sm"
+            className="fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border border-[#3b82f6]/30 shadow-2xl flex items-center gap-3 bg-white dark:bg-[#0d1322] max-w-sm"
           >
             <div className="h-8 w-8 rounded-lg bg-[#3b82f6]/10 text-[#3b82f6] flex items-center justify-center shrink-0">
               <toast.icon className="h-4.5 w-4.5" />
@@ -321,12 +321,12 @@ function HealthDashboard() {
       />
 
       {/* AI Input Hub Panel */}
-      <GlassCard className="mb-6 bg-[#0b1530] border border-blue-500/20 text-white shadow-lg">
+      <GlassCard className="mb-6 shadow-lg">
         <div className="flex flex-col gap-4">
-          <div className="flex justify-between items-center pb-2 border-b border-white/5">
+          <div className="flex justify-between items-center pb-2 border-b border-sky-200/60 dark:border-white/5">
             <div className="flex items-center gap-2">
               <Sparkles className="h-4.5 w-4.5 text-[#3b82f6]" />
-              <span className="font-display font-bold text-sm text-white">AI Health Sync</span>
+              <span className="font-display font-bold text-sm text-slate-900 dark:text-white">AI Health Sync</span>
             </div>
             <span className="text-[9px] font-mono text-blue-300 uppercase tracking-wider">Upload Wearable Export or Log Mood</span>
           </div>
@@ -339,7 +339,7 @@ function HealthDashboard() {
                 setVoiceText("");
               }}
               className={`flex items-center justify-between p-3 rounded-xl border transition text-left ${
-                hubMode === "voice" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
+                hubMode === "voice" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white" : "bg-sky-50 dark:bg-slate-800/40 border-sky-200 dark:border-slate-700/30 text-slate-700 dark:text-slate-400 hover:bg-slate-800/60"
               }`}
             >
               <div className="flex items-center gap-2">
@@ -356,7 +356,7 @@ function HealthDashboard() {
                 setSelectedFile(null);
               }}
               className={`flex items-center justify-between p-3 rounded-xl border transition text-left ${
-                hubMode === "upload" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
+                hubMode === "upload" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white" : "bg-sky-50 dark:bg-slate-800/40 border-sky-200 dark:border-slate-700/30 text-slate-700 dark:text-slate-400 hover:bg-slate-800/60"
               }`}
             >
               <div className="flex items-center gap-2">
@@ -373,7 +373,7 @@ function HealthDashboard() {
                 setPastedText("");
               }}
               className={`flex items-center justify-between p-3 rounded-xl border transition text-left ${
-                hubMode === "text" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
+                hubMode === "text" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white" : "bg-sky-50 dark:bg-slate-800/40 border-sky-200 dark:border-slate-700/30 text-slate-700 dark:text-slate-400 hover:bg-slate-800/60"
               }`}
             >
               <div className="flex items-center gap-2">
@@ -387,9 +387,9 @@ function HealthDashboard() {
           {/* Conditional Input Areas */}
           <AnimatePresence>
             {hubMode === "voice" && (
-              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="p-3 bg-[#050816] rounded-xl border border-white/5 space-y-3">
+              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="p-3 bg-slate-100/90 dark:bg-[#050816] rounded-xl border border-sky-200/60 dark:border-white/5 space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-[10px] font-mono text-slate-400">Microphone Input</span>
+                  <span className="text-[10px] font-mono text-slate-700 dark:text-slate-400">Microphone Input</span>
                   {recording && <span className="h-2 w-2 rounded-full bg-red-500 animate-ping" />}
                 </div>
                 {recording ? (
@@ -399,7 +399,7 @@ function HealthDashboard() {
                     ))}
                   </div>
                 ) : voiceText ? (
-                  <p className="text-xs text-white leading-relaxed font-mono">"{voiceText}"</p>
+                  <p className="text-xs text-slate-900 dark:text-white leading-relaxed font-mono">"{voiceText}"</p>
                 ) : (
                   <p className="text-xs text-muted-foreground italic">Click Start Recording to dictate your wellness status...</p>
                 )}
@@ -438,8 +438,8 @@ function HealthDashboard() {
             )}
 
             {hubMode === "upload" && (
-              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="p-4 bg-[#050816] rounded-xl border border-white/5 space-y-4">
-                <label className="border border-dashed border-white/10 rounded-xl p-6 flex flex-col items-center justify-center hover:border-[#3b82f6]/40 transition cursor-pointer">
+              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="p-4 bg-slate-100/90 dark:bg-[#050816] rounded-xl border border-sky-200/60 dark:border-white/5 space-y-4">
+                <label className="border border-dashed border-sky-200/80 dark:border-white/10 rounded-xl p-6 flex flex-col items-center justify-center hover:border-[#3b82f6]/40 transition cursor-pointer">
                   <input
                     type="file"
                     accept=".csv"
@@ -455,7 +455,7 @@ function HealthDashboard() {
                   />
                   <FileUp className="h-8 w-8 text-[#3b82f6] mb-2" />
                   {selectedFile ? (
-                    <span className="text-xs text-white font-mono font-bold">{selectedFile}</span>
+                    <span className="text-xs text-slate-900 dark:text-white font-mono font-bold">{selectedFile}</span>
                   ) : (
                     <span className="text-xs text-muted-foreground text-center">Click to choose wearable CSV export</span>
                   )}
@@ -473,12 +473,12 @@ function HealthDashboard() {
             )}
 
             {hubMode === "text" && (
-              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="p-3 bg-[#050816] rounded-xl border border-white/5 space-y-3">
+              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="p-3 bg-slate-100/90 dark:bg-[#050816] rounded-xl border border-sky-200/60 dark:border-white/5 space-y-3">
                 <textarea
                   value={pastedText}
                   onChange={(e) => setPastedText(e.target.value)}
                   placeholder="Paste symptoms, energy logs, or water tallies..."
-                  className="w-full h-24 bg-black/40 border border-white/10 rounded-lg p-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]/40 font-mono"
+                  className="w-full h-24 bg-black/40 border border-sky-200/80 dark:border-white/10 rounded-lg p-2.5 text-xs text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]/40 font-mono"
                 />
                 <div className="flex justify-end">
                   <button
@@ -501,7 +501,7 @@ function HealthDashboard() {
             >
               <button 
                 onClick={() => setAiResponse(null)}
-                className="absolute top-2.5 right-2.5 text-slate-400 hover:text-white transition"
+                className="absolute top-2.5 right-2.5 text-slate-700 dark:text-slate-400 hover:text-white transition"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -527,7 +527,7 @@ function HealthDashboard() {
               <h1 className="mt-3 text-2xl lg:text-3xl font-display font-bold">
                 Student Wellness Hub
               </h1>
-              <p className="mt-2 text-slate-300 max-w-xl text-xs leading-relaxed">
+              <p className="mt-2 text-slate-700 dark:text-slate-300 max-w-xl text-xs leading-relaxed">
                 Evaluating behavioral patterns offline to prevent academic burnout and regulate attention span.
               </p>
             </div>
@@ -556,32 +556,32 @@ function HealthDashboard() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
         <button 
           onClick={() => { setActiveModal("screentime"); showToast("Opening screen time app logs...", Clock); }}
-          className="bg-[#0b1530] border border-blue-500/20 p-4 rounded-2xl text-left hover:border-[#3b82f6]/30 transition hover:scale-[1.02] text-white shadow-lg"
+          className="bg-white dark:bg-[#0b1530] border border-sky-200/80 dark:border-blue-500/20 text-slate-900 dark:text-white p-4 rounded-2xl text-left hover:border-[#3b82f6]/30 transition hover:scale-[1.02] text-white shadow-lg"
         >
           <div className="text-[10px] text-blue-300 uppercase font-mono tracking-wider">Screen Time</div>
-          <div className="text-xl font-bold text-white mt-1 leading-none">{Math.floor(screenHours)}h {Math.round((screenHours % 1) * 60)}m</div>
+          <div className="text-xl font-bold text-slate-900 dark:text-white mt-1 leading-none">{Math.floor(screenHours)}h {Math.round((screenHours % 1) * 60)}m</div>
           <div className="text-[9px] text-[#3b82f6] mt-2 underline">Click to view app breakdown</div>
         </button>
         <button 
           onClick={() => { setActiveModal("sleep"); showToast("Opening sleep patterns insights...", Moon); }}
-          className="bg-[#0b1530] border border-blue-500/20 p-4 rounded-2xl text-left hover:border-[#6366f1]/30 transition hover:scale-[1.02] text-white shadow-lg"
+          className="bg-white dark:bg-[#0b1530] border border-sky-200/80 dark:border-blue-500/20 text-slate-900 dark:text-white p-4 rounded-2xl text-left hover:border-[#6366f1]/30 transition hover:scale-[1.02] text-white shadow-lg"
         >
           <div className="text-[10px] text-blue-300 uppercase font-mono tracking-wider">Sleep</div>
-          <div className="text-xl font-bold text-white mt-1 leading-none">{sleepScore}h</div>
+          <div className="text-xl font-bold text-slate-900 dark:text-white mt-1 leading-none">{sleepScore}h</div>
           <div className="text-[9px] text-[#6366f1] mt-2 underline">Healthy range (7-8h)</div>
         </button>
         <button 
           onClick={() => { setActiveModal("breathing"); showToast("Opening breathing stress relief...", Activity); }}
-          className="bg-[#0b1530] border border-blue-500/20 p-4 rounded-2xl text-left hover:border-emerald-500/30 transition hover:scale-[1.02] text-white shadow-lg"
+          className="bg-white dark:bg-[#0b1530] border border-sky-200/80 dark:border-blue-500/20 text-slate-900 dark:text-white p-4 rounded-2xl text-left hover:border-emerald-500/30 transition hover:scale-[1.02] text-white shadow-lg"
         >
           <div className="text-[10px] text-blue-300 uppercase font-mono tracking-wider">Stress Level</div>
           <div className="text-xl font-bold text-emerald-400 mt-1 leading-none">{stressLevel}</div>
-          <div className="text-[9px] text-blue-200/60 mt-2 underline">Click to start breathing cycle</div>
+          <div className="text-[9px] text-slate-600 dark:text-blue-200/60 mt-2 underline">Click to start breathing cycle</div>
         </button>
-        <div className="bg-[#0b1530] border border-blue-500/20 p-4 rounded-2xl text-white shadow-lg">
+        <div className="bg-white dark:bg-[#0b1530] border border-sky-200/80 dark:border-blue-500/20 text-slate-900 dark:text-white p-4 rounded-2xl text-white shadow-lg">
           <div className="text-[10px] text-blue-300 uppercase font-mono tracking-wider">Focus Health</div>
-          <div className="text-xl font-bold text-white mt-1 leading-none">{focusHealth}/100</div>
-          <div className="text-[9px] text-blue-200/60 mt-2">Aggregated wellness rating</div>
+          <div className="text-xl font-bold text-slate-900 dark:text-white mt-1 leading-none">{focusHealth}/100</div>
+          <div className="text-[9px] text-slate-600 dark:text-blue-200/60 mt-2">Aggregated wellness rating</div>
         </div>
       </div>
 
@@ -590,12 +590,12 @@ function HealthDashboard() {
         
         {/* Left: Interactive Water Intake Tracker */}
         <div className="lg:col-span-5 flex flex-col">
-          <GlassCard className="flex-1 flex flex-col justify-between items-center bg-[#0b1530] border border-blue-500/20 p-6 min-h-[350px] text-white shadow-lg">
+          <GlassCard className="flex-1 flex flex-col justify-between items-center p-6 min-h-[350px] shadow-lg">
             
             <div className="w-full flex justify-between items-center mb-3">
               <div>
-                <h3 className="font-display font-bold text-base text-white">Water Intake</h3>
-                <p className="text-[11px] text-blue-200/60">Hydration tracker (Daily Target: 2.0L)</p>
+                <h3 className="font-display font-bold text-base text-slate-900 dark:text-white">Water Intake</h3>
+                <p className="text-[11px] text-slate-600 dark:text-blue-200/60">Hydration tracker (Daily Target: 2.0L)</p>
               </div>
               <span className="text-[9px] font-mono text-[#3b82f6] bg-[#3b82f6]/10 px-2 py-0.5 rounded">Goal: 8 cups</span>
             </div>
@@ -618,7 +618,7 @@ function HealthDashboard() {
 
               {/* Digital progress overlay */}
               <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                <div className="text-xl font-mono font-extrabold text-white">
+                <div className="text-xl font-mono font-extrabold text-slate-900 dark:text-white">
                   {waterCups * 250} ml
                 </div>
                 <div className="text-[8px] font-mono text-white/70 uppercase tracking-widest mt-1">
@@ -639,23 +639,23 @@ function HealthDashboard() {
 
         {/* Right: Screen Time app chart logs */}
         <div className="lg:col-span-7 flex flex-col">
-          <GlassCard className="flex-1 bg-[#0b1530] border border-blue-500/20 p-6 flex flex-col justify-between text-white shadow-lg">
+          <GlassCard className="flex-1 p-6 flex flex-col justify-between shadow-lg">
             <div>
-              <div className="flex justify-between items-center mb-4 pb-2 border-b border-white/5">
+              <div className="flex justify-between items-center mb-4 pb-2 border-b border-sky-200/60 dark:border-white/5">
                 <div>
-                  <h3 className="font-display font-bold text-base text-white">Screen Time Distribution</h3>
-                  <p className="text-[11px] text-blue-200/60">Detailed logs of screen focus per app</p>
+                  <h3 className="font-display font-bold text-base text-slate-900 dark:text-white">Screen Time Distribution</h3>
+                  <p className="text-[11px] text-slate-600 dark:text-blue-200/60">Detailed logs of screen focus per app</p>
                 </div>
                 <div className="flex gap-1.5 text-[9px] font-bold">
                   <button 
                     onClick={() => setActiveDuration("today")}
-                    className={`px-2.5 py-1 rounded transition ${activeDuration === "today" ? "bg-white/10 text-white" : "text-blue-200/60 hover:text-white"}`}
+                    className={`px-2.5 py-1 rounded transition ${activeDuration === "today" ? "bg-white/10 text-white" : "text-slate-600 dark:text-blue-200/60 hover:text-white"}`}
                   >
                     Today
                   </button>
                   <button 
                     onClick={() => setActiveDuration("yesterday")}
-                    className={`px-2.5 py-1 rounded transition ${activeDuration === "yesterday" ? "bg-white/10 text-white" : "text-blue-200/60 hover:text-white"}`}
+                    className={`px-2.5 py-1 rounded transition ${activeDuration === "yesterday" ? "bg-white/10 text-white" : "text-slate-600 dark:text-blue-200/60 hover:text-white"}`}
                   >
                     Yesterday
                   </button>
@@ -667,7 +667,7 @@ function HealthDashboard() {
                 {appData.map((ap) => (
                   <div key={ap.name} className="space-y-1.5">
                     <div className="flex justify-between items-center text-xs">
-                      <span className="font-semibold text-slate-300">{ap.name}</span>
+                      <span className="font-semibold text-slate-700 dark:text-slate-300">{ap.name}</span>
                       <span className="text-white font-mono">{ap.hours} hours</span>
                     </div>
                     <div className="w-full bg-white/5 h-2 rounded-full overflow-hidden">
@@ -683,7 +683,7 @@ function HealthDashboard() {
               </div>
             </div>
 
-            <div className="text-[10px] text-blue-200/60 flex items-center gap-1 bg-slate-900/40 p-3 rounded-lg border border-white/5 mt-4">
+            <div className="text-[10px] text-slate-600 dark:text-blue-200/60 flex items-center gap-1 bg-slate-900/40 p-3 rounded-lg border border-sky-200/60 dark:border-white/5 mt-4">
               <Info className="h-3.5 w-3.5 text-[#3b82f6]" /> GyaanSetu suggests taking a 20-second break every 2 hours of IDE focus.
             </div>
 
@@ -715,7 +715,7 @@ function HealthDashboard() {
             }}
             className="cursor-pointer"
           >
-            <GlassCard className="h-full bg-[#0b1530] border border-blue-500/20 text-white shadow-lg">
+            <GlassCard className="h-full shadow-lg">
               <div className="flex items-start justify-between mb-3">
                 <div className="h-8.5 w-8.5 rounded-xl bg-gradient-to-br from-[#3b82f6] to-[#6366f1] flex items-center justify-center text-[#050816] font-bold text-xs">
                   {String(i + 1).padStart(2, "0")}
@@ -724,8 +724,8 @@ function HealthDashboard() {
                   <span className="text-[8px] font-mono bg-[#3b82f6]/10 px-2 py-0.5 rounded text-[#3b82f6]">{it.tag}</span>
                 )}
               </div>
-              <h3 className="font-display font-bold text-xs text-white mb-1">{it.title}</h3>
-              <p className="text-[10.5px] text-blue-200/70 leading-normal">{it.desc}</p>
+              <h3 className="font-display font-bold text-xs text-slate-900 dark:text-white mb-1">{it.title}</h3>
+              <p className="text-[10.5px] text-slate-600 dark:text-blue-200/70 leading-normal">{it.desc}</p>
             </GlassCard>
           </motion.div>
         ))}
@@ -741,12 +741,12 @@ function HealthDashboard() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-sm bg-[#0d1322] border border-[#3b82f6]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden"
+              className="w-full max-w-sm bg-white dark:bg-[#0d1322] border border-[#3b82f6]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-[#3b82f6]/5 rounded-full blur-2xl" />
 
-              <div className="flex items-center justify-between pb-3 border-b border-white/5 mb-4">
-                <h4 className="font-display font-extrabold text-sm text-white flex items-center gap-1.5">
+              <div className="flex items-center justify-between pb-3 border-b border-sky-200/60 dark:border-white/5 mb-4">
+                <h4 className="font-display font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
                   <Activity className="h-4.5 w-4.5 text-[#3b82f6]" />
                   Breathing Stress Regulator
                 </h4>
@@ -768,14 +768,14 @@ function HealthDashboard() {
                     transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
                     className="absolute inset-4 rounded-full bg-[#3b82f6]/10 border border-[#3b82f6]/30 shadow-[0_0_20px_rgba(59,130,246,0.15)] flex items-center justify-center"
                   />
-                  <div className="absolute text-sm font-bold text-white font-mono leading-none z-10">
+                  <div className="absolute text-sm font-bold text-slate-900 dark:text-white font-mono leading-none z-10">
                     {breathingStep}
                   </div>
                 </div>
 
                 <div className="text-center space-y-1">
-                  <div className="text-xs text-muted-foreground">Timer remaining: <span className="font-bold text-white font-mono">{breathingTimer}s</span></div>
-                  <p className="text-[10px] text-slate-400 max-w-xs leading-normal">Helps oxygenate cognitive systems and reduce mental anxiety triggers.</p>
+                  <div className="text-xs text-muted-foreground">Timer remaining: <span className="font-bold text-slate-900 dark:text-white font-mono">{breathingTimer}s</span></div>
+                  <p className="text-[10px] text-slate-700 dark:text-slate-400 max-w-xs leading-normal">Helps oxygenate cognitive systems and reduce mental anxiety triggers.</p>
                 </div>
 
                 <button
@@ -799,12 +799,12 @@ function HealthDashboard() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-sm bg-[#0d1322] border border-[#3b82f6]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden"
+              className="w-full max-w-sm bg-white dark:bg-[#0d1322] border border-[#3b82f6]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-[#6366f1]/5 rounded-full blur-2xl" />
 
-              <div className="flex items-center justify-between pb-3 border-b border-white/5 mb-4">
-                <h4 className="font-display font-extrabold text-sm text-white flex items-center gap-1.5">
+              <div className="flex items-center justify-between pb-3 border-b border-sky-200/60 dark:border-white/5 mb-4">
+                <h4 className="font-display font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
                   <Eye className="h-4.5 w-4.5 text-[#3b82f6]" />
                   20-20-20 Eye Rest Pacer
                 </h4>
@@ -813,7 +813,7 @@ function HealthDashboard() {
                 </button>
               </div>
 
-              <div className="space-y-4 text-xs text-slate-300">
+              <div className="space-y-4 text-xs text-slate-700 dark:text-slate-300">
                 <div className="bg-[#3b82f6]/10 text-[#3b82f6] p-3.5 rounded-xl text-[10.5px] leading-relaxed">
                   <b>20-20-20 Rule:</b> Every 20 minutes, look at an object 20 feet away for at least 20 seconds.
                 </div>
@@ -858,12 +858,12 @@ function HealthDashboard() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-sm bg-[#0d1322] border border-[#3b82f6]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden"
+              className="w-full max-w-sm bg-white dark:bg-[#0d1322] border border-[#3b82f6]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-[#6366f1]/5 rounded-full blur-2xl" />
 
-              <div className="flex items-center justify-between pb-3 border-b border-white/5 mb-4">
-                <h4 className="font-display font-extrabold text-sm text-white flex items-center gap-1.5">
+              <div className="flex items-center justify-between pb-3 border-b border-sky-200/60 dark:border-white/5 mb-4">
+                <h4 className="font-display font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
                   <Moon className="h-4.5 w-4.5 text-[#6366f1]" />
                   Hypnogram Sleep Stage Insights
                 </h4>
@@ -872,29 +872,29 @@ function HealthDashboard() {
                 </button>
               </div>
 
-              <div className="space-y-4 text-xs text-slate-300">
+              <div className="space-y-4 text-xs text-slate-700 dark:text-slate-300">
                 <div className="grid grid-cols-3 gap-2 text-center text-[10px] font-mono">
-                  <div className="bg-[#050816] p-2 rounded-lg border border-white/5">
-                    <div className="text-slate-400">Deep Sleep</div>
-                    <div className="text-white font-bold mt-1">{Math.max(0, (sleepScore * 0.25).toFixed(1))}h</div>
+                  <div className="bg-slate-100/90 dark:bg-[#050816] p-2 rounded-lg border border-sky-200/60 dark:border-white/5">
+                    <div className="text-slate-700 dark:text-slate-400">Deep Sleep</div>
+                    <div className="text-slate-900 dark:text-white font-bold mt-1">{Math.max(0, (sleepScore * 0.25).toFixed(1))}h</div>
                   </div>
-                  <div className="bg-[#050816] p-2 rounded-lg border border-white/5">
-                    <div className="text-slate-400">REM Stage</div>
-                    <div className="text-white font-bold mt-1">{Math.max(0, (sleepScore * 0.28).toFixed(1))}h</div>
+                  <div className="bg-slate-100/90 dark:bg-[#050816] p-2 rounded-lg border border-sky-200/60 dark:border-white/5">
+                    <div className="text-slate-700 dark:text-slate-400">REM Stage</div>
+                    <div className="text-slate-900 dark:text-white font-bold mt-1">{Math.max(0, (sleepScore * 0.28).toFixed(1))}h</div>
                   </div>
-                  <div className="bg-[#050816] p-2 rounded-lg border border-white/5">
-                    <div className="text-slate-400">Light Stage</div>
-                    <div className="text-white font-bold mt-1">{Math.max(0, (sleepScore * 0.47).toFixed(1))}h</div>
+                  <div className="bg-slate-100/90 dark:bg-[#050816] p-2 rounded-lg border border-sky-200/60 dark:border-white/5">
+                    <div className="text-slate-700 dark:text-slate-400">Light Stage</div>
+                    <div className="text-slate-900 dark:text-white font-bold mt-1">{Math.max(0, (sleepScore * 0.47).toFixed(1))}h</div>
                   </div>
                 </div>
 
-                <div className="p-3 bg-white/5 rounded-xl border border-white/5 text-[10px] leading-relaxed">
+                <div className="p-3 bg-white/5 rounded-xl border border-sky-200/60 dark:border-white/5 text-[10px] leading-relaxed">
                   <b>Sleep Hours:</b> {sleepScore}h (Target: 7-8h)
                 </div>
 
-                <div className="p-3 bg-slate-900/60 border border-white/5 rounded-xl space-y-2">
+                <div className="p-3 bg-slate-900/60 border border-sky-200/60 dark:border-white/5 rounded-xl space-y-2">
                   <div className="flex justify-between items-center text-[11px]">
-                    <span className="text-slate-300 font-semibold">Adjust Sleep Hours:</span>
+                    <span className="text-slate-700 dark:text-slate-300 font-semibold">Adjust Sleep Hours:</span>
                     <span className="font-mono font-bold text-[#6366f1]">{sleepScore}h</span>
                   </div>
                   <input 
@@ -927,7 +927,7 @@ function HealthDashboard() {
 
               <button
                 onClick={() => setActiveModal(null)}
-                className="w-full mt-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold text-white transition"
+                className="w-full mt-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold text-slate-900 dark:text-white transition"
               >
                 Close Panel
               </button>
@@ -942,12 +942,12 @@ function HealthDashboard() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-sm bg-[#0d1322] border border-[#3b82f6]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden"
+              className="w-full max-w-sm bg-white dark:bg-[#0d1322] border border-[#3b82f6]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-[#3b82f6]/5 rounded-full blur-2xl" />
 
-              <div className="flex items-center justify-between pb-3 border-b border-white/5 mb-4">
-                <h4 className="font-display font-extrabold text-sm text-white flex items-center gap-1.5">
+              <div className="flex items-center justify-between pb-3 border-b border-sky-200/60 dark:border-white/5 mb-4">
+                <h4 className="font-display font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
                   <Clock className="h-4.5 w-4.5 text-[#3b82f6]" />
                   Active Apps Screen Log
                 </h4>
@@ -958,15 +958,15 @@ function HealthDashboard() {
 
               <div className="space-y-2.5 text-xs">
                 {TODAY_APPS.map((a, idx) => (
-                  <div key={idx} className="p-3 rounded-xl bg-[#050816] border border-white/5 flex justify-between items-center">
-                    <span className="font-semibold text-slate-300">{a.name}</span>
+                  <div key={idx} className="p-3 rounded-xl bg-slate-100/90 dark:bg-[#050816] border border-sky-200/60 dark:border-white/5 flex justify-between items-center">
+                    <span className="font-semibold text-slate-700 dark:text-slate-300">{a.name}</span>
                     <span className="font-mono text-[#3b82f6]">{a.hours}h today</span>
                   </div>
                 ))}
 
-                <div className="p-3 bg-slate-900/60 border border-white/5 rounded-xl space-y-2 mt-4 text-white">
+                <div className="p-3 bg-slate-900/60 border border-sky-200/60 dark:border-white/5 rounded-xl space-y-2 mt-4 text-white">
                   <div className="flex justify-between items-center text-[11px]">
-                    <span className="text-slate-300 font-semibold">Total Screen Hours:</span>
+                    <span className="text-slate-700 dark:text-slate-300 font-semibold">Total Screen Hours:</span>
                     <span className="font-mono font-bold text-[#3b82f6]">{screenHours}h</span>
                   </div>
                   <input 
@@ -992,7 +992,7 @@ function HealthDashboard() {
 
               <button
                 onClick={() => setActiveModal(null)}
-                className="w-full mt-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold text-white transition"
+                className="w-full mt-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold text-slate-900 dark:text-white transition"
               >
                 Close Logs
               </button>
@@ -1007,12 +1007,12 @@ function HealthDashboard() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-sm bg-[#0d1322] border border-[#3b82f6]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden"
+              className="w-full max-w-sm bg-white dark:bg-[#0d1322] border border-[#3b82f6]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-[#6366f1]/5 rounded-full blur-2xl" />
 
-              <div className="flex items-center justify-between pb-3 border-b border-white/5 mb-4">
-                <h4 className="font-display font-extrabold text-sm text-white flex items-center gap-1.5">
+              <div className="flex items-center justify-between pb-3 border-b border-sky-200/60 dark:border-white/5 mb-4">
+                <h4 className="font-display font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
                   <Info className="h-4.5 w-4.5 text-[#3b82f6]" />
                   {activeModal === "stress" ? "Wearable Index Sync" : "Wellness Report"}
                 </h4>
@@ -1022,9 +1022,9 @@ function HealthDashboard() {
               </div>
 
               {activeModal === "stress" ? (
-                <div className="space-y-3.5 text-xs text-slate-300">
+                <div className="space-y-3.5 text-xs text-slate-700 dark:text-slate-300">
                   <p>Synchronize stress markers via local wearable APIs:</p>
-                  <div className="p-3 bg-[#050816] rounded-xl border border-white/5 space-y-1.5 font-mono text-[9.5px]">
+                  <div className="p-3 bg-slate-100/90 dark:bg-[#050816] rounded-xl border border-sky-200/60 dark:border-white/5 space-y-1.5 font-mono text-[9.5px]">
                     <div className="flex justify-between"><span>Heart Rate Variability:</span> <span className="text-emerald-400">74 ms (Optimal)</span></div>
                     <div className="flex justify-between"><span>Skin Conductance:</span> <span className="text-[#3b82f6]">1.2 μS</span></div>
                     <div className="flex justify-between"><span>Wearable Connection:</span> <span className="text-emerald-400">CONNECTED</span></div>
@@ -1038,7 +1038,7 @@ function HealthDashboard() {
                   )}
                 </div>
               ) : (
-                <div className="space-y-3 text-xs leading-relaxed text-slate-300">
+                <div className="space-y-3 text-xs leading-relaxed text-slate-700 dark:text-slate-300">
                   <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl text-[10.5px]">
                     <div className="flex justify-between font-bold">
                       <span>Focus Health Rating:</span> 
@@ -1048,7 +1048,7 @@ function HealthDashboard() {
                   <p>Daily breakdown suggests your screen-to-rest ratio is {screenHours > 6 ? "slightly high" : "excellent"} and hydration is {waterCups >= 8 ? "optimal" : "moderate"}. Asha suggests completing 20-20-20 ocular pacers regularly.</p>
                   
                   {wearableInsights && (
-                    <div className="p-3 bg-slate-900/60 border border-white/5 rounded-xl text-[10px] leading-relaxed text-slate-200">
+                    <div className="p-3 bg-slate-900/60 border border-sky-200/60 dark:border-white/5 rounded-xl text-[10px] leading-relaxed text-slate-200">
                       <b className="text-[#3b82f6] block mb-1">Coach Diagnostic Analysis:</b>
                       <p className="italic font-mono text-[9px] leading-normal">{wearableInsights}</p>
                     </div>
@@ -1058,7 +1058,7 @@ function HealthDashboard() {
 
               <button
                 onClick={() => setActiveModal(null)}
-                className="w-full mt-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold text-white transition"
+                className="w-full mt-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold text-slate-900 dark:text-white transition"
               >
                 Close Panel
               </button>

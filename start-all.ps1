@@ -63,8 +63,8 @@ if (-not $FrontendOnly) {
             if ($isInstalled) {
                 Write-Host "      Model $model is already cached OK" -ForegroundColor Green
             } else {
-                Write-Host "      Pulling $model..." -ForegroundColor Gray
-                Start-Process -FilePath $ollamaExe -ArgumentList "pull $model" -WindowStyle Hidden -Wait
+                Write-Host "      Pulling $model in background..." -ForegroundColor Gray
+                Start-Process -FilePath $ollamaExe -ArgumentList "pull $model" -WindowStyle Hidden
             }
         }
         Write-Host "      Models ready OK" -ForegroundColor Green

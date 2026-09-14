@@ -38,15 +38,15 @@ const MOCK_BOT_RESPONSES = [
 
 function KpiCard({ icon: Icon, label, value, delta, color }: any) {
   return (
-    <motion.div whileHover={{ y: -3 }} className="bg-[#0b1530] border border-blue-500/20 shadow-md rounded-2xl p-4 text-white">
+    <motion.div whileHover={{ y: -3 }} className="bg-white dark:bg-[#0b1530] border border-sky-200/80 dark:border-blue-500/20 shadow-xs dark:shadow-md rounded-2xl p-4 text-slate-900 dark:text-white">
       <div className="flex items-start justify-between">
         <div className={`h-10 w-10 rounded-xl flex items-center justify-center ${color}`}>
           <Icon className="h-5 w-5" />
         </div>
-        {delta && <span className="text-xs text-emerald-400 font-mono">+{delta}%</span>}
+        {delta && <span className="text-xs text-emerald-600 dark:text-emerald-400 font-mono font-bold">+{delta}%</span>}
       </div>
-      <div className="mt-3 text-2xl font-display font-bold text-white">{value}</div>
-      <div className="text-xs text-blue-200/70 mt-0.5">{label}</div>
+      <div className="mt-3 text-2xl font-display font-bold text-slate-900 dark:text-white">{value}</div>
+      <div className="text-xs text-slate-600 dark:text-blue-200/70 mt-0.5">{label}</div>
     </motion.div>
   );
 }
@@ -367,7 +367,7 @@ function Dashboard() {
 
   return (
     <AppLayout>
-      <div className="bg-slate-50 min-h-[calc(100vh-4rem)] -mx-4 lg:-mx-8 -my-6 lg:-my-8 p-4 lg:p-8">
+      <div className="space-y-6">
         {/* Toast Notification */}
       <AnimatePresence>
         {toast && (
@@ -375,13 +375,13 @@ function Dashboard() {
             initial={{ opacity: 0, y: -50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.9 }}
-            className="fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border border-[#3b82f6]/30 shadow-2xl flex items-center gap-3 bg-[#0d1322] max-w-sm"
+            className="fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border border-sky-300 dark:border-[#3b82f6]/30 shadow-2xl flex items-center gap-3 bg-white dark:bg-[#0b1530] dark:bg-[#0d1322] text-slate-900 dark:text-white max-w-sm"
           >
-            <div className="h-8 w-8 rounded-lg bg-[#3b82f6]/10 text-[#3b82f6] flex items-center justify-center shrink-0">
+            <div className="h-8 w-8 rounded-lg bg-sky-100 dark:bg-[#3b82f6]/10 text-sky-600 dark:text-[#3b82f6] flex items-center justify-center shrink-0">
               <toast.icon className="h-4 w-4" />
             </div>
-            <div className="text-xs font-semibold text-white">{toast.message}</div>
-            <button onClick={() => setToast(null)} className="text-muted-foreground hover:text-white transition ml-auto">
+            <div className="text-xs font-semibold text-slate-800 dark:text-white">{toast.message}</div>
+            <button onClick={() => setToast(null)} className="text-slate-700 dark:text-slate-400 hover:text-slate-600 dark:hover:text-white transition ml-auto">
               <X className="h-4 w-4" />
             </button>
           </motion.div>
@@ -390,22 +390,22 @@ function Dashboard() {
 
       {/* Hero Section */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-        <GradientCard className="overflow-hidden relative bg-[#0b1530] border border-blue-500/20 text-white shadow-lg">
+        <GradientCard className="overflow-hidden relative shadow-md">
           <div className="grid lg:grid-cols-[1fr_auto] gap-6 items-center">
             <div className="min-w-0">
-              <div className="inline-flex items-center gap-1.5 glass rounded-full px-3 py-1 text-xs">
-                <Sparkles className="h-3 w-3 text-[#3b82f6]" />
+              <div className="inline-flex items-center gap-1.5 glass rounded-full px-3 py-1 text-xs text-sky-800 dark:text-sky-300 font-semibold">
+                <Sparkles className="h-3.5 w-3.5 text-sky-600 dark:text-[#3b82f6]" />
                 AI Tutor is ready
               </div>
-              <h1 className="mt-3 text-3xl lg:text-4xl font-display font-bold">
-                {getGreeting()}, <span className="text-gradient">{userName}</span> 👋
+              <h1 className="mt-3 text-3xl lg:text-4xl font-display font-bold text-slate-900 dark:text-white">
+                {getGreeting()}, <span className="text-sky-600 dark:text-gradient">{userName}</span> 👋
               </h1>
-              <div className="mt-3 bg-[#070e20]/60 border border-cyan-500/20 p-4 rounded-xl max-w-xl shadow-inner backdrop-blur-sm">
+              <div className="mt-3 bg-sky-50/80 dark:bg-[#070e20]/60 border border-sky-200 dark:border-cyan-500/20 p-4 rounded-xl max-w-xl shadow-xs backdrop-blur-sm">
                 <div className="flex items-center gap-2 mb-1.5">
-                  <Bot className="h-4 w-4 text-[#3b82f6]" />
-                  <span className="text-[10px] font-mono tracking-widest text-[#3b82f6] uppercase font-bold">AI Learning Journey Narrative</span>
+                  <Bot className="h-4 w-4 text-sky-600 dark:text-[#3b82f6]" />
+                  <span className="text-[10px] font-mono tracking-widest text-sky-700 dark:text-[#3b82f6] uppercase font-bold">AI Learning Journey Narrative</span>
                 </div>
-                <p className="text-xs leading-relaxed text-[#e2e8f0]">
+                <p className="text-xs leading-relaxed text-slate-700 dark:text-[#e2e8f0]">
                   {learningJourney}
                 </p>
               </div>
@@ -428,7 +428,7 @@ function Dashboard() {
                     </button>
                     <button 
                       onClick={resetFocusSession}
-                      className="h-9 w-9 rounded-lg glass border-white/5 flex items-center justify-center text-red-400 hover:bg-red-500/10 transition"
+                      className="h-9 w-9 rounded-lg glass border-sky-200/60 dark:border-white/5 flex items-center justify-center text-red-400 hover:bg-red-500/10 transition"
                     >
                       <Square className="h-4 w-4 fill-red-400" />
                     </button>
@@ -459,7 +459,7 @@ function Dashboard() {
                   { label: "Weekly Progress", val: calculatedWeeklyProgress, icon: TrendingUp, c: "text-[#22C55E]" },
                   { label: "AI Readiness", val: calculatedAiReadiness, icon: Sparkles, c: "text-[#4f46e5]" },
                 ].map((x) => (
-                  <div key={x.label} className="glass rounded-lg p-2.5 hover:border-white/10 transition-colors">
+                  <div key={x.label} className="glass rounded-lg p-2.5 hover:border-sky-200/80 dark:border-white/10 transition-colors">
                     <x.icon className={`h-3.5 w-3.5 ${x.c}`} />
                     <div className="mt-1 font-bold text-sm">{x.val}</div>
                     <div className="text-muted-foreground text-[10px]">{x.label}</div>
@@ -486,13 +486,13 @@ function Dashboard() {
                   />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <div className="text-xl font-display font-extrabold text-white">{goalPercentage}%</div>
-                  <div className="text-[8px] text-blue-200/60 uppercase font-mono tracking-wider">Studied</div>
+                  <div className="text-xl font-display font-extrabold text-slate-900 dark:text-white">{goalPercentage}%</div>
+                  <div className="text-[8px] text-slate-600 dark:text-blue-200/60 uppercase font-mono tracking-wider">Studied</div>
                 </div>
               </div>
               <div className="mt-3 text-center">
                 <div className="text-xs font-semibold text-white">Daily Learning Goal</div>
-                <div className="text-[10px] text-blue-200/70 mt-0.5">{studyHours.toFixed(1)}h of 2.0h completed</div>
+                <div className="text-[10px] text-slate-600 dark:text-blue-200/70 mt-0.5">{studyHours.toFixed(1)}h of 2.0h completed</div>
               </div>
             </motion.div>
           </div>
@@ -500,20 +500,20 @@ function Dashboard() {
       </motion.div>
 
       {/* AI Context Engine Controls */}
-      <GlassCard className="mt-4 bg-[#0b1530] border border-[#3b82f6]/20 text-white shadow-lg">
+      <GlassCard className="mt-4 shadow-md">
         <div className="flex flex-col gap-4">
-          <div className="flex justify-between items-center pb-2 border-b border-white/5">
+          <div className="flex justify-between items-center pb-2 border-b border-sky-100 dark:border-sky-200/60 dark:border-white/5">
             <div className="flex items-center gap-2">
-              <Zap className="h-4.5 w-4.5 text-[#3b82f6] animate-pulse" />
-              <span className="font-display font-bold text-sm text-white">AI Context Engine Controls</span>
+              <Zap className="h-4.5 w-4.5 text-sky-600 dark:text-[#3b82f6] animate-pulse" />
+              <span className="font-display font-bold text-sm text-slate-900 dark:text-white">AI Context Engine Controls</span>
             </div>
-            <span className="text-[9px] font-mono text-[#3b82f6] uppercase tracking-wider">Dynamic Learning OS Configurations</span>
+            <span className="text-[9px] font-mono text-sky-600 dark:text-[#3b82f6] uppercase tracking-wider">Dynamic Learning OS Configurations</span>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             {/* Subject */}
             <div className="space-y-1">
-              <label className="text-[10px] text-blue-200/60 font-mono uppercase font-bold">Subject</label>
+              <label className="text-[10px] text-slate-600 dark:text-blue-200/70 font-mono uppercase font-bold">Subject</label>
               <input 
                 type="text" 
                 value={profile.currentSubject} 
@@ -524,14 +524,14 @@ function Dashboard() {
                     handleUpdateProfileField({ currentSubject: e.currentTarget.value });
                   }
                 }}
-                className="w-full bg-[#070e20] border border-blue-500/20 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-[#3b82f6]/50 transition" 
+                className="w-full bg-sky-50/60 dark:bg-[#070e20] border border-sky-200 dark:border-blue-500/20 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white outline-none focus:border-sky-500 dark:focus:border-[#3b82f6]/50 transition" 
                 placeholder="e.g. CS Foundations"
               />
             </div>
 
             {/* Chapter */}
             <div className="space-y-1">
-              <label className="text-[10px] text-blue-200/60 font-mono uppercase font-bold">Chapter</label>
+              <label className="text-[10px] text-slate-600 dark:text-blue-200/70 font-mono uppercase font-bold">Chapter</label>
               <input 
                 type="text" 
                 value={profile.currentChapter} 
@@ -542,18 +542,18 @@ function Dashboard() {
                     handleUpdateProfileField({ currentChapter: e.currentTarget.value });
                   }
                 }}
-                className="w-full bg-[#070e20] border border-blue-500/20 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-[#3b82f6]/50 transition" 
+                className="w-full bg-sky-50/60 dark:bg-[#070e20] border border-sky-200 dark:border-blue-500/20 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white outline-none focus:border-sky-500 dark:focus:border-[#3b82f6]/50 transition" 
                 placeholder="e.g. Recursion"
               />
             </div>
 
             {/* Persona */}
             <div className="space-y-1">
-              <label className="text-[10px] text-blue-200/60 font-mono uppercase font-bold">AI Persona</label>
+              <label className="text-[10px] text-slate-600 dark:text-blue-200/70 font-mono uppercase font-bold">AI Persona</label>
               <select 
                 value={profile.persona || "Academy Teacher"} 
                 onChange={(e) => handleUpdateProfileField({ persona: e.target.value })}
-                className="w-full bg-[#070e20] border border-blue-500/20 rounded-xl px-2.5 py-2.5 text-xs text-white outline-none focus:border-[#3b82f6]/50 transition"
+                className="w-full bg-sky-50/60 dark:bg-[#070e20] border border-sky-200 dark:border-blue-500/20 rounded-xl px-2.5 py-2.5 text-xs text-slate-900 dark:text-white outline-none focus:border-sky-500 dark:focus:border-[#3b82f6]/50 transition"
               >
                 <option value="Teacher">Academy Teacher</option>
                 <option value="Industry Engineer">Industry Engineer</option>
@@ -564,11 +564,11 @@ function Dashboard() {
 
             {/* Mode */}
             <div className="space-y-1">
-              <label className="text-[10px] text-blue-200/60 font-mono uppercase font-bold">Learning Mode</label>
+              <label className="text-[10px] text-slate-600 dark:text-blue-200/70 font-mono uppercase font-bold">Learning Mode</label>
               <select 
                 value={profile.explanationStyle} 
                 onChange={(e) => handleUpdateProfileField({ explanationStyle: e.target.value })}
-                className="w-full bg-[#070e20] border border-blue-500/20 rounded-xl px-2.5 py-2.5 text-xs text-white outline-none focus:border-[#3b82f6]/50 transition"
+                className="w-full bg-sky-50/60 dark:bg-[#070e20] border border-sky-200 dark:border-blue-500/20 rounded-xl px-2.5 py-2.5 text-xs text-slate-900 dark:text-white outline-none focus:border-sky-500 dark:focus:border-[#3b82f6]/50 transition"
               >
                 <option value="Deep Learning">Deep Learning</option>
                 <option value="Quick Assist">Quick Assist</option>
@@ -580,11 +580,11 @@ function Dashboard() {
 
             {/* Language */}
             <div className="space-y-1">
-              <label className="text-[10px] text-blue-200/60 font-mono uppercase font-bold">Preferred Lang</label>
+              <label className="text-[10px] text-slate-600 dark:text-blue-200/70 font-mono uppercase font-bold">Preferred Lang</label>
               <select 
                 value={profile.preferredLang} 
                 onChange={(e) => handleUpdateProfileField({ preferredLang: e.target.value })}
-                className="w-full bg-[#070e20] border border-blue-500/20 rounded-xl px-2.5 py-2.5 text-xs text-white outline-none focus:border-[#3b82f6]/50 transition"
+                className="w-full bg-sky-50/60 dark:bg-[#070e20] border border-sky-200 dark:border-blue-500/20 rounded-xl px-2.5 py-2.5 text-xs text-slate-900 dark:text-white outline-none focus:border-sky-500 dark:focus:border-[#3b82f6]/50 transition"
               >
                 <option value="English">English</option>
                 <option value="Hindi">Hindi (हिंदी)</option>
@@ -597,14 +597,15 @@ function Dashboard() {
       </GlassCard>
 
       {/* My Study Hub & Task Planner */}
-      <GlassCard className="mt-6 bg-[#0b1530] border border-blue-500/20 text-white shadow-lg">
+      {/* My Study Hub & Task Planner */}
+      <GlassCard className="mt-6 shadow-md">
         <div className="flex flex-col gap-5">
-          <div className="flex justify-between items-center pb-2 border-b border-white/5">
+          <div className="flex justify-between items-center pb-2 border-b border-sky-100 dark:border-sky-200/60 dark:border-white/5">
             <div className="flex items-center gap-2">
-              <BookCheck className="h-4.5 w-4.5 text-[#3b82f6]" />
-              <span className="font-display font-bold text-sm text-white">My Study Hub & Task Planner</span>
+              <BookCheck className="h-4.5 w-4.5 text-sky-600 dark:text-[#3b82f6]" />
+              <span className="font-display font-bold text-sm text-slate-900 dark:text-white">My Study Hub & Task Planner</span>
             </div>
-            <span className="text-[9px] font-mono text-blue-300 uppercase tracking-wider">Realistic Interactive Learning Controls</span>
+            <span className="text-[9px] font-mono text-sky-600 dark:text-blue-300 uppercase tracking-wider">Realistic Interactive Learning Controls</span>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-6">
@@ -612,8 +613,8 @@ function Dashboard() {
             <div className="flex flex-col justify-between space-y-3">
               <div>
                 <div className="flex justify-between items-center mb-2.5">
-                  <span className="font-display font-bold text-xs text-blue-200/80">Daily Study Objectives</span>
-                  <span className="text-[9.5px] font-mono text-[#3b82f6] bg-[#3b82f6]/10 px-2 py-0.5 rounded">
+                  <span className="font-display font-bold text-xs text-slate-700 dark:text-blue-200/80">Daily Study Objectives</span>
+                  <span className="text-[9.5px] font-mono text-sky-700 dark:text-[#3b82f6] bg-sky-100 dark:bg-[#3b82f6]/10 px-2 py-0.5 rounded font-bold">
                     {tasks.filter(t => t.completed).length} of {tasks.length} Completed
                   </span>
                 </div>
@@ -632,12 +633,12 @@ function Dashboard() {
                       }}
                       className={`flex items-center gap-3 p-2.5 rounded-xl border transition-all cursor-pointer ${
                         t.completed 
-                          ? "bg-emerald-950/20 border-emerald-500/20 text-emerald-300/80 line-through" 
-                          : "bg-slate-800/40 border-slate-700/30 text-blue-100 hover:bg-slate-800/60"
+                          ? "bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-500/20 text-emerald-700 dark:text-emerald-300/80 line-through" 
+                          : "bg-sky-50/50 dark:bg-slate-800/60 border-sky-200/60 dark:border-slate-700/50 text-slate-800 dark:text-slate-200 hover:bg-sky-100/50 dark:hover:bg-slate-800/80"
                       }`}
                     >
                       <div className={`h-4.5 w-4.5 rounded border flex items-center justify-center shrink-0 ${
-                        t.completed ? "bg-emerald-500 border-emerald-500 text-slate-900" : "border-slate-500"
+                        t.completed ? "bg-emerald-500 border-emerald-500 text-white dark:text-slate-900" : "border-slate-300 dark:border-slate-500"
                       }`}>
                         {t.completed && <Check className="h-3 w-3 stroke-[3]" />}
                       </div>
@@ -668,18 +669,18 @@ function Dashboard() {
                   value={newTaskText}
                   onChange={(e) => setNewTaskText(e.target.value)}
                   placeholder="Type next study target..." 
-                  className="flex-1 bg-slate-900/50 border border-slate-700/40 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]/50"
+                  className="flex-1 bg-white dark:bg-slate-900/50 border border-sky-200 dark:border-slate-700/40 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-sky-500 dark:focus:border-[#3b82f6]/50"
                 />
-                <button type="submit" className="bg-[#3b82f6] text-[#050816] rounded-xl px-4 py-2 text-xs font-bold hover:scale-[1.02] transition-transform shrink-0">
+                <button type="submit" className="bg-sky-600 dark:bg-[#3b82f6] text-white dark:text-[#050816] rounded-xl px-4 py-2 text-xs font-bold hover:scale-[1.02] transition-transform shrink-0 shadow-xs">
                   Add Target
                 </button>
               </form>
 
               {/* Upcoming Timetable Deadlines */}
-              <div className="mt-4 pt-4 border-t border-white/5">
+              <div className="mt-4 pt-4 border-t border-sky-100 dark:border-sky-200/60 dark:border-white/5">
                 <div className="flex justify-between items-center mb-2.5">
-                  <span className="font-display font-bold text-xs text-blue-200/80">Upcoming Timetable Deadlines</span>
-                  <span className="text-[9.5px] font-mono text-[#6366f1] bg-[#6366f1]/10 px-2 py-0.5 rounded">
+                  <span className="font-display font-bold text-xs text-slate-700 dark:text-blue-200/80">Upcoming Timetable Deadlines</span>
+                  <span className="text-[9.5px] font-mono text-indigo-600 dark:text-[#6366f1] bg-indigo-50 dark:bg-[#6366f1]/10 px-2 py-0.5 rounded font-bold">
                     {deadlines.length} Scheduled
                   </span>
                 </div>
@@ -696,24 +697,24 @@ function Dashboard() {
                           console.error(err);
                         }
                       }}
-                      className="flex items-center justify-between p-2.5 rounded-xl border bg-slate-800/40 border-slate-700/30 text-blue-100 hover:bg-slate-800/60 transition cursor-pointer"
+                      className="flex items-center justify-between p-2.5 rounded-xl border bg-sky-50/50 dark:bg-slate-800/60 border-sky-200/60 dark:border-slate-700/50 text-slate-800 dark:text-slate-200 hover:bg-sky-100/50 dark:hover:bg-slate-800/80 transition cursor-pointer"
                     >
                       <div className="flex items-center gap-3">
                         <div className="h-4.5 w-4.5 rounded border border-purple-500/50 flex items-center justify-center shrink-0" />
                         <div>
-                          <span className="text-xs block">{d.title}</span>
-                          <span className="text-[9px] text-purple-300/80 font-mono">Due: {d.dueAt}</span>
+                          <span className="text-xs block font-semibold">{d.title}</span>
+                          <span className="text-[9px] text-purple-600 dark:text-purple-300/80 font-mono">Due: {d.dueAt}</span>
                         </div>
                       </div>
-                      <span className={`text-[9px] font-mono px-2 py-0.5 rounded ${
-                        d.priority === 'High' ? 'bg-red-500/20 text-red-400' : 'bg-amber-500/20 text-amber-400'
+                      <span className={`text-[9px] font-mono px-2 py-0.5 rounded font-bold ${
+                        d.priority === 'High' ? 'bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400' : 'bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-400'
                       }`}>
                         {d.priority}
                       </span>
                     </div>
                   ))}
                   {deadlines.length === 0 && (
-                    <div className="text-xs text-slate-500 italic py-2 text-center">No upcoming deadlines. Schedule one below!</div>
+                    <div className="text-xs text-slate-600 dark:text-slate-500 italic py-2 text-center">No upcoming deadlines. Schedule one below!</div>
                   )}
                 </div>
                 
@@ -746,24 +747,24 @@ function Dashboard() {
                     value={newDeadlineTitle}
                     onChange={(e) => setNewDeadlineTitle(e.target.value)}
                     placeholder="Assignment / Exam..." 
-                    className="flex-1 min-w-[120px] bg-slate-900/50 border border-slate-700/40 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#6366f1]/50"
+                    className="flex-1 min-w-[120px] bg-white dark:bg-slate-900/50 border border-sky-200 dark:border-slate-700/40 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500"
                   />
                   <input 
                     type="date"
                     value={newDeadlineDate}
                     onChange={(e) => setNewDeadlineDate(e.target.value)}
-                    className="bg-slate-900/50 border border-slate-700/40 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#6366f1]/50"
+                    className="bg-white dark:bg-slate-900/50 border border-sky-200 dark:border-slate-700/40 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
                   />
                   <select 
                     value={newDeadlinePriority}
                     onChange={(e) => setNewDeadlinePriority(e.target.value)}
-                    className="bg-slate-900/50 border border-slate-700/40 rounded-xl px-2 py-2 text-xs text-white focus:outline-none focus:border-[#6366f1]/50"
+                    className="bg-white dark:bg-slate-900/50 border border-sky-200 dark:border-slate-700/40 rounded-xl px-2 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
                   >
                     <option value="Low">Low</option>
                     <option value="Medium">Medium</option>
                     <option value="High">High</option>
                   </select>
-                  <button type="submit" className="bg-[#6366f1] text-white rounded-xl px-4 py-2 text-xs font-bold hover:scale-[1.02] transition-transform">
+                  <button type="submit" className="bg-indigo-600 dark:bg-[#6366f1] text-white rounded-xl px-4 py-2 text-xs font-bold hover:scale-[1.02] transition-transform shadow-xs">
                     Add Event
                   </button>
                 </form>
@@ -785,7 +786,7 @@ function Dashboard() {
                       setVoiceText("");
                     }}
                     className={`flex flex-col items-center justify-center p-2.5 rounded-xl border transition text-center gap-1.5 ${
-                      hubMode === "voice" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
+                      hubMode === "voice" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-slate-900 dark:text-white font-bold" : "bg-sky-50 dark:bg-slate-800/60 border-sky-200 dark:border-slate-700/50 text-slate-700 dark:text-slate-200 hover:bg-slate-800/80"
                     }`}
                   >
                     <Mic className="h-4 w-4 text-[#3b82f6]" />
@@ -799,7 +800,7 @@ function Dashboard() {
                       setSelectedFile(null);
                     }}
                     className={`flex flex-col items-center justify-center p-2.5 rounded-xl border transition text-center gap-1.5 ${
-                      hubMode === "upload" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
+                      hubMode === "upload" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-slate-900 dark:text-white font-bold" : "bg-sky-50 dark:bg-slate-800/60 border-sky-200 dark:border-slate-700/50 text-slate-700 dark:text-slate-200 hover:bg-slate-800/80"
                     }`}
                   >
                     <Paperclip className="h-4 w-4 text-[#3b82f6]" />
@@ -813,7 +814,7 @@ function Dashboard() {
                       setPastedText("");
                     }}
                     className={`flex flex-col items-center justify-center p-2.5 rounded-xl border transition text-center gap-1.5 ${
-                      hubMode === "text" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
+                      hubMode === "text" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-slate-900 dark:text-white font-bold" : "bg-sky-50 dark:bg-slate-800/60 border-sky-200 dark:border-slate-700/50 text-slate-700 dark:text-slate-200 hover:bg-slate-800/80"
                     }`}
                   >
                     <FileText className="h-4 w-4 text-[#3b82f6]" />
@@ -825,9 +826,9 @@ function Dashboard() {
               {/* Conditional Input Areas */}
               <AnimatePresence>
                 {hubMode === "voice" && (
-                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="p-3 bg-[#050816] rounded-xl border border-white/5 space-y-3 overflow-hidden">
+                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="p-3 bg-slate-100/90 dark:bg-[#050816] rounded-xl border border-sky-200/60 dark:border-white/5 space-y-3 overflow-hidden">
                     <div className="flex justify-between items-center">
-                      <span className="text-[10px] font-mono text-slate-400">Microphone Input</span>
+                      <span className="text-[10px] font-mono text-slate-700 dark:text-slate-400">Microphone Input</span>
                       {recording && <span className="h-2 w-2 rounded-full bg-red-500 animate-ping" />}
                     </div>
                     {recording ? (
@@ -837,7 +838,7 @@ function Dashboard() {
                         ))}
                       </div>
                     ) : voiceText ? (
-                      <p className="text-xs text-white leading-relaxed font-mono">"{voiceText}"</p>
+                      <p className="text-xs text-slate-900 dark:text-white leading-relaxed font-mono">"{voiceText}"</p>
                     ) : (
                       <p className="text-xs text-muted-foreground italic">Click Start Recording to dictate study notes...</p>
                     )}
@@ -885,8 +886,8 @@ function Dashboard() {
                 )}
 
                 {hubMode === "upload" && (
-                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="p-3 bg-[#050816] rounded-xl border border-white/5 space-y-3 overflow-hidden">
-                    <div className="border border-dashed border-white/10 rounded-xl p-4 flex flex-col items-center justify-center hover:border-[#3b82f6]/40 transition cursor-pointer"
+                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="p-3 bg-slate-100/90 dark:bg-[#050816] rounded-xl border border-sky-200/60 dark:border-white/5 space-y-3 overflow-hidden">
+                    <div className="border border-dashed border-sky-200/80 dark:border-white/10 rounded-xl p-4 flex flex-col items-center justify-center hover:border-[#3b82f6]/40 transition cursor-pointer"
                       onClick={() => {
                         setSelectedFile("syllabus_quantum.pdf");
                         showToast("Uploaded syllabus_quantum.pdf", FileUp);
@@ -920,12 +921,12 @@ function Dashboard() {
                 )}
 
                 {hubMode === "text" && (
-                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="p-3 bg-[#050816] rounded-xl border border-white/5 space-y-3 overflow-hidden">
+                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="p-3 bg-slate-100/90 dark:bg-[#050816] rounded-xl border border-sky-200/60 dark:border-white/5 space-y-3 overflow-hidden">
                     <textarea
                       value={pastedText}
                       onChange={(e) => setPastedText(e.target.value)}
                       placeholder="Paste study logs, notes or tasks..."
-                      className="w-full h-20 bg-black/40 border border-white/10 rounded-lg p-2 text-[10px] text-white placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]/40 font-mono"
+                      className="w-full h-20 bg-black/40 border border-sky-200/80 dark:border-white/10 rounded-lg p-2 text-[10px] text-white placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]/40 font-mono"
                     />
                     <div className="flex justify-end">
                       <button
@@ -997,30 +998,30 @@ function Dashboard() {
       {/* Main Charts & Radar Section */}
       <div className="mt-6 grid lg:grid-cols-3 gap-4">
         {/* Line Chart */}
-        <GlassCard className="lg:col-span-2 relative bg-[#0b1530] border border-blue-500/20 text-white shadow-lg">
+        <GlassCard className="lg:col-span-2 relative shadow-md">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <h3 className="font-display font-semibold">Weekly Progress</h3>
-              <p className="text-xs text-muted-foreground">Study hours & focus score per day</p>
+              <h3 className="font-display font-semibold text-slate-900 dark:text-white">Weekly Progress</h3>
+              <p className="text-xs text-slate-600 dark:text-slate-500 dark:text-muted-foreground">Study hours & focus score per day</p>
             </div>
             
             {/* Active view selectors */}
             <div className="flex gap-2 text-[10px] font-bold">
               <button 
                 onClick={() => setSelectedKpi("all")}
-                className={`px-2.5 py-1 rounded-md transition ${selectedKpi === "all" ? "bg-white/10 text-white" : "text-muted-foreground hover:text-white"}`}
+                className={`px-2.5 py-1 rounded-md transition ${selectedKpi === "all" ? "bg-sky-100 dark:bg-white/10 text-sky-800 dark:text-white" : "text-slate-600 dark:text-slate-500 dark:text-muted-foreground hover:text-slate-800 dark:hover:text-white"}`}
               >
                 All Data
               </button>
               <button 
                 onClick={() => setSelectedKpi("hours")}
-                className={`px-2.5 py-1 rounded-md transition ${selectedKpi === "hours" ? "bg-[#3b82f6]/20 text-[#3b82f6]" : "text-muted-foreground hover:text-[#3b82f6]"}`}
+                className={`px-2.5 py-1 rounded-md transition ${selectedKpi === "hours" ? "bg-sky-100 dark:bg-[#3b82f6]/20 text-sky-700 dark:text-[#3b82f6]" : "text-slate-600 dark:text-slate-500 dark:text-muted-foreground hover:text-sky-600"}`}
               >
                 Hours
               </button>
               <button 
                 onClick={() => setSelectedKpi("focus")}
-                className={`px-2.5 py-1 rounded-md transition ${selectedKpi === "focus" ? "bg-[#6366f1]/20 text-[#6366f1]" : "text-muted-foreground hover:text-[#6366f1]"}`}
+                className={`px-2.5 py-1 rounded-md transition ${selectedKpi === "focus" ? "bg-indigo-100 dark:bg-[#6366f1]/20 text-indigo-700 dark:text-[#6366f1]" : "text-slate-600 dark:text-slate-500 dark:text-muted-foreground hover:text-indigo-600"}`}
               >
                 Focus
               </button>
@@ -1032,24 +1033,24 @@ function Dashboard() {
               <AreaChart data={weekly}>
                 <defs>
                   <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.6} />
-                    <stop offset="100%" stopColor="#3b82f6" stopOpacity={0} />
+                    <stop offset="0%" stopColor="#0284c7" stopOpacity={0.5} />
+                    <stop offset="100%" stopColor="#0284c7" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="g2" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#6366f1" stopOpacity={0.5} />
+                    <stop offset="0%" stopColor="#6366f1" stopOpacity={0.4} />
                     <stop offset="100%" stopColor="#6366f1" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid stroke="rgba(255,255,255,0.05)" vertical={false} />
+                <CartesianGrid stroke="rgba(148,163,184,0.15)" vertical={false} />
                 <XAxis dataKey="d" stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} />
                 <YAxis stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} />
-                <Tooltip contentStyle={{ background: "#0B1120", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8 }} />
+                <Tooltip contentStyle={{ background: "#ffffff", color: "#0f172a", border: "1px solid #e0f2fe", borderRadius: 12, boxShadow: "0 4px 12px rgba(0,0,0,0.05)" }} />
                 
                 {(selectedKpi === "all" || selectedKpi === "hours") && (
-                  <Area type="monotone" dataKey="hours" stroke="#3b82f6" fill="url(#g1)" strokeWidth={2} name="Hours" />
+                  <Area type="monotone" dataKey="hours" stroke="#0284c7" fill="url(#g1)" strokeWidth={2.5} name="Hours" />
                 )}
                 {(selectedKpi === "all" || selectedKpi === "focus") && (
-                  <Area type="monotone" dataKey="focus" stroke="#6366f1" fill="url(#g2)" strokeWidth={2} name="Focus Score" />
+                  <Area type="monotone" dataKey="focus" stroke="#6366f1" fill="url(#g2)" strokeWidth={2.5} name="Focus Score" />
                 )}
               </AreaChart>
             </ResponsiveContainer>
@@ -1057,13 +1058,13 @@ function Dashboard() {
         </GlassCard>
 
         {/* Subject Radar Chart */}
-        <GlassCard className="bg-[#0b1530] border border-blue-500/20 text-white shadow-lg">
+        <GlassCard className="shadow-md">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="font-display font-semibold">Subject Mastery</h3>
+            <h3 className="font-display font-semibold text-slate-900 dark:text-white">Subject Mastery</h3>
             {activeSubjectFilter && (
               <button 
                 onClick={() => setActiveSubjectFilter(null)}
-                className="text-[9px] text-amber-400 border border-amber-500/20 rounded px-1.5 py-0.5 hover:bg-amber-500/10 transition"
+                className="text-[9px] text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-transparent border border-amber-300 dark:border-amber-500/20 rounded px-1.5 py-0.5 hover:bg-amber-100 transition"
               >
                 Reset Focus
               </button>
@@ -1072,10 +1073,10 @@ function Dashboard() {
           <div className="h-56">
             <ResponsiveContainer>
               <RadarChart data={subjects}>
-                <PolarGrid stroke="rgba(255,255,255,0.1)" />
+                <PolarGrid stroke="rgba(148,163,184,0.2)" />
                 <PolarAngleAxis 
                   dataKey="s" 
-                  tick={{ fill: "#94a3b8", fontSize: 10, cursor: "pointer" }}
+                  tick={{ fill: "#475569", fontSize: 10, cursor: "pointer" }}
                   onClick={(e) => {
                     if (e && e.value) {
                       setActiveSubjectFilter(e.value);
@@ -1084,11 +1085,11 @@ function Dashboard() {
                   }}
                 />
                 <PolarRadiusAxis tick={false} axisLine={false} />
-                <Radar dataKey="v" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.3} strokeWidth={2} />
+                <Radar dataKey="v" stroke="#0284c7" fill="#0284c7" fillOpacity={0.25} strokeWidth={2} />
               </RadarChart>
             </ResponsiveContainer>
           </div>
-          <div className="text-[10px] text-center text-muted-foreground mt-1">
+          <div className="text-[10px] text-center text-slate-600 dark:text-slate-500 dark:text-muted-foreground mt-1">
             Click on any subject label to set study focus
           </div>
         </GlassCard>
@@ -1096,15 +1097,15 @@ function Dashboard() {
 
       <div className="mt-4 grid lg:grid-cols-2 gap-4">
         {/* Bar Chart */}
-        <GlassCard className="bg-[#0b1530] border border-blue-500/20 text-white shadow-lg">
-          <h3 className="font-display font-semibold mb-3">Learning Time Distribution</h3>
+        <GlassCard className="shadow-md">
+          <h3 className="font-display font-semibold mb-3 text-slate-900 dark:text-white">Learning Time Distribution</h3>
           <div className="h-56">
             <ResponsiveContainer>
               <BarChart data={weekly}>
-                <CartesianGrid stroke="rgba(255,255,255,0.05)" vertical={false} />
+                <CartesianGrid stroke="rgba(148,163,184,0.15)" vertical={false} />
                 <XAxis dataKey="d" stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} />
                 <YAxis stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} />
-                <Tooltip contentStyle={{ background: "#0B1120", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8 }} />
+                <Tooltip contentStyle={{ background: "#ffffff", color: "#0f172a", border: "1px solid #e0f2fe", borderRadius: 12 }} />
                 <Bar dataKey="hours" fill="url(#g1)" radius={[8, 8, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -1112,10 +1113,10 @@ function Dashboard() {
         </GlassCard>
 
         {/* AI Recommendations - Clicking builds custom course */}
-        <GlassCard className="bg-[#0b1530] border border-blue-500/20 text-white shadow-lg">
+        <GlassCard className="shadow-md">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="font-display font-semibold">AI Recommendations</h3>
-            <span className="text-[9px] font-mono text-muted-foreground">Ollama Gemma-2B ready</span>
+            <h3 className="font-display font-semibold text-slate-900 dark:text-white">AI Recommendations</h3>
+            <span className="text-[9px] font-mono text-slate-600 dark:text-slate-500 dark:text-muted-foreground">Ollama Gemma-2B ready</span>
           </div>
 
           <div className="space-y-4">
@@ -1123,22 +1124,22 @@ function Dashboard() {
               <div 
                 key={r.name} 
                 onClick={() => !recGenerating && startRecommendation(r)}
-                className="group cursor-pointer p-2 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/5 transition"
+                className="group cursor-pointer p-2 rounded-xl hover:bg-sky-50 dark:hover:bg-white/5 border border-transparent hover:border-sky-200 dark:hover:border-sky-200/60 dark:border-white/5 transition"
               >
                 <div className="flex items-center justify-between text-xs mb-1.5">
-                  <span className="font-semibold text-slate-300 group-hover:text-white flex items-center gap-1.5">
-                    <Sparkles className="h-3.5 w-3.5 text-[#3b82f6]" /> {r.name}
+                  <span className="font-semibold text-slate-700 dark:text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white flex items-center gap-1.5">
+                    <Sparkles className="h-3.5 w-3.5 text-sky-600 dark:text-[#3b82f6]" /> {r.name}
                   </span>
-                  <span className="text-[10px] text-[#3b82f6] font-mono group-hover:underline flex items-center gap-1">
+                  <span className="text-[10px] text-sky-600 dark:text-[#3b82f6] font-mono group-hover:underline flex items-center gap-1 font-bold">
                     Start Course <ArrowRight className="h-3 w-3" />
                   </span>
                 </div>
-                <div className="h-2 rounded-full bg-white/5 overflow-hidden">
+                <div className="h-2 rounded-full bg-sky-100 dark:bg-white/5 overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${r.confidence}%` }}
                     transition={{ duration: 1 }}
-                    className="h-full rounded-full bg-gradient-to-r from-[#3b82f6] to-[#6366f1]"
+                    className="h-full rounded-full bg-gradient-to-r from-sky-500 to-indigo-600 dark:from-[#3b82f6] dark:to-[#6366f1]"
                   />
                 </div>
               </div>
@@ -1155,12 +1156,12 @@ function Dashboard() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="w-full max-w-sm p-6 rounded-3xl border border-[#3b82f6]/20 bg-[#0d1322] shadow-2xl relative overflow-hidden"
+              className="w-full max-w-sm p-6 rounded-3xl border border-[#3b82f6]/20 bg-white dark:bg-[#0d1322] shadow-2xl relative overflow-hidden"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-[#3b82f6]/5 rounded-full blur-2xl" />
               
-              <div className="flex items-center justify-between mb-4 pb-2 border-b border-white/5">
-                <h4 className="font-display font-bold text-sm text-[#e9feff] flex items-center gap-2">
+              <div className="flex items-center justify-between mb-4 pb-2 border-b border-sky-200/60 dark:border-white/5">
+                <h4 className="font-display font-bold text-sm text-slate-900 dark:text-[#e9feff] flex items-center gap-2">
                   <RefreshCw className={`h-4.5 w-4.5 text-[#3b82f6] ${recGenerating ? "animate-spin" : ""}`} /> 
                   Generating Curriculum
                 </h4>
@@ -1174,7 +1175,7 @@ function Dashboard() {
               <div className="space-y-4">
                 <div>
                   <div className="text-xs text-muted-foreground uppercase font-mono">Recommendation Target</div>
-                  <div className="text-base font-bold text-white mt-0.5">{activeRecommendation.name}</div>
+                  <div className="text-base font-bold text-slate-900 dark:text-white mt-0.5">{activeRecommendation.name}</div>
                 </div>
 
                 <div className="space-y-1.5">
@@ -1190,7 +1191,7 @@ function Dashboard() {
                   </div>
                 </div>
 
-                <div className="text-[10px] text-muted-foreground leading-relaxed italic bg-white/5 p-3 rounded-lg border border-white/5 font-mono">
+                <div className="text-[10px] text-muted-foreground leading-relaxed italic bg-white/5 p-3 rounded-lg border border-sky-200/60 dark:border-white/5 font-mono">
                   {recProgress < 50 ? "fetching learning node dependencies..." : recProgress < 100 ? "building local offline index map..." : "curriculum generated successfully!"}
                 </div>
 
@@ -1215,25 +1216,25 @@ function Dashboard() {
             initial={{ opacity: 0, x: 100 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 120 }}
-            className="fixed bottom-4 right-4 left-4 sm:left-auto sm:right-6 sm:bottom-6 z-40 w-[calc(100%-2rem)] sm:w-full sm:max-w-sm h-[480px] rounded-3xl border border-[#3b82f6]/30 bg-[#0d1322] shadow-[0_20px_50px_rgba(59,130,246,0.15)] flex flex-col overflow-hidden"
+            className="fixed bottom-4 right-4 left-4 sm:left-auto sm:right-6 sm:bottom-6 z-40 w-[calc(100%-2rem)] sm:w-full sm:max-w-sm h-[480px] rounded-3xl border border-sky-300 dark:border-[#3b82f6]/30 bg-white dark:bg-[#0b1530] dark:bg-[#0d1322] shadow-2xl flex flex-col overflow-hidden text-slate-900 dark:text-white"
           >
             {/* Header */}
-            <div className="bg-[#0f172a] px-4 py-3.5 border-b border-white/10 flex items-center justify-between">
+            <div className="bg-sky-50 dark:bg-[#0f172a] px-4 py-3.5 border-b border-sky-200 dark:border-sky-200/80 dark:border-white/10 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="relative">
-                  <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-[#3b82f6] to-[#6366f1] flex items-center justify-center glow-cyan">
-                    <Bot className="h-4 w-4 text-[#050816]" />
+                  <div className="h-7 w-7 rounded-lg bg-sky-600 dark:bg-gradient-to-br dark:from-[#3b82f6] dark:to-[#6366f1] flex items-center justify-center">
+                    <Bot className="h-4 w-4 text-white" />
                   </div>
-                  <span className="absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full bg-emerald-400 border border-[#0f172a]" />
+                  <span className="absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full bg-emerald-500 border border-white dark:border-[#0f172a]" />
                 </div>
                 <div>
-                  <div className="text-xs font-bold text-white leading-none">GyaanSetu AI Tutor</div>
-                  <div className="text-[9px] text-[#3b82f6] mt-1 font-mono">Local Inference Client</div>
+                  <div className="text-xs font-bold text-slate-900 dark:text-white leading-none">GyaanSetu AI Tutor</div>
+                  <div className="text-[9px] text-sky-600 dark:text-[#3b82f6] mt-1 font-mono font-semibold">Local Inference Client</div>
                 </div>
               </div>
               <button 
                 onClick={() => setChatOpen(false)}
-                className="text-muted-foreground hover:text-white transition p-1"
+                className="text-slate-700 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white transition p-1"
               >
                 <X className="h-4.5 w-4.5" />
               </button>
@@ -1248,8 +1249,8 @@ function Dashboard() {
                 >
                   <div className={`p-3 rounded-2xl max-w-[80%] leading-relaxed ${
                     msg.sender === "user" 
-                      ? "bg-gradient-to-r from-[#3b82f6]/20 to-[#6366f1]/20 text-white border border-[#3b82f6]/20 rounded-tr-none"
-                      : "bg-white/5 text-slate-300 border border-white/5 rounded-tl-none"
+                      ? "bg-sky-600 dark:bg-gradient-to-r dark:from-[#3b82f6]/20 dark:to-[#6366f1]/20 text-white border border-sky-600 dark:border-[#3b82f6]/20 rounded-tr-none"
+                      : "bg-sky-100/70 dark:bg-white/5 text-slate-800 dark:text-slate-700 dark:text-slate-300 border border-sky-200/60 dark:border-sky-200/60 dark:border-white/5 rounded-tl-none font-medium"
                   }`}>
                     {msg.text}
                   </div>
@@ -1257,32 +1258,32 @@ function Dashboard() {
               ))}
               {isTyping && (
                 <div className="flex justify-start">
-                  <div className="bg-white/5 border border-white/5 text-muted-foreground p-3 rounded-2xl rounded-tl-none flex items-center gap-1">
-                    <span className="h-1.5 w-1.5 bg-[#3b82f6] rounded-full animate-bounce" />
-                    <span className="h-1.5 w-1.5 bg-[#3b82f6] rounded-full animate-bounce [animation-delay:0.2s]" />
-                    <span className="h-1.5 w-1.5 bg-[#3b82f6] rounded-full animate-bounce [animation-delay:0.4s]" />
+                  <div className="bg-sky-100/70 dark:bg-white/5 border border-sky-200/60 dark:border-sky-200/60 dark:border-white/5 text-slate-600 dark:text-slate-500 dark:text-muted-foreground p-3 rounded-2xl rounded-tl-none flex items-center gap-1">
+                    <span className="h-1.5 w-1.5 bg-sky-600 dark:bg-[#3b82f6] rounded-full animate-bounce" />
+                    <span className="h-1.5 w-1.5 bg-sky-600 dark:bg-[#3b82f6] rounded-full animate-bounce [animation-delay:0.2s]" />
+                    <span className="h-1.5 w-1.5 bg-sky-600 dark:bg-[#3b82f6] rounded-full animate-bounce [animation-delay:0.4s]" />
                   </div>
                 </div>
               )}
             </div>
 
             {/* Prompt templates */}
-            <div className="px-4 py-2 flex gap-1.5 overflow-x-auto scrollbar-thin border-t border-white/5">
+            <div className="px-4 py-2 flex gap-1.5 overflow-x-auto scrollbar-thin border-t border-sky-100 dark:border-sky-200/60 dark:border-white/5 bg-sky-50/40 dark:bg-transparent">
               <button 
                 onClick={() => handleSendMessage("how do i improve my focus score?")}
-                className="text-[9px] bg-white/5 border border-white/5 text-[#3b82f6] px-2.5 py-1 rounded-full whitespace-nowrap hover:bg-white/10 transition"
+                className="text-[9px] bg-white dark:bg-[#0b1530]/5 border border-sky-200 dark:border-sky-200/60 dark:border-white/5 text-sky-700 dark:text-[#3b82f6] px-2.5 py-1 rounded-full whitespace-nowrap hover:bg-sky-100 dark:hover:bg-white/10 transition font-bold"
               >
                 Improve Focus
               </button>
               <button 
                 onClick={() => handleSendMessage("explain reinforcement learning")}
-                className="text-[9px] bg-white/5 border border-white/5 text-[#3b82f6] px-2.5 py-1 rounded-full whitespace-nowrap hover:bg-white/10 transition"
+                className="text-[9px] bg-white dark:bg-[#0b1530]/5 border border-sky-200 dark:border-sky-200/60 dark:border-white/5 text-sky-700 dark:text-[#3b82f6] px-2.5 py-1 rounded-full whitespace-nowrap hover:bg-sky-100 dark:hover:bg-white/10 transition font-bold"
               >
                 RL Concept
               </button>
               <button 
                 onClick={() => handleSendMessage("give me a math study tip")}
-                className="text-[9px] bg-white/5 border border-white/5 text-[#3b82f6] px-2.5 py-1 rounded-full whitespace-nowrap hover:bg-white/10 transition"
+                className="text-[9px] bg-white dark:bg-[#0b1530]/5 border border-sky-200 dark:border-sky-200/60 dark:border-white/5 text-sky-700 dark:text-[#3b82f6] px-2.5 py-1 rounded-full whitespace-nowrap hover:bg-sky-100 dark:hover:bg-white/10 transition font-bold"
               >
                 Math Tip
               </button>
@@ -1291,18 +1292,18 @@ function Dashboard() {
             {/* Input Bar */}
             <form 
               onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}
-              className="p-3 border-t border-white/10 bg-[#0f172a] flex gap-2 items-center"
+              className="p-3 border-t border-sky-200 dark:border-sky-200/80 dark:border-white/10 bg-sky-50 dark:bg-[#0f172a] flex gap-2 items-center"
             >
               <input 
                 type="text"
                 placeholder="Ask me anything..."
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
-                className="flex-1 bg-white/5 border border-white/5 rounded-xl px-3 py-2 text-xs text-white outline-none placeholder:text-muted-foreground/60 focus:border-[#3b82f6]/30 transition"
+                className="flex-1 bg-white dark:bg-[#0b1530]/5 border border-sky-200 dark:border-sky-200/60 dark:border-white/5 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white outline-none placeholder:text-slate-700 dark:text-slate-400 focus:border-sky-500 dark:focus:border-[#3b82f6]/30 transition"
               />
               <button 
                 type="submit" 
-                className="h-8 w-8 rounded-xl bg-gradient-to-r from-[#3b82f6] to-[#3626ce] flex items-center justify-center text-[#050816] hover:scale-105 active:scale-95 transition"
+                className="h-8 w-8 rounded-xl bg-sky-600 dark:bg-gradient-to-r dark:from-[#3b82f6] dark:to-[#3626ce] flex items-center justify-center text-white dark:text-[#050816] hover:scale-105 active:scale-95 transition"
               >
                 <Send className="h-4 w-4" />
               </button>

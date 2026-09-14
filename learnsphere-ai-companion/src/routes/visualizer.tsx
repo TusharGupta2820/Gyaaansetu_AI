@@ -120,7 +120,7 @@ function VisualizerDashboard() {
             initial={{ opacity: 0, y: -50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.9 }}
-            className="fixed top-20 right-6 z-50 px-5 py-3 rounded-xl border border-[#3b82f6]/30 shadow-2xl bg-[#0d1322] text-xs text-white font-semibold"
+            className="fixed top-20 right-6 z-50 px-5 py-3 rounded-xl border border-[#3b82f6]/30 shadow-2xl bg-white dark:bg-[#0d1322] text-xs text-slate-900 dark:text-white font-semibold"
           >
             {toast}
           </motion.div>
@@ -136,31 +136,31 @@ function VisualizerDashboard() {
       <div className="grid lg:grid-cols-12 gap-6 items-stretch mb-6">
         {/* Left Control Panel */}
         <div className="lg:col-span-4">
-          <GlassCard className="bg-[#0b1530] border border-blue-500/20 text-white shadow-lg p-6 h-full flex flex-col justify-between">
+          <GlassCard className="shadow-lg p-6 h-full flex flex-col justify-between">
             <div className="space-y-4">
-              <h3 className="font-display font-extrabold text-sm text-white flex items-center gap-1.5">
+              <h3 className="font-display font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
                 <Sparkles className="h-4.5 w-4.5 text-[#3b82f6]" /> AI Diagram Creator
               </h3>
-              <p className="text-[11px] text-blue-200/60 leading-relaxed">
+              <p className="text-[11px] text-slate-600 dark:text-blue-200/60 leading-relaxed">
                 Enter any textbook topic, system, or programming algorithm, select a layout style, and generate an interactive concept roadmap.
               </p>
 
               <div>
-                <label className="text-[9px] font-mono text-slate-400 uppercase">Concept / Topic</label>
+                <label className="text-[9px] font-mono text-slate-700 dark:text-slate-400 uppercase">Concept / Topic</label>
                 <textarea
                   value={topic}
                   onChange={(e) => setTopic(e.target.value)}
                   placeholder="e.g., React Hydration Cycle, Blockchain consensus, Photosynthesis, or Binary Search Tree"
-                  className="w-full h-24 mt-1 bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]/40 outline-none transition"
+                  className="w-full h-24 mt-1 bg-black/40 border border-sky-200/80 dark:border-white/10 rounded-xl p-3 text-xs text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]/40 outline-none transition"
                 />
               </div>
 
               <div>
-                <label className="text-[9px] font-mono text-slate-400 uppercase">Layout Style</label>
+                <label className="text-[9px] font-mono text-slate-700 dark:text-slate-400 uppercase">Layout Style</label>
                 <select
                   value={style}
                   onChange={(e) => setStyle(e.target.value)}
-                  className="w-full mt-1 bg-[#050816] border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#3b82f6]/40"
+                  className="w-full mt-1 bg-slate-100/90 dark:bg-[#050816] border border-sky-200/80 dark:border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#3b82f6]/40"
                 >
                   {LAYOUT_STYLES.map((st) => (
                     <option key={st} value={st}>
@@ -191,24 +191,24 @@ function VisualizerDashboard() {
 
         {/* Right Interactive Canvas */}
         <div className="lg:col-span-8">
-          <GradientCard className="bg-[#0b1530] border border-blue-500/20 text-white shadow-lg p-6 h-full flex flex-col justify-between">
-            <div className="flex justify-between items-center pb-3 border-b border-white/5 mb-4">
+          <GradientCard className="shadow-lg p-6 h-full flex flex-col justify-between">
+            <div className="flex justify-between items-center pb-3 border-b border-sky-200/60 dark:border-white/5 mb-4">
               <div>
                 <span className="text-xs font-mono text-[#3b82f6] tracking-wider uppercase font-bold">Interactive Graph Canvas</span>
-                <span className="text-[9px] font-mono text-slate-400 ml-3">Style: {style}</span>
+                <span className="text-[9px] font-mono text-slate-700 dark:text-slate-400 ml-3">Style: {style}</span>
               </div>
               <button 
                 onClick={() => showToast("Exporting high-resolution PNG graph...")}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-[10px] font-mono hover:bg-white/10 transition"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-sky-200/80 dark:border-white/10 text-[10px] font-mono hover:bg-white/10 transition"
               >
                 <Download className="h-3.5 w-3.5" /> Export SVG
               </button>
             </div>
 
             {/* SVG Visual Canvas */}
-            <div className="relative flex-1 bg-black/40 border border-white/5 rounded-2xl min-h-[380px] overflow-hidden flex items-center justify-center">
+            <div className="relative flex-1 bg-black/40 border border-sky-200/60 dark:border-white/5 rounded-2xl min-h-[380px] overflow-hidden flex items-center justify-center">
               {loading ? (
-                <div className="flex flex-col items-center justify-center text-slate-500">
+                <div className="flex flex-col items-center justify-center text-slate-600 dark:text-slate-500">
                   <RefreshCw className="h-8 w-8 text-[#3b82f6] animate-spin mb-3" />
                   <p className="text-xs font-mono">Synthesizing network topology...</p>
                 </div>

@@ -120,7 +120,7 @@ function AvatarDashboard() {
 
   return (
     <AppLayout>
-      <div className="bg-slate-50 min-h-[calc(100vh-4rem)] -mx-4 lg:-mx-8 -my-6 lg:-my-8 p-4 lg:p-8">
+      <div className="bg-slate-50 dark:bg-[#050816] min-h-[calc(100vh-4rem)] -mx-4 lg:-mx-8 -my-6 lg:-my-8 p-4 lg:p-8">
         {/* Toast Notification */}
       <AnimatePresence>
         {toast && (
@@ -128,7 +128,7 @@ function AvatarDashboard() {
             initial={{ opacity: 0, y: -50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.9 }}
-            className="fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border border-[#3b82f6]/30 shadow-2xl flex items-center gap-3 bg-[#0d1322] max-w-sm"
+            className="fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border border-[#3b82f6]/30 shadow-2xl flex items-center gap-3 bg-white dark:bg-[#0d1322] max-w-sm"
           >
             <div className="h-8 w-8 rounded-lg bg-[#3b82f6]/10 text-[#3b82f6] flex items-center justify-center shrink-0">
               <toast.icon className="h-4.5 w-4.5" />
@@ -151,7 +151,7 @@ function AvatarDashboard() {
         
         {/* Left Column: Holographic Avatar Visualizer */}
         <div className="lg:col-span-5 flex flex-col">
-          <GradientCard className="flex-1 flex flex-col justify-between relative overflow-hidden bg-[#0b1530] border border-blue-500/20 text-white shadow-lg p-6 min-h-[400px]">
+          <GradientCard className="flex-1 flex flex-col justify-between relative overflow-hidden shadow-lg p-6 min-h-[400px]">
             
             {/* Background elements */}
             <div className="absolute inset-0 bg-[#3b82f6]/5 blur-[80px] pointer-events-none" />
@@ -160,7 +160,7 @@ function AvatarDashboard() {
             <div className="flex justify-between items-start z-10">
               <div>
                 <div className="text-[10px] font-mono text-muted-foreground uppercase">Hologram Interface</div>
-                <div className="text-sm font-bold text-white mt-0.5">DNA Aura Sync</div>
+                <div className="text-sm font-bold text-slate-900 dark:text-white mt-0.5">DNA Aura Sync</div>
               </div>
               <div className="glass px-2.5 py-1 rounded-lg text-[10px] font-mono text-[#3b82f6]">
                 XP: {xp}
@@ -172,7 +172,7 @@ function AvatarDashboard() {
               <motion.div 
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                className={`relative h-44 w-44 rounded-full flex flex-col items-center justify-center transition-all duration-500 bg-[#0c1122]/60 border border-white/10 ${activeAura.tailwind}`}
+                className={`relative h-44 w-44 rounded-full flex flex-col items-center justify-center transition-all duration-500 bg-[#0c1122]/60 border border-sky-200/80 dark:border-white/10 ${activeAura.tailwind}`}
               >
                 {/* 3D Holographic Inner Core */}
                 <div className="text-7xl mb-2 relative z-10">
@@ -224,7 +224,7 @@ function AvatarDashboard() {
                 </button>
                 <button
                   onClick={() => setCustomizing(prev => !prev)}
-                  className="glass px-4 py-2.5 rounded-xl text-xs font-bold border-white/10 hover:bg-white/5 transition"
+                  className="glass px-4 py-2.5 rounded-xl text-xs font-bold border-sky-200/80 dark:border-white/10 hover:bg-white/5 transition"
                 >
                   {customizing ? "Close Studio" : "Customize Outfit"}
                 </button>
@@ -245,11 +245,11 @@ function AvatarDashboard() {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                className="flex-1 bg-[#0b1530] border border-blue-500/20 text-white shadow-lg p-6 rounded-[28px] flex flex-col justify-between"
+                className="flex-1 bg-white dark:bg-[#0b1530] border border-sky-200/80 dark:border-blue-500/20 text-slate-900 dark:text-white shadow-lg p-6 rounded-[28px] flex flex-col justify-between"
               >
                 <div className="space-y-6">
                   <div>
-                    <h3 className="font-display font-extrabold text-base text-white">Avatar Studio</h3>
+                    <h3 className="font-display font-extrabold text-base text-slate-900 dark:text-white">Avatar Studio</h3>
                     <p className="text-xs text-muted-foreground mt-0.5">Customize your clothing outfits and learning DNA glow aura.</p>
                   </div>
 
@@ -264,7 +264,7 @@ function AvatarDashboard() {
                           className={`flex items-center gap-2.5 p-3 rounded-xl border transition-all text-left ${
                             activeOutfit.id === outfit.id
                               ? "bg-white/5 border-[#3b82f6]/40 text-white"
-                              : "glass hover:bg-white/5 border-white/5 text-muted-foreground"
+                              : "glass hover:bg-white/5 border-sky-200/60 dark:border-white/5 text-muted-foreground"
                           }`}
                         >
                           <span className="text-xl">{outfit.emoji}</span>
@@ -285,7 +285,7 @@ function AvatarDashboard() {
                           className={`flex items-center gap-2.5 p-3 rounded-xl border transition-all text-left ${
                             activeAura.id === aura.id
                               ? "bg-white/5 border-[#3b82f6]/40 text-white"
-                              : "glass border-white/5 text-muted-foreground hover:bg-white/5"
+                              : "glass border-sky-200/60 dark:border-white/5 text-muted-foreground hover:bg-white/5"
                           }`}
                         >
                           <span className={`h-4.5 w-4.5 rounded-full flex items-center justify-center ${aura.tailwind}`}>
@@ -300,7 +300,7 @@ function AvatarDashboard() {
 
                 <button
                   onClick={() => setCustomizing(false)}
-                  className="w-full mt-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold text-white transition"
+                  className="w-full mt-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold text-slate-900 dark:text-white transition"
                 >
                   Save Changes
                 </button>
@@ -311,11 +311,11 @@ function AvatarDashboard() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
-                className="flex-1 bg-[#0b1530] border border-blue-500/20 text-white shadow-lg p-6 rounded-[28px] flex flex-col justify-between"
+                className="flex-1 bg-white dark:bg-[#0b1530] border border-sky-200/80 dark:border-blue-500/20 text-slate-900 dark:text-white shadow-lg p-6 rounded-[28px] flex flex-col justify-between"
               >
                 <div className="space-y-4">
                   <div>
-                    <h3 className="font-display font-extrabold text-base text-white">Cognitive Profile Breakdown</h3>
+                    <h3 className="font-display font-extrabold text-base text-slate-900 dark:text-white">Cognitive Profile Breakdown</h3>
                     <p className="text-xs text-muted-foreground mt-0.5">Select any card below to view detailed neural analysis and recommended study adjustments.</p>
                   </div>
 
@@ -337,7 +337,7 @@ function AvatarDashboard() {
                         </p>
                       </motion.div>
                     ) : (
-                      <div className="bg-slate-900/60 p-5 rounded-2xl border border-dashed border-blue-500/20 text-xs text-blue-200/50 italic flex flex-col items-center justify-center h-28 text-center">
+                      <div className="bg-slate-900/60 p-5 rounded-2xl border border-dashed border-blue-500/20 text-xs text-slate-600 dark:text-slate-500 dark:text-blue-200/50 italic flex flex-col items-center justify-center h-28 text-center">
                         <Activity className="h-6 w-6 text-blue-300/30 mb-1" />
                         Click on any metric card below to review metrics.
                       </div>
@@ -346,7 +346,7 @@ function AvatarDashboard() {
                 </div>
 
                 {/* Subtitle / branding info */}
-                <div className="mt-4 text-[10px] text-muted-foreground flex items-center gap-1.5 border-t border-white/5 pt-3">
+                <div className="mt-4 text-[10px] text-muted-foreground flex items-center gap-1.5 border-t border-sky-200/60 dark:border-white/5 pt-3">
                   <Sparkles className="h-3.5 w-3.5 text-[#3b82f6]" /> 
                   Cognitive profiling syncs automatically on local Gemma model-sets.
                 </div>
@@ -368,14 +368,14 @@ function AvatarDashboard() {
                 className={`p-3.5 rounded-2xl border text-left transition-all hover:scale-[1.02] ${
                   selectedStat?.label === s.label
                     ? "border-[#3b82f6]/60 bg-[#3b82f6]/10 shadow-[0_0_20px_rgba(59,130,246,0.1)]"
-                    : "border-blue-500/20 bg-[#0b1530] hover:border-blue-400/30"
+                    : "border-blue-500/20 bg-white dark:bg-[#0b1530] hover:border-blue-400/30"
                 } text-white shadow-md`}
               >
-                <div className="text-[10px] text-blue-300/80 font-mono uppercase tracking-wide font-semibold">{s.label}</div>
+                <div className="text-[10px] text-slate-700 dark:text-blue-300/80 font-mono uppercase tracking-wide font-semibold">{s.label}</div>
                 <div className={`text-base font-bold mt-1 leading-none ${
                   selectedStat?.label === s.label ? "text-[#3b82f6]" : "text-white"
                 }`}>{s.value}</div>
-                <div className="text-[9px] text-blue-200/50 mt-1.5 leading-none font-mono">{s.hint}</div>
+                <div className="text-[9px] text-slate-600 dark:text-slate-500 dark:text-blue-200/50 mt-1.5 leading-none font-mono">{s.hint}</div>
               </button>
             ))}
           </div>
@@ -440,18 +440,18 @@ function AvatarDashboard() {
             }}
             className="cursor-pointer"
           >
-            <div className="h-full bg-[#0b1530] border border-blue-500/20 hover:border-blue-400/40 text-white shadow-md hover:shadow-xl transition-all p-5 rounded-3xl flex flex-col">
+            <div className="h-full bg-white dark:bg-[#0b1530] border border-sky-200/80 dark:border-blue-500/20 text-slate-900 dark:text-white hover:border-blue-400/40 text-white shadow-md hover:shadow-xl transition-all p-5 rounded-3xl flex flex-col">
               <div className="flex items-start justify-between mb-4">
-                <div className={`h-9 w-9 rounded-xl bg-gradient-to-br ${it.accent} flex items-center justify-center text-white font-bold text-xs shadow-md`}>
+                <div className={`h-9 w-9 rounded-xl bg-gradient-to-br ${it.accent} flex items-center justify-center text-slate-900 dark:text-white font-bold text-xs shadow-md`}>
                   {String(i + 1).padStart(2, "0")}
                 </div>
                 {it.tag && (
                   <span className="text-[9px] bg-[#3b82f6]/10 border border-[#3b82f6]/20 text-[#3b82f6] rounded-full px-2 py-0.5 font-mono font-bold uppercase tracking-wide">{it.tag}</span>
                 )}
               </div>
-              <h3 className="font-display font-bold text-sm text-white mb-1.5">{it.title}</h3>
-              <p className="text-[11px] text-blue-200/60 leading-relaxed flex-1">{it.desc}</p>
-              <div className="mt-4 pt-3 border-t border-white/5 text-[10px] text-[#3b82f6] font-mono font-semibold flex items-center gap-1">
+              <h3 className="font-display font-bold text-sm text-slate-900 dark:text-white mb-1.5">{it.title}</h3>
+              <p className="text-[11px] text-slate-600 dark:text-blue-200/60 leading-relaxed flex-1">{it.desc}</p>
+              <div className="mt-4 pt-3 border-t border-sky-200/60 dark:border-white/5 text-[10px] text-[#3b82f6] font-mono font-semibold flex items-center gap-1">
                 View Details →
               </div>
             </div>
@@ -467,12 +467,12 @@ function AvatarDashboard() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-md bg-[#0b1530] border border-blue-500/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden text-white"
+              className="w-full max-w-md bg-white dark:bg-[#0b1530] border border-sky-200/80 dark:border-blue-500/20 text-slate-900 dark:text-white p-6 rounded-3xl shadow-2xl relative overflow-hidden text-white"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-[#6366f1]/5 rounded-full blur-2xl" />
 
-              <div className="flex items-center justify-between pb-3 border-b border-white/5 mb-4">
-                <h4 className="font-display font-extrabold text-base text-white flex items-center gap-1.5">
+              <div className="flex items-center justify-between pb-3 border-b border-sky-200/60 dark:border-white/5 mb-4">
+                <h4 className="font-display font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-1.5">
                   <Award className="h-5 w-5 text-[#3b82f6]" />
                   {activeGridModal === "dna" && "Learning DNA Profile"}
                   {activeGridModal === "radar" && "Six Competencies Radar"}
@@ -487,9 +487,9 @@ function AvatarDashboard() {
 
               {/* DNA Profile content */}
               {activeGridModal === "dna" && (
-                <div className="space-y-3 text-xs leading-relaxed text-slate-300">
+                <div className="space-y-3 text-xs leading-relaxed text-slate-700 dark:text-slate-300">
                   <p>Your dynamic neural profile registers the following metrics:</p>
-                  <div className="space-y-2 bg-[#050816] p-3.5 rounded-xl border border-white/5 font-mono text-[10px]">
+                  <div className="space-y-2 bg-slate-100/90 dark:bg-[#050816] p-3.5 rounded-xl border border-sky-200/60 dark:border-white/5 font-mono text-[10px]">
                     <div className="flex justify-between"><span>Retention Rate:</span> <span className="text-[#3b82f6]">92.4%</span></div>
                     <div className="flex justify-between"><span>Speed Index:</span> <span className="text-[#ffafd2]">1.2s/inf</span></div>
                     <div className="flex justify-between"><span>Cognitive Load Limit:</span> <span className="text-[#3b82f6]">450 FLOPS</span></div>
@@ -500,13 +500,13 @@ function AvatarDashboard() {
 
               {/* Radar content */}
               {activeGridModal === "radar" && (
-                <div className="space-y-3 text-xs leading-relaxed text-slate-300">
+                <div className="space-y-3 text-xs leading-relaxed text-slate-700 dark:text-slate-300">
                   <p>Six competencies mapped dynamically on GyaanSetu:</p>
-                  <div className="space-y-2 bg-[#050816] p-3.5 rounded-xl border border-white/5 font-mono text-[10px]">
+                  <div className="space-y-2 bg-slate-100/90 dark:bg-[#050816] p-3.5 rounded-xl border border-sky-200/60 dark:border-white/5 font-mono text-[10px]">
                     <div className="flex justify-between"><span>Critical Logic:</span> <span className="text-[#3b82f6]">96%</span></div>
                     <div className="flex justify-between"><span>Calculus:</span> <span className="text-[#3b82f6]">92%</span></div>
                     <div className="flex justify-between"><span>Vision OCR Processing:</span> <span className="text-emerald-400">80%</span></div>
-                    <div className="flex justify-between"><span>Multilingual Vocabulary:</span> <span className="text-slate-400">70%</span></div>
+                    <div className="flex justify-between"><span>Multilingual Vocabulary:</span> <span className="text-slate-700 dark:text-slate-400">70%</span></div>
                   </div>
                 </div>
               )}
@@ -514,15 +514,15 @@ function AvatarDashboard() {
               {/* Badges content */}
               {activeGridModal === "badges" && (
                 <div className="space-y-3">
-                  <p className="text-xs text-slate-300 mb-2">Your unlocked achievement badges:</p>
+                  <p className="text-xs text-slate-700 dark:text-slate-300 mb-2">Your unlocked achievement badges:</p>
                   <div className="space-y-2.5">
                     {BADGES.map((b, idx) => {
                       const Icon = b.icon;
                       return (
                         <div key={idx} className={`p-3 rounded-xl border flex items-center gap-3 ${
-                          b.unlocked ? "bg-[#050816] border-[#3b82f6]/20 text-white" : "bg-white/5 border-white/5 opacity-50 text-slate-400"
+                          b.unlocked ? "bg-slate-100/90 dark:bg-[#050816] border-[#3b82f6]/20 text-white" : "bg-white/5 border-sky-200/60 dark:border-white/5 opacity-50 text-slate-700 dark:text-slate-400"
                         }`}>
-                          <div className={`h-8 w-8 rounded-lg flex items-center justify-center shrink-0 ${b.unlocked ? "bg-[#3b82f6]/10 text-[#3b82f6]" : "bg-white/5 text-slate-500"}`}>
+                          <div className={`h-8 w-8 rounded-lg flex items-center justify-center shrink-0 ${b.unlocked ? "bg-[#3b82f6]/10 text-[#3b82f6]" : "bg-white/5 text-slate-600 dark:text-slate-500"}`}>
                             <Icon className="h-4.5 w-4.5" />
                           </div>
                           <div>
@@ -538,7 +538,7 @@ function AvatarDashboard() {
 
               {/* Personality content */}
               {activeGridModal === "personality" && (
-                <div className="space-y-3 text-xs leading-relaxed text-slate-300">
+                <div className="space-y-3 text-xs leading-relaxed text-slate-700 dark:text-slate-300">
                   <div className="bg-[#3b82f6]/10 text-[#3b82f6] p-3 rounded-xl text-[11px] font-semibold">
                     INTJ Study Guideline: Focus on self-paced system architectures.
                   </div>
@@ -548,22 +548,22 @@ function AvatarDashboard() {
 
               {/* Strength Map content */}
               {activeGridModal === "strength" && (
-                <div className="space-y-3 text-xs leading-relaxed text-slate-300">
+                <div className="space-y-3 text-xs leading-relaxed text-slate-700 dark:text-slate-300">
                   <p>Your master concept nodes mapped by local Gemma-2B:</p>
                   <div className="grid grid-cols-2 gap-2 text-[10px] font-mono">
-                    <div className="bg-[#050816] p-2.5 rounded-lg border border-white/5">
+                    <div className="bg-slate-100/90 dark:bg-[#050816] p-2.5 rounded-lg border border-sky-200/60 dark:border-white/5">
                       <div className="text-muted-foreground">Quantum superposition</div>
                       <div className="text-[#3b82f6] font-bold mt-1">94% Mastery</div>
                     </div>
-                    <div className="bg-[#050816] p-2.5 rounded-lg border border-white/5">
+                    <div className="bg-slate-100/90 dark:bg-[#050816] p-2.5 rounded-lg border border-sky-200/60 dark:border-white/5">
                       <div className="text-muted-foreground">DC Circuit Analysis</div>
                       <div className="text-[#3b82f6] font-bold mt-1">88% Mastery</div>
                     </div>
-                    <div className="bg-[#050816] p-2.5 rounded-lg border border-white/5">
+                    <div className="bg-slate-100/90 dark:bg-[#050816] p-2.5 rounded-lg border border-sky-200/60 dark:border-white/5">
                       <div className="text-muted-foreground">Gradient Descent</div>
                       <div className="text-[#3b82f6] font-bold mt-1">95% Mastery</div>
                     </div>
-                    <div className="bg-[#050816] p-2.5 rounded-lg border border-white/5">
+                    <div className="bg-slate-100/90 dark:bg-[#050816] p-2.5 rounded-lg border border-sky-200/60 dark:border-white/5">
                       <div className="text-muted-foreground">RC Charge Time</div>
                       <div className="text-amber-500 font-bold mt-1">68% Mastery</div>
                     </div>
@@ -573,7 +573,7 @@ function AvatarDashboard() {
 
               <button
                 onClick={() => setActiveGridModal(null)}
-                className="w-full mt-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold text-white transition"
+                className="w-full mt-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold text-slate-900 dark:text-white transition"
               >
                 Close Panel
               </button>

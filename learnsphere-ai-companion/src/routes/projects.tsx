@@ -230,7 +230,7 @@ function ProjectsDashboard() {
 
   return (
     <AppLayout>
-      <div className="bg-[#050816] min-h-[calc(100vh-4rem)] -mx-4 lg:-mx-8 -my-6 lg:-my-8 p-4 lg:p-8">
+      <div className="bg-slate-50 dark:bg-[#050816] min-h-[calc(100vh-4rem)] -mx-4 lg:-mx-8 -my-6 lg:-my-8 p-4 lg:p-8">
         
         <AnimatePresence>
           {toast && (
@@ -238,7 +238,7 @@ function ProjectsDashboard() {
               initial={{ opacity: 0, y: -50, scale: 0.9 }} 
               animate={{ opacity: 1, y: 0, scale: 1 }} 
               exit={{ opacity: 0, y: -20, scale: 0.9 }} 
-              className="fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border border-[#3b82f6]/30 shadow-2xl flex items-center gap-3 bg-[#0d1322] max-w-sm"
+              className="fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border border-[#3b82f6]/30 shadow-2xl flex items-center gap-3 bg-white dark:bg-[#0d1322] max-w-sm"
             >
               <div className="h-8 w-8 rounded-lg bg-[#3b82f6]/10 text-[#3b82f6] flex items-center justify-center shrink-0">
                 <toast.icon className="h-4.5 w-4.5" />
@@ -254,7 +254,7 @@ function ProjectsDashboard() {
         <PageHeader title="Project Helper" subtitle="AI generates project ideas, documentation, slides, and architecture diagrams in seconds." icon={FolderKanban} />
 
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-          <GradientCard className="overflow-hidden relative mb-6 bg-[#0b1530] border border-blue-500/20 text-white shadow-lg p-6">
+          <GradientCard className="overflow-hidden relative mb-6 shadow-lg p-6">
             <div className="flex flex-col gap-6">
               <div className="grid lg:grid-cols-[1fr_auto] gap-6 items-center">
                 <div>
@@ -263,7 +263,7 @@ function ProjectsDashboard() {
                     Powered by DeepSeek-R1 AI
                   </div>
                   <h1 className="mt-3 text-xl lg:text-2xl font-display font-bold">Build Industry-Grade Blueprints & Code</h1>
-                  <p className="mt-2 text-slate-300 max-w-xl text-xs leading-relaxed">
+                  <p className="mt-2 text-slate-700 dark:text-slate-300 max-w-xl text-xs leading-relaxed">
                     Select a project helper category below, supply your requirements, and generate high-yield blueprints, storyboard scripts, or architecture Mermaid diagrams.
                   </p>
                 </div>
@@ -278,35 +278,35 @@ function ProjectsDashboard() {
         </motion.div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-          <div className="bg-[#0b1530] border border-blue-500/20 text-white shadow-md p-4 rounded-2xl">
-            <div className="text-[10px] text-blue-200/70 uppercase font-mono tracking-wider">Templates Run</div>
+          <div className="bg-white dark:bg-[#0b1530] border border-sky-200/80 dark:border-blue-500/20 text-slate-900 dark:text-white shadow-md p-4 rounded-2xl">
+            <div className="text-[10px] text-slate-600 dark:text-blue-200/70 uppercase font-mono tracking-wider">Templates Run</div>
             <div className="text-xl font-bold text-[#3b82f6] mt-1 leading-none">{history.length}</div>
-            <div className="text-[9px] text-blue-200/60 mt-2">Personal blueprints compiled</div>
+            <div className="text-[9px] text-slate-600 dark:text-blue-200/60 mt-2">Personal blueprints compiled</div>
           </div>
           
-          <div className="bg-[#0b1530] border border-blue-500/20 text-white shadow-md p-4 rounded-2xl">
-            <div className="text-[10px] text-blue-200/70 uppercase font-mono tracking-wider">Primary Model</div>
-            <div className="text-xl font-bold text-white mt-1 leading-none">DeepSeek-R1</div>
+          <div className="bg-white dark:bg-[#0b1530] border border-sky-200/80 dark:border-blue-500/20 text-slate-900 dark:text-white shadow-md p-4 rounded-2xl">
+            <div className="text-[10px] text-slate-600 dark:text-blue-200/70 uppercase font-mono tracking-wider">Primary Model</div>
+            <div className="text-xl font-bold text-slate-900 dark:text-white mt-1 leading-none">DeepSeek-R1</div>
             <div className="text-[9px] text-[#3b82f6] mt-2 font-semibold font-mono">Local 8B Reasoning Model</div>
           </div>
           
-          <div className="bg-[#0b1530] border border-blue-500/20 text-white shadow-md p-4 rounded-2xl">
-            <div className="text-[10px] text-blue-200/70 uppercase font-mono tracking-wider">Output Type</div>
+          <div className="bg-white dark:bg-[#0b1530] border border-sky-200/80 dark:border-blue-500/20 text-slate-900 dark:text-white shadow-md p-4 rounded-2xl">
+            <div className="text-[10px] text-slate-600 dark:text-blue-200/70 uppercase font-mono tracking-wider">Output Type</div>
             <div className="text-xl font-bold text-amber-400 mt-1 leading-none">Markdown / SVG</div>
             <div className="text-[9px] text-[#6366f1] mt-2 font-semibold">Copyable templates & Mermaid code</div>
           </div>
           
-          <div className="bg-[#0b1530] border border-blue-500/20 text-white shadow-md p-4 rounded-2xl">
-            <div className="text-[10px] text-blue-200/70 uppercase font-mono tracking-wider">Status</div>
+          <div className="bg-white dark:bg-[#0b1530] border border-sky-200/80 dark:border-blue-500/20 text-slate-900 dark:text-white shadow-md p-4 rounded-2xl">
+            <div className="text-[10px] text-slate-600 dark:text-blue-200/70 uppercase font-mono tracking-wider">Status</div>
             <div className="text-xl font-bold text-[#22C55E] mt-1 leading-none">Ready</div>
-            <div className="text-[9px] text-blue-200/60 mt-2">Offline database active</div>
+            <div className="text-[9px] text-slate-600 dark:text-blue-200/60 mt-2">Offline database active</div>
           </div>
         </div>
 
         {/* Dynamic Generator Section */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch mb-6">
           <div className="lg:col-span-8 flex flex-col">
-            <GlassCard className="flex-1 flex flex-col justify-between bg-[#0b1530] border border-blue-500/20 text-white shadow-lg p-6 min-h-[400px]">
+            <GlassCard className="flex-1 flex flex-col justify-between shadow-lg p-6 min-h-[400px]">
               
               {generating ? (
                 <div className="flex-1 flex flex-col items-center justify-center space-y-4 py-12">
@@ -320,12 +320,12 @@ function ProjectsDashboard() {
                 </div>
               ) : currentOutput ? (
                 <div className="flex-1 flex flex-col justify-between space-y-4">
-                  <div className="flex justify-between items-center pb-3 border-b border-white/5">
+                  <div className="flex justify-between items-center pb-3 border-b border-sky-200/60 dark:border-white/5">
                     <div>
                       <span className="text-[9px] font-mono font-bold text-[#3b82f6] bg-[#3b82f6]/10 px-2.5 py-0.5 rounded border border-[#3b82f6]/20 shadow-sm mr-2 uppercase">
                         {currentOutput.tag || currentOutput.category}
                       </span>
-                      <h4 className="font-display font-extrabold text-sm text-[#e9feff] inline-block">{currentOutput.title}</h4>
+                      <h4 className="font-display font-extrabold text-sm text-slate-900 dark:text-[#e9feff] inline-block">{currentOutput.title}</h4>
                     </div>
                     <div className="flex items-center gap-2">
                       {savedIds.has(currentOutput.id) ? (
@@ -343,7 +343,7 @@ function ProjectsDashboard() {
                       )}
                       <button 
                         onClick={() => handleDownloadMarkdown(currentOutput)} 
-                        className="p-1.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 hover:text-white transition"
+                        className="p-1.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-700 dark:text-slate-300 hover:text-white transition"
                         title="Download Markdown Blueprint"
                       >
                         <FileDown className="h-4 w-4" />
@@ -357,21 +357,21 @@ function ProjectsDashboard() {
                     </div>
                   </div>
 
-                  <div className="flex-1 max-h-[500px] overflow-y-auto bg-black/30 p-4.5 rounded-2xl border border-white/5 font-mono text-xs text-slate-200 leading-relaxed whitespace-pre-wrap">
+                  <div className="flex-1 max-h-[500px] overflow-y-auto bg-black/30 p-4.5 rounded-2xl border border-sky-200/60 dark:border-white/5 font-mono text-xs text-slate-200 leading-relaxed whitespace-pre-wrap">
                     {currentOutput.outputMarkdown}
                   </div>
                 </div>
               ) : (
                 <div className="flex-1 flex flex-col justify-between">
-                  <div className="flex justify-between items-center mb-4 pb-2 border-b border-white/5">
+                  <div className="flex justify-between items-center mb-4 pb-2 border-b border-sky-200/60 dark:border-white/5">
                     <div>
-                      <h3 className="font-display font-extrabold text-base text-white">AI Blueprint Canvas</h3>
+                      <h3 className="font-display font-extrabold text-base text-slate-900 dark:text-white">AI Blueprint Canvas</h3>
                       <p className="text-[11px] text-muted-foreground">Select a category on the right or explore modes below to construct blueprints.</p>
                     </div>
                     <span className="text-[9px] font-mono text-[#3b82f6] bg-[#3b82f6]/10 px-2 py-0.5 rounded">DeepSeek-R1 Ready</span>
                   </div>
 
-                  <div className="flex-1 flex flex-col items-center justify-center text-center italic text-xs text-muted-foreground py-16 border border-dashed border-white/5 rounded-2xl">
+                  <div className="flex-1 flex flex-col items-center justify-center text-center italic text-xs text-muted-foreground py-16 border border-dashed border-sky-200/60 dark:border-white/5 rounded-2xl">
                     <FolderKanban className="h-8 w-8 text-slate-600 mb-2" />
                     No active blueprint generation. Choose a helper template to build your plan.
                   </div>
@@ -382,10 +382,10 @@ function ProjectsDashboard() {
           </div>
 
           <div className="lg:col-span-4 flex flex-col">
-            <GlassCard className="flex-1 bg-[#0b1530] border border-blue-500/20 text-white shadow-lg p-6 flex flex-col justify-between">
+            <GlassCard className="flex-1 shadow-lg p-6 flex flex-col justify-between">
               <div className="space-y-4">
                 <div>
-                  <h3 className="font-display font-extrabold text-base text-white">Quick History</h3>
+                  <h3 className="font-display font-extrabold text-base text-slate-900 dark:text-white">Quick History</h3>
                   <p className="text-[11px] text-muted-foreground mt-0.5">Access your past compiled project guides</p>
                 </div>
                 
@@ -394,17 +394,17 @@ function ProjectsDashboard() {
                     history.map((item) => (
                       <div 
                         key={item.id}
-                        className="w-full flex items-center justify-between p-3 rounded-xl border border-slate-700/30 bg-slate-800/40 hover:bg-slate-800/60 transition group cursor-pointer"
+                        className="w-full flex items-center justify-between p-3 rounded-xl border border-sky-200 dark:border-slate-700/50 bg-sky-50 dark:bg-slate-800/60 hover:bg-slate-800/80 transition group cursor-pointer"
                         onClick={() => setCurrentOutput(item)}
                       >
                         <div className="truncate mr-2">
-                          <div className="text-xs font-semibold text-white truncate">{item.title}</div>
+                          <div className="text-xs font-semibold text-slate-900 dark:text-white truncate">{item.title}</div>
                           <span className="text-[8px] font-mono text-[#3b82f6] uppercase tracking-wider bg-[#3b82f6]/5 border border-[#3b82f6]/10 px-1.5 py-0.5 rounded">{item.tag || item.category}</span>
                         </div>
                         <div className="flex items-center gap-1.5 shrink-0">
                           <button 
                             onClick={(e) => { e.stopPropagation(); handleDownloadMarkdown(item); }}
-                            className="p-1 rounded bg-slate-700 text-slate-400 hover:text-white transition"
+                            className="p-1 rounded bg-slate-700 text-slate-700 dark:text-slate-400 hover:text-white transition"
                             title="Download"
                           >
                             <FileDown className="h-3 w-3" />
@@ -420,7 +420,7 @@ function ProjectsDashboard() {
                       </div>
                     ))
                   ) : (
-                    <div className="text-center italic text-[10px] text-slate-500 py-12">No past blueprints saved.</div>
+                    <div className="text-center italic text-[10px] text-slate-600 dark:text-slate-500 py-12">No past blueprints saved.</div>
                   )}
                 </div>
               </div>
@@ -432,7 +432,7 @@ function ProjectsDashboard() {
         </div>
 
         {/* Explore Categories Grid */}
-        <h3 id="explore-modes" className="font-display font-extrabold text-base text-white mb-4">Explore Generator Templates</h3>
+        <h3 id="explore-modes" className="font-display font-extrabold text-base text-slate-900 dark:text-white mb-4">Explore Generator Templates</h3>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
           {PROJECT_CATEGORIES.map((cat, idx) => (
             <motion.div 
@@ -449,15 +449,15 @@ function ProjectsDashboard() {
               }} 
               className="cursor-pointer"
             >
-              <GlassCard className="h-full bg-[#0b1530] border border-blue-500/20 text-white shadow-lg hover:border-[#3b82f6]/20 transition-all">
+              <GlassCard className="h-full shadow-lg hover:border-[#3b82f6]/20 transition-all">
                 <div className="flex items-start justify-between mb-2.5">
                   <div className="h-8.5 w-8.5 rounded-lg bg-[#3b82f6]/10 text-[#3b82f6] flex items-center justify-center">
                     <cat.icon className="h-4.5 w-4.5" />
                   </div>
-                  <span className="text-[8px] font-mono uppercase bg-white/5 border border-white/5 px-2 py-0.5 rounded text-slate-400">{cat.tag}</span>
+                  <span className="text-[8px] font-mono uppercase bg-white/5 border border-sky-200/60 dark:border-white/5 px-2 py-0.5 rounded text-slate-700 dark:text-slate-400">{cat.tag}</span>
                 </div>
-                <h3 className="font-display font-bold text-xs text-[#e9feff] mb-1">{cat.title}</h3>
-                <p className="text-[10.5px] text-slate-400 leading-normal">{cat.desc}</p>
+                <h3 className="font-display font-bold text-xs text-slate-900 dark:text-[#e9feff] mb-1">{cat.title}</h3>
+                <p className="text-[10.5px] text-slate-700 dark:text-slate-400 leading-normal">{cat.desc}</p>
               </GlassCard>
             </motion.div>
           ))}
@@ -472,11 +472,11 @@ function ProjectsDashboard() {
                 initial={{ scale: 0.95, opacity: 0 }} 
                 animate={{ scale: 1, opacity: 1 }} 
                 exit={{ scale: 0.95, opacity: 0 }} 
-                className="w-full max-w-md bg-[#0b1530] border border-blue-500/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden text-white font-sans text-xs"
+                className="w-full max-w-md bg-white dark:bg-[#0b1530] border border-sky-200/80 dark:border-blue-500/20 text-slate-900 dark:text-white p-6 rounded-3xl shadow-2xl relative overflow-hidden text-white font-sans text-xs"
               >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-[#3b82f6]/5 rounded-full blur-2xl pointer-events-none" />
-                <div className="flex items-center justify-between pb-3 border-b border-white/5 mb-4">
-                  <h4 className="font-display font-extrabold text-sm text-white flex items-center gap-1.5">
+                <div className="flex items-center justify-between pb-3 border-b border-sky-200/60 dark:border-white/5 mb-4">
+                  <h4 className="font-display font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
                     <Sparkles className="h-4.5 w-4.5 text-[#3b82f6]" />
                     {activeCategory.title} Generator
                   </h4>
@@ -493,7 +493,7 @@ function ProjectsDashboard() {
                       value={projectTitle} 
                       onChange={(e) => setProjectTitle(e.target.value)} 
                       placeholder="e.g. Offline Learning App, Health Tracker" 
-                      className="w-full bg-[#050816] border border-white/10 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]/40" 
+                      className="w-full bg-slate-100/90 dark:bg-[#050816] border border-sky-200/80 dark:border-white/10 rounded-xl p-3 text-xs text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]/40" 
                     />
                   </div>
 
@@ -503,7 +503,7 @@ function ProjectsDashboard() {
                       value={projectDesc} 
                       onChange={(e) => setProjectDesc(e.target.value)} 
                       placeholder="Specify your specific project features, prompts, or problems..." 
-                      className="w-full h-20 bg-[#050816] border border-white/10 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]/40" 
+                      className="w-full h-20 bg-slate-100/90 dark:bg-[#050816] border border-sky-200/80 dark:border-white/10 rounded-xl p-3 text-xs text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]/40" 
                     />
                   </div>
 
@@ -515,7 +515,7 @@ function ProjectsDashboard() {
                         value={techStack} 
                         onChange={(e) => setTechStack(e.target.value)} 
                         placeholder="e.g. React, Fastify, PostgreSQL" 
-                        className="w-full bg-[#050816] border border-white/10 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]/40" 
+                        className="w-full bg-slate-100/90 dark:bg-[#050816] border border-sky-200/80 dark:border-white/10 rounded-xl p-3 text-xs text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]/40" 
                       />
                     </div>
                   )}
@@ -528,7 +528,7 @@ function ProjectsDashboard() {
                         value={teamSize} 
                         onChange={(e) => setTeamSize(parseInt(e.target.value) || 1)} 
                         min={1} 
-                        className="w-full bg-[#050816] border border-white/10 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]/40" 
+                        className="w-full bg-slate-100/90 dark:bg-[#050816] border border-sky-200/80 dark:border-white/10 rounded-xl p-3 text-xs text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]/40" 
                       />
                     </div>
                   )}
@@ -541,7 +541,7 @@ function ProjectsDashboard() {
                         value={targetAudience} 
                         onChange={(e) => setTargetAudience(e.target.value)} 
                         placeholder="e.g. College students, senior managers, technical examiners" 
-                        className="w-full bg-[#050816] border border-white/10 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]/40" 
+                        className="w-full bg-slate-100/90 dark:bg-[#050816] border border-sky-200/80 dark:border-white/10 rounded-xl p-3 text-xs text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]/40" 
                       />
                     </div>
                   )}

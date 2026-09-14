@@ -6,7 +6,8 @@ import { useState, useEffect, useRef } from "react";
 import { 
   Home, Sparkles, Play, Square, Volume2, ShieldAlert, 
   Settings, Award, RefreshCw, X, Users, BarChart2, BellOff, Info, Check, VolumeX,
-  Mic, Paperclip, FileUp, FileText, ChevronRight
+  Mic, Paperclip, FileUp, FileText, ChevronRight, CloudRain, Coffee, Trees, Radio, Headphones,
+  Laptop, GraduationCap, UserCheck
 } from "lucide-react";
 import { generateFocusSession } from "@/lib/api/ai.service";
 
@@ -16,17 +17,17 @@ export const Route = createFileRoute("/focus")({
 });
 
 const SOUNDSCAPES = [
-  { id: "rain", name: "Rain Storm", icon: "🌧️" },
-  { id: "cafe", name: "Paris Café", icon: "☕" },
-  { id: "forest", name: "Summer Forest", icon: "🌲" },
-  { id: "space", name: "Deep Space", icon: "🛸" },
-  { id: "lofi", name: "LoFi Chill Beats", icon: "🎧" }
+  { id: "rain", name: "Rain Storm", icon: CloudRain },
+  { id: "cafe", name: "Paris Café", icon: Coffee },
+  { id: "forest", name: "Summer Forest", icon: Trees },
+  { id: "space", name: "Deep Space", icon: Radio },
+  { id: "lofi", name: "LoFi Chill Beats", icon: Headphones }
 ];
 
 const STUDY_MATES = [
-  { name: "Aarav Sharma", status: "Focusing (14m left)", avatar: "👨‍💻" },
-  { name: "Dr. Elena Vaneva", status: "Focusing (3m left)", avatar: "👩‍🏫" },
-  { name: "Mark Thompson", status: "Break (5m)", avatar: "🧔" }
+  { name: "Aarav Sharma", status: "Focusing (14m left)", icon: Laptop },
+  { name: "Dr. Elena Vaneva", status: "Focusing (3m left)", icon: GraduationCap },
+  { name: "Mark Thompson", status: "Break (5m)", icon: UserCheck }
 ];
 
 function FocusDashboard() {
@@ -146,7 +147,7 @@ function FocusDashboard() {
             initial={{ opacity: 0, y: -50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.9 }}
-            className="fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border border-[#3b82f6]/30 shadow-2xl flex items-center gap-3 bg-[#0d1322] max-w-sm"
+            className="fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border border-[#3b82f6]/30 shadow-2xl flex items-center gap-3 bg-white dark:bg-[#0d1322] max-w-sm"
           >
             <div className="h-8 w-8 rounded-lg bg-[#3b82f6]/10 text-[#3b82f6] flex items-center justify-center shrink-0">
               <toast.icon className="h-4.5 w-4.5" />
@@ -172,7 +173,7 @@ function FocusDashboard() {
             onClick={() => setActiveTab("study")}
             className={`px-5 py-2.5 rounded-xl text-xs font-bold font-display transition-all ${
               activeTab === "study"
-                ? "bg-[#0b1530] text-white shadow-md"
+                ? "bg-white dark:bg-[#0b1530] text-white shadow-md"
                 : "text-slate-600 hover:text-slate-900 hover:bg-slate-300/30"
             }`}
           >
@@ -182,7 +183,7 @@ function FocusDashboard() {
             onClick={() => setActiveTab("interview")}
             className={`px-5 py-2.5 rounded-xl text-xs font-bold font-display transition-all flex items-center gap-2 ${
               activeTab === "interview"
-                ? "bg-[#0b1530] text-white shadow-md"
+                ? "bg-white dark:bg-[#0b1530] text-white shadow-md"
                 : "text-slate-600 hover:text-slate-900 hover:bg-slate-300/30"
             }`}
           >
@@ -208,7 +209,7 @@ function FocusDashboard() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-6 p-4 rounded-2xl border border-blue-500/20 bg-[#0d1322] text-white max-w-md"
+          className="mb-6 p-4 rounded-2xl border border-blue-500/20 bg-white dark:bg-[#0d1322] text-white max-w-md"
         >
           <h4 className="text-xs font-bold mb-2">DevInterview Bot Connection Address</h4>
           <div className="flex gap-2">
@@ -216,7 +217,7 @@ function FocusDashboard() {
               type="text"
               value={botUrl}
               onChange={(e) => setBotUrl(e.target.value)}
-              className="bg-[#050816] border border-white/10 rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-[#3b82f6]/40 flex-1"
+              className="bg-slate-100/90 dark:bg-[#050816] border border-sky-200/80 dark:border-white/10 rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-[#3b82f6]/40 flex-1"
               placeholder="https://gyaaansetu-ai-interviewbot.vercel.app/"
             />
             <button
@@ -235,12 +236,12 @@ function FocusDashboard() {
       {activeTab === "study" ? (
         <>
         {/* AI Focus Assistant Panel */}
-        <GlassCard className="mb-6 bg-[#0b1530] border border-blue-500/20 text-white shadow-lg">
+        <GlassCard className="mb-6 shadow-lg">
           <div className="flex flex-col gap-4">
-          <div className="flex justify-between items-center pb-2 border-b border-white/5">
+          <div className="flex justify-between items-center pb-2 border-b border-sky-200/60 dark:border-white/5">
             <div className="flex items-center gap-2">
               <Sparkles className="h-4.5 w-4.5 text-[#3b82f6]" />
-              <span className="font-display font-bold text-sm text-white">AI Focus Assistant</span>
+              <span className="font-display font-bold text-sm text-slate-900 dark:text-white">AI Focus Assistant</span>
             </div>
             <span className="text-[9px] font-mono text-blue-300 uppercase tracking-wider">Upload Study PDFs or Dictate Tasks</span>
           </div>
@@ -253,7 +254,7 @@ function FocusDashboard() {
                 setVoiceText("");
               }}
               className={`flex items-center justify-between p-3 rounded-xl border transition text-left ${
-                hubMode === "voice" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
+                hubMode === "voice" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-slate-900 dark:text-white font-bold" : "bg-sky-50 dark:bg-slate-800/60 border-sky-200 dark:border-slate-700/50 text-slate-700 dark:text-slate-200 hover:bg-slate-800/80"
               }`}
             >
               <div className="flex items-center gap-2">
@@ -270,7 +271,7 @@ function FocusDashboard() {
                 setSelectedFile(null);
               }}
               className={`flex items-center justify-between p-3 rounded-xl border transition text-left ${
-                hubMode === "upload" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
+                hubMode === "upload" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-slate-900 dark:text-white font-bold" : "bg-sky-50 dark:bg-slate-800/60 border-sky-200 dark:border-slate-700/50 text-slate-700 dark:text-slate-200 hover:bg-slate-800/80"
               }`}
             >
               <div className="flex items-center gap-2">
@@ -287,7 +288,7 @@ function FocusDashboard() {
                 setPastedText("");
               }}
               className={`flex items-center justify-between p-3 rounded-xl border transition text-left ${
-                hubMode === "text" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white" : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
+                hubMode === "text" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-slate-900 dark:text-white font-bold" : "bg-sky-50 dark:bg-slate-800/60 border-sky-200 dark:border-slate-700/50 text-slate-700 dark:text-slate-200 hover:bg-slate-800/80"
               }`}
             >
               <div className="flex items-center gap-2">
@@ -301,9 +302,9 @@ function FocusDashboard() {
           {/* Conditional Input Areas */}
           <AnimatePresence>
             {hubMode === "voice" && (
-              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="p-3 bg-[#050816] rounded-xl border border-white/5 space-y-3">
+              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="p-3 bg-slate-100/90 dark:bg-[#050816] rounded-xl border border-sky-200/60 dark:border-white/5 space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-[10px] font-mono text-slate-400">Microphone Input</span>
+                  <span className="text-[10px] font-mono text-slate-700 dark:text-slate-400">Microphone Input</span>
                   {recording && <span className="h-2 w-2 rounded-full bg-red-500 animate-ping" />}
                 </div>
                 {recording ? (
@@ -313,7 +314,7 @@ function FocusDashboard() {
                     ))}
                   </div>
                 ) : voiceText ? (
-                  <p className="text-xs text-white leading-relaxed font-mono">"{voiceText}"</p>
+                  <p className="text-xs text-slate-900 dark:text-white leading-relaxed font-mono">"{voiceText}"</p>
                 ) : (
                   <p className="text-xs text-muted-foreground italic">Click Start Recording to dictate focus targets...</p>
                 )}
@@ -366,8 +367,8 @@ function FocusDashboard() {
             )}
 
             {hubMode === "upload" && (
-              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="p-4 bg-[#050816] rounded-xl border border-white/5 space-y-4">
-                <div className="border border-dashed border-white/10 rounded-xl p-6 flex flex-col items-center justify-center hover:border-[#3b82f6]/40 transition cursor-pointer"
+              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="p-4 bg-slate-100/90 dark:bg-[#050816] rounded-xl border border-sky-200/60 dark:border-white/5 space-y-4">
+                <div className="border border-dashed border-sky-200/80 dark:border-white/10 rounded-xl p-6 flex flex-col items-center justify-center hover:border-[#3b82f6]/40 transition cursor-pointer"
                   onClick={() => {
                     setSelectedFile("study_guide_networks.pdf");
                     showToast("Uploaded study_guide_networks.pdf", FileUp);
@@ -375,7 +376,7 @@ function FocusDashboard() {
                 >
                   <FileUp className="h-8 w-8 text-[#3b82f6] mb-2" />
                   {selectedFile ? (
-                    <span className="text-xs text-white font-mono font-bold">{selectedFile}</span>
+                    <span className="text-xs text-slate-900 dark:text-white font-mono font-bold">{selectedFile}</span>
                   ) : (
                     <span className="text-xs text-muted-foreground text-center">Drag and drop textbook PDF here, or click to upload</span>
                   )}
@@ -407,12 +408,12 @@ function FocusDashboard() {
             )}
 
             {hubMode === "text" && (
-              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="p-3 bg-[#050816] rounded-xl border border-white/5 space-y-3">
+              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="p-3 bg-slate-100/90 dark:bg-[#050816] rounded-xl border border-sky-200/60 dark:border-white/5 space-y-3">
                 <textarea
                   value={pastedText}
                   onChange={(e) => setPastedText(e.target.value)}
                   placeholder="Paste your custom notes or exam question outline here..."
-                  className="w-full h-24 bg-black/40 border border-white/10 rounded-lg p-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]/40 font-mono"
+                  className="w-full h-24 bg-black/40 border border-sky-200/80 dark:border-white/10 rounded-lg p-2.5 text-xs text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]/40 font-mono"
                 />
                 <div className="flex justify-end">
                   <button
@@ -450,13 +451,13 @@ function FocusDashboard() {
         
         {/* Left Column: Pomodoro Circular Progress clock */}
         <div className="lg:col-span-7 flex flex-col">
-          <GradientCard className="flex-1 flex flex-col justify-between items-center relative overflow-hidden bg-[#0b1530] border border-blue-500/20 p-6 min-h-[420px] text-white shadow-lg">
+          <GradientCard className="flex-1 flex flex-col justify-between items-center relative overflow-hidden p-6 min-h-[420px] shadow-lg">
             
             {/* Top Bar inside Timer */}
             <div className="flex justify-between items-center w-full z-10">
               <div>
                 <div className="text-[10px] font-mono text-blue-300 uppercase tracking-wider">Pomodoro Cycle</div>
-                <div className="text-sm font-bold text-white mt-0.5">{focusTitle}</div>
+                <div className="text-sm font-bold text-slate-900 dark:text-white mt-0.5">{focusTitle}</div>
               </div>
               <div className="flex gap-1">
                 {[25, 45, 60].map((m) => (
@@ -466,7 +467,7 @@ function FocusDashboard() {
                     className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold transition ${
                       activeDuration === m * 60 
                         ? "bg-[#3b82f6] text-[#050816]" 
-                        : "bg-slate-800/40 border border-slate-700/30 text-slate-400 hover:text-white"
+                        : "bg-sky-50 dark:bg-slate-800/40 border border-sky-200 dark:border-slate-700/30 text-slate-700 dark:text-slate-400 hover:text-white"
                     }`}
                   >
                     {m}m
@@ -478,7 +479,7 @@ function FocusDashboard() {
             {/* Circular Progress & Digital clock */}
             <div className="my-6 relative flex items-center justify-center">
               {/* Outer Glow Ring */}
-              <div className={`absolute h-56 w-56 rounded-full border border-white/5 transition-all duration-700 ${
+              <div className={`absolute h-56 w-56 rounded-full border border-sky-200/60 dark:border-white/5 transition-all duration-700 ${
                 timerActive ? "shadow-[0_0_50px_rgba(59,130,246,0.2)] border-[#3b82f6]/20 animate-pulse" : ""
               }`} />
               
@@ -505,7 +506,7 @@ function FocusDashboard() {
 
               {/* Digital Time display overlay */}
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <div className="text-4xl font-mono font-extrabold text-white tracking-widest leading-none">
+                <div className="text-4xl font-mono font-extrabold text-slate-900 dark:text-white tracking-widest leading-none">
                   {formatTime(secondsLeft)}
                 </div>
                 <div className="text-[8px] font-mono text-muted-foreground uppercase tracking-widest mt-2">
@@ -515,13 +516,13 @@ function FocusDashboard() {
             </div>
 
             {/* AI Focus Tasks Checklist */}
-            <div className="w-full max-w-sm bg-[#050816]/60 p-4 rounded-2xl border border-white/5 z-10 mb-6 text-left">
+            <div className="w-full max-w-sm bg-slate-100 dark:bg-[#050816] p-4 rounded-2xl border border-sky-200/60 dark:border-white/10 z-10 mb-6 text-left">
               <div className="text-[10px] text-blue-300 font-mono uppercase font-bold mb-2 flex items-center gap-1.5">
                 <Sparkles className="h-3.5 w-3.5 text-[#3b82f6]" /> Focus Tasks Checklist
               </div>
               <div className="space-y-2">
                 {focusTasks.map((task, idx) => (
-                  <div key={idx} className="flex gap-2 items-start text-[10.5px] text-slate-300 font-mono">
+                  <div key={idx} className="flex gap-2 items-start text-[10.5px] text-slate-700 dark:text-slate-200 font-mono">
                     <Check className="h-3.5 w-3.5 text-emerald-400 shrink-0 mt-0.5" />
                     <span>{task}</span>
                   </div>
@@ -544,7 +545,7 @@ function FocusDashboard() {
               </button>
               <button
                 onClick={handleResetTimer}
-                className="bg-slate-800/40 border border-slate-700/30 text-blue-200 hover:bg-slate-800/60 px-4 py-2.5 rounded-xl text-xs font-bold border-white/10 hover:bg-white/5 transition flex items-center justify-center"
+                className="bg-sky-50 dark:bg-slate-800/60 border border-sky-200 dark:border-slate-700/50 text-[#0b1530] dark:text-white hover:bg-slate-800/80 px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center"
               >
                 <RefreshCw className="h-4.5 w-4.5" />
               </button>
@@ -557,10 +558,10 @@ function FocusDashboard() {
         <div className="lg:col-span-5 flex flex-col justify-between gap-4">
           
           {/* Soundscapes Control Box */}
-          <GlassCard className="flex-1 bg-[#0b1530] border border-blue-500/20 p-6 flex flex-col justify-between text-white shadow-lg">
+          <GlassCard className="flex-1 p-6 flex flex-col justify-between shadow-lg">
             <div>
               <div className="flex justify-between items-center mb-3">
-                <h3 className="font-display font-extrabold text-base text-white">Ambient Soundscapes</h3>
+                <h3 className="font-display font-extrabold text-base text-slate-900 dark:text-white">Ambient Soundscapes</h3>
                 {activeSound && (
                   <button 
                     onClick={() => { setActiveSound(null); showToast("Ambient soundscapes muted.", Volume2); }}
@@ -570,20 +571,22 @@ function FocusDashboard() {
                   </button>
                 )}
               </div>
-              <p className="text-[11px] text-blue-200/60 mb-4">Layer ambient sounds to anchor your attention</p>
+              <p className="text-[11px] text-slate-600 dark:text-blue-200/60 mb-4">Layer ambient sounds to anchor your attention</p>
               
               <div className="grid grid-cols-2 gap-2">
                 {SOUNDSCAPES.map((snd) => (
                   <button
                     key={snd.id}
                     onClick={() => { setActiveSound(snd.id); showToast(`Ambient sound layer set to ${snd.name}`, Volume2); }}
-                    className={`flex items-center gap-2 p-2.5 rounded-xl border transition-all text-left ${
+                    className={`flex items-center gap-2.5 p-2.5 rounded-xl border transition-all text-left ${
                       activeSound === snd.id 
-                        ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-white font-bold"
-                        : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:bg-slate-800/60"
+                        ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-slate-900 dark:text-white font-bold"
+                        : "bg-sky-50 dark:bg-slate-800/60 border-sky-200 dark:border-slate-700/50 text-slate-700 dark:text-slate-200 hover:bg-slate-800/80"
                     }`}
                   >
-                    <span className="text-base">{snd.icon}</span>
+                    <div className="h-7 w-7 rounded-lg bg-[#3b82f6]/10 text-[#3b82f6] flex items-center justify-center shrink-0">
+                      <snd.icon className="h-3.5 w-3.5" />
+                    </div>
                     <span className="text-xs">{snd.name}</span>
                   </button>
                 ))}
@@ -592,7 +595,7 @@ function FocusDashboard() {
 
             {/* Simulated Audio Wave Visualizer */}
             {activeSound && (
-              <div className="mt-4 flex items-center justify-center gap-1.5 h-6 bg-[#050816]/60 rounded-lg border border-white/5 px-3">
+              <div className="mt-4 flex items-center justify-center gap-1.5 h-6 bg-slate-100 dark:bg-[#050816] rounded-lg border border-sky-200/60 dark:border-white/10 px-3">
                 <span className="text-[9px] font-mono text-muted-foreground mr-1 uppercase">Playing:</span>
                 {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
                   <motion.span
@@ -607,20 +610,22 @@ function FocusDashboard() {
           </GlassCard>
 
           {/* Social Study Partners */}
-          <GlassCard className="bg-[#0b1530] border border-blue-500/20 p-6 text-white shadow-lg">
-            <h3 className="font-display font-extrabold text-base text-white mb-1.5 flex items-center gap-1.5">
+          <GlassCard className="p-6 shadow-lg">
+            <h3 className="font-display font-extrabold text-base text-slate-900 dark:text-white mb-1.5 flex items-center gap-1.5">
               <Users className="h-4.5 w-4.5 text-[#3b82f6]" /> Virtual Study Room
             </h3>
-            <p className="text-[11px] text-blue-200/60 mb-3">Silent focus groups synced live on GyaanSetu</p>
+            <p className="text-[11px] text-slate-600 dark:text-blue-200/60 mb-3">Silent focus groups synced live on GyaanSetu</p>
             
             <div className="space-y-2.5">
               {STUDY_MATES.map((sm, index) => (
-                <div key={index} className="flex items-center justify-between p-2 rounded-xl bg-slate-900/40 border border-white/5">
-                  <div className="flex items-center gap-2">
-                    <span className="text-base">{sm.avatar}</span>
+                <div key={index} className="flex items-center justify-between p-2 rounded-xl bg-slate-900/40 border border-sky-200/60 dark:border-white/5">
+                  <div className="flex items-center gap-2.5">
+                    <div className="h-8 w-8 rounded-lg bg-[#3b82f6]/10 text-[#3b82f6] flex items-center justify-center shrink-0">
+                      <sm.icon className="h-4 w-4" />
+                    </div>
                     <div>
-                      <div className="text-xs font-bold text-white leading-none">{sm.name}</div>
-                      <div className="text-[9px] text-blue-200/60 mt-1 font-mono">{sm.status}</div>
+                      <div className="text-xs font-bold text-slate-900 dark:text-white leading-none">{sm.name}</div>
+                      <div className="text-[9px] text-slate-600 dark:text-blue-200/60 mt-1 font-mono">{sm.status}</div>
                     </div>
                   </div>
                   <span className={`h-2 w-2 rounded-full ${sm.status.includes("Focus") ? "bg-emerald-400 animate-ping" : "bg-amber-400"}`} />
@@ -635,33 +640,33 @@ function FocusDashboard() {
 
       {/* Grid of 4 Interactive Stats Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-        <div className="glass p-4 rounded-2xl border border-white/5">
+        <div className="glass p-4 rounded-2xl border border-sky-200/60 dark:border-white/5">
           <div className="text-[10px] text-muted-foreground uppercase font-mono tracking-wider">Today's Focus</div>
           <div className="text-xl font-bold text-gradient mt-1 leading-none">
             {Math.floor(todayFocus / 60)}h {todayFocus % 60}m
           </div>
-          <div className="text-[9px] text-slate-400 mt-2">Aggregated active minutes</div>
+          <div className="text-[9px] text-slate-700 dark:text-slate-400 mt-2">Aggregated active minutes</div>
         </div>
         <button 
           onClick={() => { setActiveModal("sessions"); showToast("Opening focus sessions log...", Info); }}
-          className="glass p-4 rounded-2xl border border-white/5 text-left hover:border-[#3b82f6]/30 transition hover:scale-[1.02]"
+          className="glass p-4 rounded-2xl border border-sky-200/60 dark:border-white/5 text-left hover:border-[#3b82f6]/30 transition hover:scale-[1.02]"
         >
           <div className="text-[10px] text-muted-foreground uppercase font-mono tracking-wider">Sessions</div>
-          <div className="text-xl font-bold text-white mt-1 leading-none">{sessionsCount}</div>
+          <div className="text-xl font-bold text-slate-900 dark:text-white mt-1 leading-none">{sessionsCount}</div>
           <div className="text-[9px] text-[#3b82f6] mt-2 underline">Click to view log</div>
         </button>
-        <div className="glass p-4 rounded-2xl border border-white/5">
+        <div className="glass p-4 rounded-2xl border border-sky-200/60 dark:border-white/5">
           <div className="text-[10px] text-muted-foreground uppercase font-mono tracking-wider">Avg Focus Score</div>
           <div className="text-xl font-bold text-gradient mt-1 leading-none">92</div>
           <div className="text-[9px] text-[#6366f1] mt-2">Attention stability rating</div>
         </div>
         <button 
           onClick={() => { setActiveModal("shield"); showToast("Opening distraction alert logs...", Info); }}
-          className="glass p-4 rounded-2xl border border-white/5 text-left hover:border-red-500/30 transition hover:scale-[1.02]"
+          className="glass p-4 rounded-2xl border border-sky-200/60 dark:border-white/5 text-left hover:border-red-500/30 transition hover:scale-[1.02]"
         >
           <div className="text-[10px] text-muted-foreground uppercase font-mono tracking-wider">Distractions Blocked</div>
           <div className="text-xl font-bold text-red-400 mt-1 leading-none">{distractionsCount}</div>
-          <div className="text-[9px] text-slate-400 mt-2 underline">Click to view alerts</div>
+          <div className="text-[9px] text-slate-700 dark:text-slate-400 mt-2 underline">Click to view alerts</div>
         </button>
       </div>
 
@@ -697,8 +702,8 @@ function FocusDashboard() {
                   <span className="text-[8px] font-mono bg-[#3b82f6]/10 px-2 py-0.5 rounded text-[#3b82f6]">{it.tag}</span>
                 )}
               </div>
-              <h3 className="font-display font-bold text-xs text-[#e9feff] mb-1">{it.title}</h3>
-              <p className="text-[10.5px] text-slate-400 leading-normal">{it.desc}</p>
+              <h3 className="font-display font-bold text-xs text-slate-900 dark:text-[#e9feff] mb-1">{it.title}</h3>
+              <p className="text-[10.5px] text-slate-700 dark:text-slate-400 leading-normal">{it.desc}</p>
             </GlassCard>
           </motion.div>
         ))}
@@ -706,17 +711,17 @@ function FocusDashboard() {
       </>
       ) : (
         <div className="w-full flex flex-col gap-6">
-          <GlassCard className="bg-[#0b1530] border border-blue-500/20 text-white shadow-xl p-6 relative overflow-hidden">
+          <GlassCard className="shadow-xl p-6 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute -left-10 -bottom-10 w-64 h-64 bg-violet-600/10 rounded-full blur-3xl pointer-events-none" />
 
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-white/5 mb-6 z-10 relative">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-sky-200/60 dark:border-white/5 mb-6 z-10 relative">
               <div>
                 <h3 className="font-display font-extrabold text-lg text-[#3b82f6] flex items-center gap-2">
                   <Sparkles className="h-5 w-5 text-[#3b82f6]" />
                   DevInterview AI Companion
                 </h3>
-                <p className="text-xs text-slate-300 mt-1">
+                <p className="text-xs text-slate-700 dark:text-slate-300 mt-1">
                   A local 3D VRM-driven coding interviewer bot, powered by DeepSeek-R1 (~82.6% HumanEval Accuracy) and local offline voice synthesis.
                 </p>
               </div>
@@ -729,7 +734,7 @@ function FocusDashboard() {
                   href={botUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="bg-white/10 hover:bg-white/15 border border-white/10 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1"
+                  className="bg-white/10 hover:bg-white/15 border border-sky-200/80 dark:border-white/10 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1"
                 >
                   Open in New Tab
                   <ChevronRight className="h-3.5 w-3.5" />
@@ -738,7 +743,7 @@ function FocusDashboard() {
             </div>
 
             {/* Iframing the Bot */}
-            <div className="w-full rounded-2xl overflow-hidden border border-white/10 bg-[#050816] shadow-inner relative z-10">
+            <div className="w-full rounded-2xl overflow-hidden border border-sky-200/80 dark:border-white/10 bg-slate-100/90 dark:bg-[#050816] shadow-inner relative z-10">
               <iframe
                 src={botUrl}
                 title="DevInterview Bot"
@@ -748,19 +753,19 @@ function FocusDashboard() {
             </div>
 
             {/* Launch Instructions Helper */}
-            <div className="mt-6 p-4 rounded-xl bg-[#050816]/70 border border-white/5 space-y-2 z-10 relative">
-              <h4 className="text-xs font-bold text-white flex items-center gap-1.5">
+            <div className="mt-6 p-4 rounded-xl bg-slate-100/90 dark:bg-[#050816]/70 border border-sky-200/60 dark:border-white/5 space-y-2 z-10 relative">
+              <h4 className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
                 <Info className="h-4 w-4 text-[#3b82f6]" />
                 How to start the DevInterview Bot locally?
               </h4>
-              <p className="text-[11px] text-slate-400 leading-relaxed">
+              <p className="text-[11px] text-slate-700 dark:text-slate-400 leading-relaxed">
                 Since DevInterview.AI runs completely offline with 0 cloud dependencies, it connects to your GyaanSetu local backend. To run:
               </p>
-              <ol className="list-decimal list-inside text-[11px] text-slate-400 space-y-1 pl-1">
-                <li>Open a terminal in the folder: <code className="bg-white/5 text-slate-300 px-1.5 py-0.5 rounded font-mono text-[10px]">D:\Gyaansetu-AI\devinterviewbot</code></li>
-                <li>Install dependencies (if not already done): <code className="bg-white/5 text-slate-300 px-1.5 py-0.5 rounded font-mono text-[10px]">npm install</code></li>
-                <li>Verify your local GyaanSetu backend is running on port <code className="bg-white/5 text-slate-300 px-1.5 py-0.5 rounded font-mono text-[10px]">8000</code></li>
-                <li>Run the development server: <code className="bg-white/5 text-slate-300 px-1.5 py-0.5 rounded font-mono text-[10px]">npm run dev</code></li>
+              <ol className="list-decimal list-inside text-[11px] text-slate-700 dark:text-slate-400 space-y-1 pl-1">
+                <li>Open a terminal in the folder: <code className="bg-white/5 text-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded font-mono text-[10px]">D:\Gyaansetu-AI\devinterviewbot</code></li>
+                <li>Install dependencies (if not already done): <code className="bg-white/5 text-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded font-mono text-[10px]">npm install</code></li>
+                <li>Verify your local GyaanSetu backend is running on port <code className="bg-white/5 text-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded font-mono text-[10px]">8000</code></li>
+                <li>Run the development server: <code className="bg-white/5 text-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded font-mono text-[10px]">npm run dev</code></li>
               </ol>
             </div>
           </GlassCard>
@@ -777,12 +782,12 @@ function FocusDashboard() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-sm bg-[#0d1322] border border-[#3b82f6]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden"
+              className="w-full max-w-sm bg-white dark:bg-[#0d1322] border border-[#3b82f6]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-[#3b82f6]/5 rounded-full blur-2xl" />
 
-              <div className="flex items-center justify-between pb-3 border-b border-white/5 mb-4">
-                <h4 className="font-display font-extrabold text-sm text-white flex items-center gap-1.5">
+              <div className="flex items-center justify-between pb-3 border-b border-sky-200/60 dark:border-white/5 mb-4">
+                <h4 className="font-display font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
                   <Award className="h-4.5 w-4.5 text-[#3b82f6]" />
                   Focus Sessions Completed Today
                 </h4>
@@ -800,9 +805,9 @@ function FocusDashboard() {
                   { time: "03:45 PM", duration: "25 min", status: "Focus Completed" },
                   { time: "05:00 PM", duration: "25 min", status: "Focus Completed" }
                 ].map((s, idx) => (
-                  <div key={idx} className="p-3 rounded-xl bg-[#050816] border border-white/5 flex items-center justify-between text-xs">
+                  <div key={idx} className="p-3 rounded-xl bg-slate-100/90 dark:bg-[#050816] border border-sky-200/60 dark:border-white/5 flex items-center justify-between text-xs">
                     <div>
-                      <div className="font-bold text-white">{s.time}</div>
+                      <div className="font-bold text-slate-900 dark:text-white">{s.time}</div>
                       <div className="text-[10px] text-muted-foreground mt-0.5">{s.duration} duration</div>
                     </div>
                     <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">
@@ -814,7 +819,7 @@ function FocusDashboard() {
 
               <button
                 onClick={() => setActiveModal(null)}
-                className="w-full mt-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold text-white transition"
+                className="w-full mt-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold text-slate-900 dark:text-white transition"
               >
                 Close Log
               </button>
@@ -829,12 +834,12 @@ function FocusDashboard() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-sm bg-[#0d1322] border border-[#3b82f6]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden"
+              className="w-full max-w-sm bg-white dark:bg-[#0d1322] border border-[#3b82f6]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/5 rounded-full blur-2xl" />
 
-              <div className="flex items-center justify-between pb-3 border-b border-white/5 mb-4">
-                <h4 className="font-display font-extrabold text-sm text-white flex items-center gap-1.5">
+              <div className="flex items-center justify-between pb-3 border-b border-sky-200/60 dark:border-white/5 mb-4">
+                <h4 className="font-display font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
                   <ShieldAlert className="h-4.5 w-4.5 text-red-400" />
                   {activeModal === "shield" ? "Shield Alert: Distractions Blocked" : "Focus Analytics Heatmap"}
                 </h4>
@@ -846,11 +851,11 @@ function FocusDashboard() {
               {activeModal === "shield" ? (
                 <div className="space-y-3">
                   <div className="flex justify-between items-center p-2 rounded-lg bg-white/5 text-xs">
-                    <span className="text-slate-300">Auto-Dim Distractions Shield:</span>
+                    <span className="text-slate-700 dark:text-slate-300">Auto-Dim Distractions Shield:</span>
                     <button 
                       onClick={() => { setShieldActive(!shieldActive); showToast(`Distraction Shield toggled.`, ShieldAlert); }}
                       className={`px-3 py-1 rounded-lg font-mono text-[10px] font-bold transition ${
-                        shieldActive ? "bg-[#3b82f6] text-[#050816]" : "bg-white/10 text-slate-400"
+                        shieldActive ? "bg-[#3b82f6] text-[#050816]" : "bg-white/10 text-slate-700 dark:text-slate-400"
                       }`}
                     >
                       {shieldActive ? "ACTIVE" : "MUTED"}
@@ -862,17 +867,17 @@ function FocusDashboard() {
                       { source: "facebook.com (Tab block)", count: "6 times" },
                       { source: "Slack desktop alerts", count: "29 notifications muted" }
                     ].map((d, idx) => (
-                      <div key={idx} className="p-3 rounded-xl bg-[#050816] border border-white/5 flex items-center justify-between text-xs">
-                        <span className="font-semibold text-slate-300">{d.source}</span>
+                      <div key={idx} className="p-3 rounded-xl bg-slate-100/90 dark:bg-[#050816] border border-sky-200/60 dark:border-white/5 flex items-center justify-between text-xs">
+                        <span className="font-semibold text-slate-700 dark:text-slate-300">{d.source}</span>
                         <span className="text-[10px] font-mono text-red-400 font-bold">{d.count}</span>
                       </div>
                     ))}
                   </div>
                 </div>
               ) : (
-                <div className="space-y-3.5 text-xs text-slate-300">
+                <div className="space-y-3.5 text-xs text-slate-700 dark:text-slate-300">
                   <p>Weekly attention consistency heatmap (Mon-Sun):</p>
-                  <div className="grid grid-cols-7 gap-1.5 p-3 rounded-xl bg-[#050816] border border-white/5">
+                  <div className="grid grid-cols-7 gap-1.5 p-3 rounded-xl bg-slate-100/90 dark:bg-[#050816] border border-sky-200/60 dark:border-white/5">
                     {[
                       { day: "M", v: 3 }, { day: "T", v: 4 }, { day: "W", v: 2 }, 
                       { day: "T", v: 5 }, { day: "F", v: 4 }, { day: "S", v: 5 }, { day: "S", v: 3 }
@@ -881,8 +886,8 @@ function FocusDashboard() {
                         <div className={`h-8 w-8 rounded-lg flex items-center justify-center font-bold font-mono text-[10px] ${
                           d.v === 5 ? "bg-[#3b82f6] text-[#050816] shadow-[0_0_8px_#3b82f6]" :
                           d.v === 4 ? "bg-[#3b82f6]/60 text-white" :
-                          d.v === 3 ? "bg-[#3b82f6]/30 text-slate-300" :
-                          "bg-white/5 text-slate-500"
+                          d.v === 3 ? "bg-[#3b82f6]/30 text-slate-700 dark:text-slate-300" :
+                          "bg-white/5 text-slate-600 dark:text-slate-500"
                         }`}>
                           {d.v * 20}%
                         </div>
@@ -898,7 +903,7 @@ function FocusDashboard() {
 
               <button
                 onClick={() => setActiveModal(null)}
-                className="w-full mt-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold text-white transition"
+                className="w-full mt-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold text-slate-900 dark:text-white transition"
               >
                 Close Panel
               </button>
@@ -913,12 +918,12 @@ function FocusDashboard() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-sm bg-[#0d1322] border border-[#3b82f6]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden"
+              className="w-full max-w-sm bg-white dark:bg-[#0d1322] border border-[#3b82f6]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-[#6366f1]/5 rounded-full blur-2xl" />
 
-              <div className="flex items-center justify-between pb-3 border-b border-white/5 mb-4">
-                <h4 className="font-display font-extrabold text-sm text-white flex items-center gap-1.5">
+              <div className="flex items-center justify-between pb-3 border-b border-sky-200/60 dark:border-white/5 mb-4">
+                <h4 className="font-display font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
                   <Info className="h-4.5 w-4.5 text-[#3b82f6]" />
                   {activeModal === "social" && "Virtual Study Room Info"}
                   {activeModal === "lofi" && "LoFi Beats Mixer"}
@@ -930,16 +935,16 @@ function FocusDashboard() {
               </div>
 
               {activeModal === "social" && (
-                <div className="space-y-3 text-xs leading-relaxed text-slate-300">
+                <div className="space-y-3 text-xs leading-relaxed text-slate-700 dark:text-slate-300">
                   <p>Study Rooms allow synchronized group timers. You are currently connected to <b>Asia-South Focus Cell</b>.</p>
                   <p>Study partners currently in the cell are listed on your sound card mixer. If you completed a Pomodoro interval, you will all earn +20 Group XP points.</p>
                 </div>
               )}
 
               {activeModal === "lofi" && (
-                <div className="space-y-3.5 text-xs text-slate-300">
+                <div className="space-y-3.5 text-xs text-slate-700 dark:text-slate-300">
                   <p>Curated Chill beats matching your keyboard typing speed:</p>
-                  <div className="bg-[#050816] p-3 rounded-xl border border-white/5 space-y-2 font-mono text-[10px]">
+                  <div className="bg-slate-100/90 dark:bg-[#050816] p-3 rounded-xl border border-sky-200/60 dark:border-white/5 space-y-2 font-mono text-[10px]">
                     <div className="flex justify-between"><span>Current Tempo:</span> <span className="text-[#3b82f6] font-bold">78 BPM</span></div>
                     <div className="flex justify-between"><span>Active Track:</span> <span className="text-white">Midnight Coffee Coding</span></div>
                   </div>
@@ -953,9 +958,9 @@ function FocusDashboard() {
               )}
 
               {activeModal === "timer" && (
-                <div className="space-y-3 text-xs leading-relaxed text-slate-300">
+                <div className="space-y-3 text-xs leading-relaxed text-slate-700 dark:text-slate-300">
                   <p>Configure custom work/break intervals:</p>
-                  <div className="space-y-2.5 bg-[#050816] p-3 rounded-xl border border-white/5">
+                  <div className="space-y-2.5 bg-slate-100/90 dark:bg-[#050816] p-3 rounded-xl border border-sky-200/60 dark:border-white/5">
                     <div className="flex justify-between items-center text-[10.5px]">
                       <span>Work Interval Duration:</span>
                       <span className="font-bold text-[#3b82f6]">{Math.floor(activeDuration / 60)} minutes</span>
@@ -970,7 +975,7 @@ function FocusDashboard() {
 
               <button
                 onClick={() => setActiveModal(null)}
-                className="w-full mt-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold text-white transition"
+                className="w-full mt-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold text-slate-900 dark:text-white transition"
               >
                 Close Panel
               </button>
