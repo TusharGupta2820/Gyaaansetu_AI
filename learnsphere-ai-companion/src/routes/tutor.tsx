@@ -62,12 +62,13 @@ function Tutor() {
   const [showHistory, setShowHistory] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
 
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const recognitionRef   = useRef<any>(null);
-  const audioChunksRef   = useRef<Blob[]>([]);
-  const bottomRef        = useRef<HTMLDivElement>(null);
-  const fileInputRef     = useRef<HTMLInputElement>(null);
-  const ragInputRef      = useRef<HTMLInputElement>(null);
+  const mediaRecorderRef    = useRef<MediaRecorder | null>(null);
+  const recognitionRef      = useRef<any>(null);
+  const audioChunksRef      = useRef<Blob[]>([]);
+  const bottomRef           = useRef<HTMLDivElement>(null);
+  const fileInputRef        = useRef<HTMLInputElement>(null);
+  const ragInputRef         = useRef<HTMLInputElement>(null);
+  const capturedTextRef     = useRef<string>("");  // tracks final STT transcript reliably
   const userId = getUserId();
 
   // Load sessions on mount & health checks
@@ -81,7 +82,7 @@ function Tutor() {
       return;
     }
 
-    checkBackendHealth().then(setBackendOnline);
+    checkBackendHealth().then(result => setBackendOnline(result.status !== "offline"));
     ragGetStats(userId).then(setRagStats).catch(() => {});
 
     // Load profile context
@@ -379,6 +380,9 @@ function Tutor() {
       return;
     }
 
+    // Reset captured text ref before every new recording session
+    capturedTextRef.current = "";
+
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 
     if (SpeechRecognition) {
@@ -386,35 +390,45 @@ function Tutor() {
         const recognition = new SpeechRecognition();
         recognitionRef.current = recognition;
         recognition.continuous = false;
-        recognition.interimResults = true;
+        recognition.interimResults = true;  // show interim in textarea but only send final
         recognition.lang = lang === "Hindi" ? "hi-IN" : "en-US";
 
-        let capturedText = "";
-
         recognition.onresult = (event: any) => {
-          let text = "";
+          let finalText = "";
+          let interimText = "";
           for (let i = event.resultIndex; i < event.results.length; ++i) {
-            text += event.results[i][0].transcript;
+            if (event.results[i].isFinal) {
+              finalText += event.results[i][0].transcript;
+            } else {
+              interimText += event.results[i][0].transcript;
+            }
           }
-          if (text) {
-            capturedText = text;
-            setInput(text);
+          // Prefer final results; fall back to interim for live textarea preview
+          const best = finalText || interimText;
+          if (best) {
+            if (finalText) capturedTextRef.current = finalText; // only finalize on final result
+            setInput(best); // show interim in textarea for UX
           }
         };
 
         recognition.onerror = (event: any) => {
-          console.warn("SpeechRecognition browser error, switching to MediaRecorder fallback:", event.error);
+          console.warn("SpeechRecognition error, switching to MediaRecorder fallback:", event.error);
           setRecording(false);
           recognitionRef.current = null;
+          capturedTextRef.current = "";
           startMediaRecorderFallback();
         };
 
         recognition.onend = () => {
           setRecording(false);
-          const finalPrompt = capturedText.trim() || input.trim();
+          recognitionRef.current = null;
+          // Use captured final text from ref (avoids stale closure on input state)
+          const finalPrompt = capturedTextRef.current.trim();
           if (finalPrompt) {
+            setInput(""); // clear textarea since we're sending now
             send(finalPrompt);
           }
+          capturedTextRef.current = "";
         };
 
         recognition.start();
