@@ -4,7 +4,7 @@ import { GlassCard } from "@/components/ui-kit/Card";
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Bot, Send, Mic, MicOff, Camera, Paperclip, Sparkles,
+  Bot, Send, Mic, Camera, Paperclip, Sparkles,
   Globe2, User, Square, Upload, X, Check, Database, Loader2,
   MessageSquare, Plus, Trash2, Menu
 } from "lucide-react";
@@ -62,14 +62,29 @@ function Tutor() {
   const [showHistory, setShowHistory] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
 
-  const mediaRecorderRef    = useRef<MediaRecorder | null>(null);
-  const recognitionRef      = useRef<any>(null);
-  const audioChunksRef      = useRef<Blob[]>([]);
-  const bottomRef           = useRef<HTMLDivElement>(null);
-  const fileInputRef        = useRef<HTMLInputElement>(null);
-  const ragInputRef         = useRef<HTMLInputElement>(null);
-  const capturedTextRef     = useRef<string>("");  // tracks final STT transcript reliably
+  const mediaRecorderRef  = useRef<MediaRecorder | null>(null);
+  const audioChunksRef    = useRef<Blob[]>([]);
+  const bottomRef         = useRef<HTMLDivElement>(null);
+  const fileInputRef      = useRef<HTMLInputElement>(null);
+  const ragInputRef       = useRef<HTMLInputElement>(null);
   const userId = getUserId();
+
+  // ── Browser TTS (no backend needed) ────────────────────────────────
+  const speakText = (text: string) => {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel(); // stop any previous
+    const plain = text.replace(/\*\*(.*?)\*\*/g, '$1').replace(/#+\s/g, '').trim();
+    const utt = new SpeechSynthesisUtterance(plain.slice(0, 500)); // cap at 500 chars
+    const langMap: Record<string, string> = {
+      Hindi: 'hi-IN', English: 'en-US', Marathi: 'mr-IN', Gujarati: 'gu-IN',
+      Tamil: 'ta-IN', Telugu: 'te-IN', Bengali: 'bn-IN', Kannada: 'kn-IN',
+      Malayalam: 'ml-IN', Punjabi: 'pa-IN',
+    };
+    utt.lang = langMap[lang] ?? 'en-US';
+    utt.rate = 0.95;
+    utt.pitch = 1.0;
+    window.speechSynthesis.speak(utt);
+  };
 
   // Load sessions on mount & health checks
   useEffect(() => {
@@ -284,191 +299,142 @@ function Tutor() {
     );
   };
 
-  // ── Voice recording ────────────────────────────────────────────────────────
-  const startMediaRecorderFallback = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mr = new MediaRecorder(stream);
-      mediaRecorderRef.current = mr;
-      audioChunksRef.current = [];
-
-      mr.ondataavailable = e => audioChunksRef.current.push(e.data);
-      mr.onstop = async () => {
-        stream.getTracks().forEach(t => t.stop());
-        const mimeType = mr.mimeType || "audio/webm";
-        const blob = new Blob(audioChunksRef.current, { type: mimeType });
-
-        if (backendOnline === false) {
-          addAiMessage("⚠️ AI backend offline — voice requires the FastAPI server.");
-          return;
-        }
-
-        // Show processing indicator in chat
-        setMessages(prev => [...prev, { role: "user", text: "🎙️ Processing voice…" }]);
-
-        try {
-          const res = await tutorVoiceChat(blob, lang, mode, userId);
-          const transcriptText = res.transcript?.trim();
-          const responseText = res.response?.trim();
-
-          if (!transcriptText) {
-            // Whisper returned empty — remove the placeholder and tell user to type
-            setMessages(prev => {
-              const copy = [...prev];
-              for (let i = copy.length - 1; i >= 0; i--) {
-                if (copy[i].role === "user" && copy[i].text.includes("Processing voice")) {
-                  copy[i] = { ...copy[i], text: "🎙️ Could not transcribe audio" };
-                  break;
-                }
-              }
-              return copy;
-            });
-            addAiMessage("🎤 I couldn't transcribe your audio. This usually means:\n\n• The recording was too short or silent\n• Whisper model isn't loaded on backend\n\n**Please type your question** in the chat box below — I'm ready to answer! 💬");
-          } else {
-            // ✅ Got transcript — update user bubble, then stream AI reply via text pipeline
-            setMessages(prev => {
-              const copy = [...prev];
-              for (let i = copy.length - 1; i >= 0; i--) {
-                if (copy[i].role === "user" && copy[i].text.includes("Processing voice")) {
-                  copy[i] = { ...copy[i], text: `🎙️ "${transcriptText}"` };
-                  break;
-                }
-              }
-              return copy;
-            });
-            // Stream AI response for the transcript
-            if (responseText) {
-              // Backend already generated a response via Whisper pipeline
-              addAiMessage(responseText, { audioUrl: res.audio_url ?? undefined });
-            } else {
-              // Use the streaming text chat for a proper AI reply
-              setStreaming(true);
-              setMessages(prev => [...prev, { role: "ai", text: "", isStreaming: true }]);
-              await tutorChatStream(
-                { message: transcriptText, language: lang, mode, user_id: userId, use_rag: ragEnabled },
-                {
-                  onToken: appendToLastAi,
-                  onDone: finaliseStream,
-                  onError: (err) => { appendToLastAi(`\n\n⚠️ ${err}`); finaliseStream(); },
-                }
-              );
-            }
-          }
-        } catch {
-          setMessages(prev => {
-            const copy = [...prev];
-            for (let i = copy.length - 1; i >= 0; i--) {
-              if (copy[i].role === "user" && copy[i].text.includes("Processing voice")) {
-                copy[i] = { ...copy[i], text: "🎙️ Voice error" };
-                break;
-              }
-            }
-            return copy;
-          });
-          addAiMessage("⚠️ Voice pipeline error. Please type your question below.");
-        }
-        setStreaming(false);
-      };
-
-      mr.start();
-      setRecording(true);
-    } catch {
-      addAiMessage("⚠️ Microphone access denied. Please allow mic permissions.");
-    }
-  };
-
+  // ── Voice: MediaRecorder → Backend Whisper STT (primary, no Google needed) ──────
   const toggleRecording = async () => {
+    // STOP: if already recording
     if (recording) {
-      if (recognitionRef.current) {
-        try { recognitionRef.current.stop(); } catch (e) {}
-      }
-      if (mediaRecorderRef.current) {
-        try { mediaRecorderRef.current.stop(); } catch (e) {}
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+        mediaRecorderRef.current.stop();
       }
       setRecording(false);
       return;
     }
 
-    // Reset captured text ref before every new recording session
-    capturedTextRef.current = "";
-
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-
-    if (SpeechRecognition) {
-      try {
-        const recognition = new SpeechRecognition();
-        recognitionRef.current = recognition;
-        recognition.continuous = false;
-        recognition.interimResults = true;  // show interim in textarea but only send final
-        recognition.lang = lang === "Hindi" ? "hi-IN" : "en-US";
-
-        recognition.onresult = (event: any) => {
-          let finalText = "";
-          let interimText = "";
-          for (let i = event.resultIndex; i < event.results.length; ++i) {
-            if (event.results[i].isFinal) {
-              finalText += event.results[i][0].transcript;
-            } else {
-              interimText += event.results[i][0].transcript;
-            }
-          }
-          // Prefer final results; fall back to interim for live textarea preview
-          const best = finalText || interimText;
-          if (best) {
-            if (finalText) capturedTextRef.current = finalText; // only finalize on final result
-            setInput(best); // show interim in textarea for UX
-          }
-        };
-
-        recognition.onerror = (event: any) => {
-          const errorType: string = event.error;
-          console.warn("SpeechRecognition error:", errorType);
-          setRecording(false);
-          recognitionRef.current = null;
-          capturedTextRef.current = "";
-
-          // Network / service errors: Google STT servers unreachable.
-          // MediaRecorder fallback won't help here — tell user to type instead.
-          if (errorType === "network" || errorType === "service-not-allowed") {
-            addAiMessage(
-              "🌐 **Browser speech recognition needs an internet connection** (Google servers).\n\n" +
-              "Your browser couldn't reach the speech service right now.\n\n" +
-              "👉 **Please type your question** in the box below — I'm ready to answer!"
-            );
-            return;
-          }
-
-          // not-allowed: mic permission denied
-          if (errorType === "not-allowed") {
-            addAiMessage("🎙️ Microphone permission denied. Please allow mic access in your browser settings.");
-            return;
-          }
-
-          // For other errors (no-speech, audio-capture, aborted) → try MediaRecorder+Whisper
-          startMediaRecorderFallback();
-        };
-
-        recognition.onend = () => {
-          setRecording(false);
-          recognitionRef.current = null;
-          // Use captured final text from ref (avoids stale closure on input state)
-          const finalPrompt = capturedTextRef.current.trim();
-          if (finalPrompt) {
-            setInput(""); // clear textarea since we're sending now
-            send(finalPrompt);
-          }
-          capturedTextRef.current = "";
-        };
-
-        recognition.start();
-        setRecording(true);
-        return;
-      } catch (e) {
-        console.warn("Failed to start SpeechRecognition, switching to MediaRecorder", e);
-      }
+    // START recording
+    let stream: MediaStream;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch {
+      addAiMessage("⚠️ Microphone access denied. Please click the lock icon in your browser address bar and allow microphone access.");
+      return;
     }
 
-    await startMediaRecorderFallback();
+    // Prefer WAV-compatible mime types for better Whisper compatibility
+    const mimeType = MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
+      ? "audio/webm;codecs=opus"
+      : MediaRecorder.isTypeSupported("audio/webm")
+      ? "audio/webm"
+      : "";
+
+    const mr = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
+    mediaRecorderRef.current = mr;
+    audioChunksRef.current = [];
+
+    mr.ondataavailable = (e) => {
+      if (e.data.size > 0) audioChunksRef.current.push(e.data);
+    };
+
+    mr.onstop = async () => {
+      stream.getTracks().forEach((t) => t.stop());
+      const blob = new Blob(audioChunksRef.current, { type: mimeType || "audio/webm" });
+
+      if (blob.size < 1000) {
+        // Recording too short — likely no speech
+        addAiMessage("🎙️ Recording was too short. Hold the mic button, speak clearly, then release.");
+        return;
+      }
+
+      if (backendOnline === false) {
+        addAiMessage("⚠️ AI backend is offline. Start the backend with `.\\start-all.ps1` for voice to work.");
+        return;
+      }
+
+      // Show processing bubble
+      setMessages((prev) => [...prev, { role: "user", text: "🎙️ Transcribing…" }]);
+
+      try {
+        const res = await tutorVoiceChat(blob, lang, mode, userId);
+        const transcriptText = res.transcript?.trim();
+        const responseText   = res.response?.trim();
+
+        if (!transcriptText) {
+          // Whisper returned empty — replace bubble, show helpful message
+          setMessages((prev) => {
+            const copy = [...prev];
+            for (let i = copy.length - 1; i >= 0; i--) {
+              if (copy[i].role === "user" && copy[i].text.includes("Transcribing")) {
+                copy[i] = { ...copy[i], text: "🎙️ (no speech detected)" };
+                break;
+              }
+            }
+            return copy;
+          });
+          addAiMessage(
+            "🎙️ Whisper couldn't detect speech in your recording.\n\n" +
+            "**Tips for better voice recognition:**\n" +
+            "• Speak louder and closer to the mic\n" +
+            "• Reduce background noise\n" +
+            "• Hold the mic button, wait 1 second, then speak\n\n" +
+            "Or just **type your question** below — I'm ready! 💬"
+          );
+          return;
+        }
+
+        // ✅ Whisper transcribed successfully!
+        // Update the user bubble to show the actual transcript
+        setMessages((prev) => {
+          const copy = [...prev];
+          for (let i = copy.length - 1; i >= 0; i--) {
+            if (copy[i].role === "user" && copy[i].text.includes("Transcribing")) {
+              copy[i] = { ...copy[i], text: `🎙️ "${transcriptText}"` };
+              break;
+            }
+          }
+          return copy;
+        });
+
+        // Get AI response via streaming text pipeline
+        setStreaming(true);
+        setMessages((prev) => [...prev, { role: "ai", text: "", isStreaming: true }]);
+
+        await tutorChatStream(
+          { message: transcriptText, language: lang, mode, user_id: userId, use_rag: ragEnabled },
+          {
+            onToken: appendToLastAi,
+            onDone: () => {
+              finaliseStream();
+              // Read out the AI response using browser TTS
+              setMessages((prev) => {
+                const last = prev[prev.length - 1];
+                if (last?.role === "ai" && last.text) speakText(last.text);
+                return prev;
+              });
+            },
+            onError: (err) => {
+              appendToLastAi(`\n\n⚠️ ${err}`);
+              finaliseStream();
+            },
+          }
+        );
+      } catch (err: any) {
+        setMessages((prev) => {
+          const copy = [...prev];
+          for (let i = copy.length - 1; i >= 0; i--) {
+            if (copy[i].role === "user" && copy[i].text.includes("Transcribing")) {
+              copy[i] = { ...copy[i], text: "🎙️ Voice error" };
+              break;
+            }
+          }
+          return copy;
+        });
+        addAiMessage(`⚠️ Voice error: ${err?.message ?? "Backend unreachable"}. Please type your question.`);
+        setStreaming(false);
+      }
+    };
+
+    // Collect data every 250ms for smoother chunks
+    mr.start(250);
+    setRecording(true);
   };
 
   // ── Image upload + OCR solve ───────────────────────────────────────────────
@@ -766,11 +732,15 @@ function Tutor() {
                 />
               </label>
 
-              {/* Voice */}
+              {/* Voice — MediaRecorder → Whisper STT */}
               <button
                 onClick={toggleRecording}
-                className={`p-2 rounded-lg transition ${recording ? "bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400 animate-pulse" : "hover:bg-sky-100 dark:hover:bg-white/5 text-slate-600 dark:text-blue-200"}`}
-                title={recording ? "Stop recording" : "Voice input"}
+                className={`p-2 rounded-lg transition ${
+                  recording
+                    ? "bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400 animate-pulse ring-2 ring-red-400/40"
+                    : "hover:bg-sky-100 dark:hover:bg-white/5 text-slate-600 dark:text-blue-200"
+                }`}
+                title={recording ? "Click to stop & transcribe" : "Click to start voice (Whisper AI)"}
               >
                 {recording ? <Square className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
               </button>
@@ -780,8 +750,8 @@ function Tutor() {
                 value={input}
                 onChange={e => setInput(e.target.value)}
                 onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
-                placeholder={recording ? "Recording… click ⬛ to stop" : "Ask anything — text, image, voice, or PDF…"}
-                className="flex-1 bg-transparent outline-none resize-none px-2 py-2 text-sm text-slate-900 dark:text-white placeholder:text-slate-700 dark:text-slate-400 dark:placeholder:text-slate-600 dark:text-slate-500 font-medium"
+                placeholder={recording ? "🔴 Recording… click ⬛ to stop & transcribe" : "Ask anything — text, image, or voice (Whisper AI)…"}
+                className="flex-1 bg-transparent outline-none resize-none px-2 py-2 text-sm text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-500 font-medium"
               />
 
               <button
