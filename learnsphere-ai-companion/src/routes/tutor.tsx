@@ -297,66 +297,75 @@ function Tutor() {
         stream.getTracks().forEach(t => t.stop());
         const mimeType = mr.mimeType || "audio/webm";
         const blob = new Blob(audioChunksRef.current, { type: mimeType });
-        setMessages(prev => [...prev, { role: "user", text: "🎙️ Processing voice input…" }]);
 
         if (backendOnline === false) {
           addAiMessage("⚠️ AI backend offline — voice requires the FastAPI server.");
           return;
         }
 
-        setStreaming(true);
-        addAiMessage("🎧 Generating answer…", { isStreaming: true });
+        // Show processing indicator in chat
+        setMessages(prev => [...prev, { role: "user", text: "🎙️ Processing voice…" }]);
+
         try {
           const res = await tutorVoiceChat(blob, lang, mode, userId);
           const transcriptText = res.transcript?.trim();
           const responseText = res.response?.trim();
 
           if (!transcriptText) {
+            // Whisper returned empty — remove the placeholder and tell user to type
             setMessages(prev => {
               const copy = [...prev];
               for (let i = copy.length - 1; i >= 0; i--) {
-                if (copy[i].role === "user" && copy[i].text.includes("Processing voice input")) {
-                  copy[i] = { ...copy[i], text: "🎙️ Speech not detected" };
-                  break;
-                }
-              }
-              for (let i = copy.length - 1; i >= 0; i--) {
-                if (copy[i].role === "ai" && copy[i].isStreaming) {
-                  copy[i] = {
-                    ...copy[i],
-                    text: responseText || "I couldn't hear or transcribe your speech clearly. Please try speaking into the microphone again or type your question below.",
-                    isStreaming: false,
-                  };
+                if (copy[i].role === "user" && copy[i].text.includes("Processing voice")) {
+                  copy[i] = { ...copy[i], text: "🎙️ Could not transcribe audio" };
                   break;
                 }
               }
               return copy;
             });
+            addAiMessage("🎤 I couldn't transcribe your audio. This usually means:\n\n• The recording was too short or silent\n• Whisper model isn't loaded on backend\n\n**Please type your question** in the chat box below — I'm ready to answer! 💬");
           } else {
+            // ✅ Got transcript — update user bubble, then stream AI reply via text pipeline
             setMessages(prev => {
               const copy = [...prev];
               for (let i = copy.length - 1; i >= 0; i--) {
-                if (copy[i].role === "user" && copy[i].text.includes("Processing voice input")) {
+                if (copy[i].role === "user" && copy[i].text.includes("Processing voice")) {
                   copy[i] = { ...copy[i], text: `🎙️ "${transcriptText}"` };
                   break;
                 }
               }
-              for (let i = copy.length - 1; i >= 0; i--) {
-                if (copy[i].role === "ai" && copy[i].isStreaming) {
-                  copy[i] = {
-                    ...copy[i],
-                    text: responseText || "No response generated.",
-                    isStreaming: false,
-                    audioUrl: res.audio_url ?? undefined,
-                  };
-                  break;
-                }
-              }
               return copy;
             });
+            // Stream AI response for the transcript
+            if (responseText) {
+              // Backend already generated a response via Whisper pipeline
+              addAiMessage(responseText, { audioUrl: res.audio_url ?? undefined });
+            } else {
+              // Use the streaming text chat for a proper AI reply
+              setStreaming(true);
+              setMessages(prev => [...prev, { role: "ai", text: "", isStreaming: true }]);
+              await tutorChatStream(
+                { message: transcriptText, language: lang, mode, user_id: userId, use_rag: ragEnabled },
+                {
+                  onToken: appendToLastAi,
+                  onDone: finaliseStream,
+                  onError: (err) => { appendToLastAi(`\n\n⚠️ ${err}`); finaliseStream(); },
+                }
+              );
+            }
           }
         } catch {
-          appendToLastAi("\n\n⚠️ Voice pipeline error.");
+          setMessages(prev => {
+            const copy = [...prev];
+            for (let i = copy.length - 1; i >= 0; i--) {
+              if (copy[i].role === "user" && copy[i].text.includes("Processing voice")) {
+                copy[i] = { ...copy[i], text: "🎙️ Voice error" };
+                break;
+              }
+            }
+            return copy;
+          });
+          addAiMessage("⚠️ Voice pipeline error. Please type your question below.");
         }
         setStreaming(false);
       };
@@ -364,7 +373,7 @@ function Tutor() {
       mr.start();
       setRecording(true);
     } catch {
-      addAiMessage("⚠️ Microphone access denied.");
+      addAiMessage("⚠️ Microphone access denied. Please allow mic permissions.");
     }
   };
 
@@ -412,10 +421,30 @@ function Tutor() {
         };
 
         recognition.onerror = (event: any) => {
-          console.warn("SpeechRecognition error, switching to MediaRecorder fallback:", event.error);
+          const errorType: string = event.error;
+          console.warn("SpeechRecognition error:", errorType);
           setRecording(false);
           recognitionRef.current = null;
           capturedTextRef.current = "";
+
+          // Network / service errors: Google STT servers unreachable.
+          // MediaRecorder fallback won't help here — tell user to type instead.
+          if (errorType === "network" || errorType === "service-not-allowed") {
+            addAiMessage(
+              "🌐 **Browser speech recognition needs an internet connection** (Google servers).\n\n" +
+              "Your browser couldn't reach the speech service right now.\n\n" +
+              "👉 **Please type your question** in the box below — I'm ready to answer!"
+            );
+            return;
+          }
+
+          // not-allowed: mic permission denied
+          if (errorType === "not-allowed") {
+            addAiMessage("🎙️ Microphone permission denied. Please allow mic access in your browser settings.");
+            return;
+          }
+
+          // For other errors (no-speech, audio-capture, aborted) → try MediaRecorder+Whisper
           startMediaRecorderFallback();
         };
 
