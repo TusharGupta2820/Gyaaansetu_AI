@@ -284,63 +284,7 @@ function Tutor() {
   };
 
   // ── Voice recording ────────────────────────────────────────────────────────
-  const toggleRecording = async () => {
-    if (recording) {
-      if (recognitionRef.current) {
-        try { recognitionRef.current.stop(); } catch (e) {}
-      }
-      if (mediaRecorderRef.current) {
-        try { mediaRecorderRef.current.stop(); } catch (e) {}
-      }
-      setRecording(false);
-      return;
-    }
-
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-
-    if (SpeechRecognition) {
-      try {
-        const recognition = new SpeechRecognition();
-        recognitionRef.current = recognition;
-        recognition.continuous = false;
-        recognition.interimResults = true;
-        recognition.lang = lang === "Hindi" ? "hi-IN" : "en-US";
-
-        let capturedText = "";
-
-        recognition.onresult = (event: any) => {
-          let text = "";
-          for (let i = event.resultIndex; i < event.results.length; ++i) {
-            text += event.results[i][0].transcript;
-          }
-          if (text) {
-            capturedText = text;
-            setInput(text);
-          }
-        };
-
-        recognition.onerror = (event: any) => {
-          console.error("Speech recognition error:", event.error);
-          setRecording(false);
-        };
-
-        recognition.onend = () => {
-          setRecording(false);
-          const finalPrompt = capturedText.trim() || input.trim();
-          if (finalPrompt) {
-            send(finalPrompt);
-          }
-        };
-
-        recognition.start();
-        setRecording(true);
-        return;
-      } catch (e) {
-        console.error("Failed to initialize SpeechRecognition, falling back to MediaRecorder", e);
-      }
-    }
-
-    // MediaRecorder + Backend STT fallback
+  const startMediaRecorderFallback = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mr = new MediaRecorder(stream);
@@ -371,7 +315,7 @@ function Tutor() {
               const copy = [...prev];
               for (let i = copy.length - 1; i >= 0; i--) {
                 if (copy[i].role === "user" && copy[i].text.includes("Processing voice input")) {
-                  copy[i] = { ...copy[i], text: "🎙️ Could not transcribe speech" };
+                  copy[i] = { ...copy[i], text: "🎙️ Speech not detected" };
                   break;
                 }
               }
@@ -379,7 +323,7 @@ function Tutor() {
                 if (copy[i].role === "ai" && copy[i].isStreaming) {
                   copy[i] = {
                     ...copy[i],
-                    text: "I couldn't hear or transcribe your speech clearly. Please speak into the microphone again or type your question below.",
+                    text: responseText || "I couldn't hear or transcribe your speech clearly. Please try speaking into the microphone again or type your question below.",
                     isStreaming: false,
                   };
                   break;
@@ -421,6 +365,67 @@ function Tutor() {
     } catch {
       addAiMessage("⚠️ Microphone access denied.");
     }
+  };
+
+  const toggleRecording = async () => {
+    if (recording) {
+      if (recognitionRef.current) {
+        try { recognitionRef.current.stop(); } catch (e) {}
+      }
+      if (mediaRecorderRef.current) {
+        try { mediaRecorderRef.current.stop(); } catch (e) {}
+      }
+      setRecording(false);
+      return;
+    }
+
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+
+    if (SpeechRecognition) {
+      try {
+        const recognition = new SpeechRecognition();
+        recognitionRef.current = recognition;
+        recognition.continuous = false;
+        recognition.interimResults = true;
+        recognition.lang = lang === "Hindi" ? "hi-IN" : "en-US";
+
+        let capturedText = "";
+
+        recognition.onresult = (event: any) => {
+          let text = "";
+          for (let i = event.resultIndex; i < event.results.length; ++i) {
+            text += event.results[i][0].transcript;
+          }
+          if (text) {
+            capturedText = text;
+            setInput(text);
+          }
+        };
+
+        recognition.onerror = (event: any) => {
+          console.warn("SpeechRecognition browser error, switching to MediaRecorder fallback:", event.error);
+          setRecording(false);
+          recognitionRef.current = null;
+          startMediaRecorderFallback();
+        };
+
+        recognition.onend = () => {
+          setRecording(false);
+          const finalPrompt = capturedText.trim() || input.trim();
+          if (finalPrompt) {
+            send(finalPrompt);
+          }
+        };
+
+        recognition.start();
+        setRecording(true);
+        return;
+      } catch (e) {
+        console.warn("Failed to start SpeechRecognition, switching to MediaRecorder", e);
+      }
+    }
+
+    await startMediaRecorderFallback();
   };
 
   // ── Image upload + OCR solve ───────────────────────────────────────────────

@@ -147,9 +147,13 @@ async def voice_chat(
     stt_result = await whisper_service.transcribe_bytes(audio_bytes, language)
     user_text = stt_result.get("text", "").strip()
     if not user_text:
-        user_text = "Tell me about Newton's First Law of Motion and its practical applications."
-
-    logger.info(f"Transcribed [{language}]: {user_text[:80]}…")
+        return {
+            "transcript": "",
+            "response": "I couldn't hear or transcribe your speech clearly. Please try speaking into the microphone again or type your question in the chat box.",
+            "audio_url": None,
+            "tts_success": False,
+            "stt_confidence": 0
+        }
 
     # Step 2: Get AI response
     prompt = user_text
