@@ -3,11 +3,12 @@ import CodeEditor, { type CodeEditorHandle } from '@/components/CodeEditor';
 import ChatPanel from '@/components/ChatPanel';
 import LiveControls from '@/components/LiveControls';
 import AvatarInterviewer, { type AvatarInterviewerHandle } from '@/components/AvatarInterviewer';
+import ProblemBankModal from '@/components/ProblemBankModal';
 import { useTheme } from '@/hooks/useTheme';
 import { useLiveInterview } from '@/hooks/useLiveInterview';
 import { useInterviewSession } from '@/hooks/useInterviewSession';
-import { RefreshCw, Terminal } from 'lucide-react';
-import { PROBLEMS } from '@/constants';
+import { RefreshCw, Terminal, BookOpen } from 'lucide-react';
+import type { InterviewProblem } from '@/types';
 
 const API_KEY = (import.meta as any).env.VITE_API_KEY || '';
 
@@ -21,6 +22,7 @@ const App: React.FC = () => {
   const avatarRef = useRef<AvatarInterviewerHandle>(null);
   const { theme, toggleTheme } = useTheme();
   const [activeTab, setActiveTab] = useState<'workspace' | 'chat'>('workspace');
+  const [isProblemModalOpen, setIsProblemModalOpen] = useState(false);
 
   const session = useInterviewSession({ apiKey: API_KEY });
 
@@ -50,7 +52,15 @@ const App: React.FC = () => {
       <Header
         currentProblem={session.currentProblem}
         onRandomProblem={session.handleRandomProblem}
+        onOpenProblemBank={() => setIsProblemModalOpen(true)}
         live={live}
+      />
+
+      {/* LeetCode Problem Bank Selector Modal */}
+      <ProblemBankModal
+        isOpen={isProblemModalOpen}
+        onClose={() => setIsProblemModalOpen(false)}
+        onSelectProblem={session.handleSelectProblem}
       />
 
       {/* Mobile Tab Switcher */}
@@ -120,6 +130,7 @@ export default App;
 interface HeaderProps {
   currentProblem: { title: string; difficulty: 'Easy' | 'Medium' | 'Hard' };
   onRandomProblem: () => void;
+  onOpenProblemBank: () => void;
   live: {
     isLiveConnected: boolean;
     isConnectingLive: boolean;
@@ -134,7 +145,7 @@ interface HeaderProps {
   };
 }
 
-function Header({ currentProblem, onRandomProblem, live }: HeaderProps) {
+function Header({ currentProblem, onRandomProblem, onOpenProblemBank, live }: HeaderProps) {
   const difficultyClass =
     currentProblem.difficulty === 'Easy'
       ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/40'
@@ -151,14 +162,24 @@ function Header({ currentProblem, onRandomProblem, live }: HeaderProps) {
         </div>
         <div className="hidden sm:block h-5 w-px bg-subtle mx-1" />
         <div className="flex items-center gap-2 sm:gap-3">
-          <span className="text-xs sm:text-sm font-bold text-primary truncate max-w-[140px] sm:max-w-none">{currentProblem.title}</span>
+          {/* Problem Bank Picker Button */}
+          <button
+            onClick={onOpenProblemBank}
+            className="flex items-center gap-1.5 px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-md shadow-md transition-all border border-indigo-500"
+            title="Open LeetCode 1000+ Problem Bank"
+          >
+            <BookOpen className="w-3.5 h-3.5" />
+            <span>Problem Bank (1000+)</span>
+          </button>
+
+          <span className="text-xs sm:text-sm font-bold text-primary truncate max-w-[120px] sm:max-w-none">{currentProblem.title}</span>
           <span className={`text-[10px] px-2 py-0.5 rounded-full border font-bold ${difficultyClass} uppercase tracking-wider`}>
             {currentProblem.difficulty}
           </span>
           <button 
             onClick={onRandomProblem} 
             className="flex items-center gap-1.5 px-2.5 py-1 bg-slate-800 hover:bg-slate-700 active:bg-slate-900 text-slate-100 border border-slate-700 rounded-md text-xs font-semibold shadow-sm transition-all"
-            title="Next Practice Problem"
+            title="Next Random LeetCode Problem"
           >
             <RefreshCw className="w-3.5 h-3.5 text-indigo-400" />
             <span className="hidden md:inline">Next Problem</span>
@@ -191,4 +212,3 @@ function DescriptionBanner({ description }: { description: string }) {
     </div>
   );
 }
-

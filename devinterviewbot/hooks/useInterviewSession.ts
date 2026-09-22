@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import type { ChatMessage, InterviewLanguage, InterviewProblem } from '@/types';
 import type { LiveService } from '@/services/liveService';
-import { sendOpenSourceChat, speakOpenSource, executeCode, type ExecutionResult } from '@/services/openSourceService';
+import { sendOpenSourceChat, speakOpenSource, executeCode, fetchRandomLeetCodeProblem, type ExecutionResult } from '@/services/openSourceService';
 import { PROBLEMS } from '@/constants';
 
 interface UseInterviewSessionParams {
@@ -90,14 +90,33 @@ export function useInterviewSession({ apiKey }: UseInterviewSessionParams) {
     ]);
   }, [currentProblem.title]);
 
-  const handleRandomProblem = useCallback(() => {
-    // Filter out current problem so user always sees a different one
+  const handleSelectProblem = useCallback((problem: InterviewProblem) => {
+    setCurrentProblem(problem);
+    const starter = problem.starters?.[languageRef.current] || problem.starters?.python || `// ${problem.title}\n// Write your solution here...`;
+    setCode(starter);
+  }, []);
+
+  const handleRandomProblem = useCallback(async () => {
+    try {
+      const fetched = await fetchRandomLeetCodeProblem();
+      if (fetched) {
+        handleSelectProblem({
+          id: fetched.id,
+          title: fetched.title,
+          description: fetched.description,
+          difficulty: fetched.difficulty as 'Easy' | 'Medium' | 'Hard',
+          starters: fetched.starters
+        });
+        return;
+      }
+    } catch {}
+
+    // Fallback to local static problems if offline
     const others = PROBLEMS.filter(p => p.id !== currentProblemRef.current.id);
     const pool = others.length > 0 ? others : PROBLEMS;
     const random = pool[Math.floor(Math.random() * pool.length)];
-    setCurrentProblem(random);
-    setCode(random.starters[languageRef.current] || random.starters.python || '');
-  }, []);
+    handleSelectProblem(random);
+  }, [handleSelectProblem]);
 
   const handleLanguageChange = useCallback(
     (lang: InterviewLanguage) => {
@@ -252,6 +271,7 @@ export function useInterviewSession({ apiKey }: UseInterviewSessionParams) {
     setIsTerminalOpen,
     handleRunCode,
     handleRandomProblem,
+    handleSelectProblem,
     handleLanguageChange,
     handleSendMessage,
     setLiveRefs,

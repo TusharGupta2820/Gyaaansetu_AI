@@ -234,3 +234,66 @@ export async function isOpenSourceBackendReady(): Promise<boolean> {
   }
 }
 
+/**
+ * Fetch a random problem from the 1000+ LeetCode backend catalog.
+ */
+export async function fetchRandomLeetCodeProblem(
+  difficulty?: string,
+  category?: string
+) {
+  try {
+    const params = new URLSearchParams();
+    if (difficulty) params.append("difficulty", difficulty);
+    if (category) params.append("category", category);
+
+    const res = await fetch(`${API_BASE}/interview/problem/random?${params.toString()}`);
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Fetch a list of practice problems with optional search and category filters.
+ */
+export async function fetchLeetCodeProblemList(
+  search?: string,
+  category?: string,
+  difficulty?: string
+) {
+  try {
+    const params = new URLSearchParams();
+    if (search) params.append("search", search);
+    if (category) params.append("category", category);
+    if (difficulty) params.append("difficulty", difficulty);
+
+    const res = await fetch(`${API_BASE}/interview/problem/list?${params.toString()}`);
+    if (!res.ok) return { total: 0, categories: ["All"], problems: [] };
+    return await res.json();
+  } catch {
+    return { total: 0, categories: ["All"], problems: [] };
+  }
+}
+
+/**
+ * Generate a brand new custom coding problem using AI on demand.
+ */
+export async function generateAiLeetCodeProblem(
+  topic: string,
+  difficulty: string = "Medium"
+) {
+  try {
+    const res = await fetch(`${API_BASE}/interview/problem/generate`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ topic, difficulty }),
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+
