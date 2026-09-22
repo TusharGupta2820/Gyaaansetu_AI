@@ -84,9 +84,17 @@ async def db_context_middleware(request: Request, call_next):
     finally:
         current_user_id.reset(token)
 
-# ── CORS: allow the React frontends ─────────────────────────────────────────
+# ── CORS: allow all local React frontends ─────────────────────────────────────
 app.add_middleware(
     CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5180",
+        "http://127.0.0.1:5180",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+    ],
     allow_origin_regex=r"https?://.*",
     allow_credentials=True,
     allow_methods=["*"],

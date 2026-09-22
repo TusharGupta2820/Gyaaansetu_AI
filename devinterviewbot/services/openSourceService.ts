@@ -11,7 +11,15 @@
  * No Gemini API key needed. No cloud calls made.
  */
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+export function getApiBase(): string {
+  if (import.meta.env.VITE_API_BASE_URL) {
+    return import.meta.env.VITE_API_BASE_URL;
+  }
+  if (typeof window !== "undefined" && window.location && window.location.hostname) {
+    return `http://${window.location.hostname}:8000`;
+  }
+  return "http://localhost:8000";
+}
 
 export interface ChatTurn {
   role: "user" | "model";
@@ -130,7 +138,7 @@ Keep responses concise (2-4 sentences). Be encouraging but rigorous.`;
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout limit
 
-    const res = await fetch(`${API_BASE}/tutor/chat/simple`, {
+    const res = await fetch(`${getApiBase()}/tutor/chat/simple`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       signal: controller.signal,
@@ -164,15 +172,55 @@ export interface ExecutionResult {
 }
 
 /**
- * Execute code in selected language via FastAPI compiler runner endpoint.
+ * Execute code in selected language via browser runner or FastAPI compiler endpoint.
  */
 export async function executeCode(
   code: string,
   language: string,
   stdin: string = ""
 ): Promise<ExecutionResult> {
+  const normLang = language.toLowerCase().trim();
+
+  // Instant Client-Side Execution for JavaScript & TypeScript
+  if (normLang === "javascript" || normLang === "typescript") {
+    try {
+      const logs: string[] = [];
+      const customConsole = {
+        log: (...args: any[]) => logs.push(args.map(a => (typeof a === "object" ? JSON.stringify(a, null, 2) : String(a))).join(" ")),
+        error: (...args: any[]) => logs.push("[Error] " + args.map(a => String(a)).join(" ")),
+        warn: (...args: any[]) => logs.push("[Warn] " + args.map(a => String(a)).join(" ")),
+        info: (...args: any[]) => logs.push(args.map(a => String(a)).join(" ")),
+      };
+
+      const startTime = performance.now();
+      let execCode = code;
+      if (normLang === "typescript") {
+        execCode = code.replace(/:\s*(number|string|boolean|any|void|number\[\]|string\[\]|object)/g, "");
+      }
+
+      const runFn = new Function("console", execCode);
+      runFn(customConsole);
+      const duration = Math.round(performance.now() - startTime);
+
+      return {
+        output: logs.join("\n") || "Code executed cleanly. (Add console.log() to view output values).",
+        error: "",
+        execution_time_ms: duration,
+        status: "success",
+      };
+    } catch (jsErr: any) {
+      return {
+        output: "",
+        error: `JavaScript Runtime Error:\n${jsErr?.message || String(jsErr)}`,
+        execution_time_ms: 0,
+        status: "runtime_error",
+      };
+    }
+  }
+
+  // Backend Compiler Runner for Python, C++, Java, C#, Go, Rust, SQL, C
   try {
-    const res = await fetch(`${API_BASE}/interview/execute`, {
+    const res = await fetch(`${getApiBase()}/interview/execute`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ code, language, stdin }),
@@ -181,7 +229,7 @@ export async function executeCode(
     if (!res.ok) {
       return {
         output: "",
-        error: `Execution server returned error status ${res.status}`,
+        error: `Execution server returned status ${res.status}`,
         execution_time_ms: 0,
         status: "runtime_error",
       };
@@ -191,7 +239,7 @@ export async function executeCode(
   } catch (err: any) {
     return {
       output: "",
-      error: `Could not reach execution backend: ${err?.message || "Network error"}`,
+      error: `Could not reach execution backend: ${err?.message || "Network error"}. Make sure backend is running on port 8000.`,
       execution_time_ms: 0,
       status: "runtime_error",
     };
@@ -205,7 +253,7 @@ export async function executeCode(
 export async function speakOpenSource(text: string): Promise<string | null> {
   try {
     const detectedLanguage = detectLanguage(text, "English");
-    const res = await fetch(`${API_BASE}/tutor/tts`, {
+    const res = await fetch(`${getApiBase()}/tutor/tts`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -216,7 +264,7 @@ export async function speakOpenSource(text: string): Promise<string | null> {
 
     if (!res.ok) return null;
     const data = await res.json();
-    return data.audio_url ? `${API_BASE}${data.audio_url}` : null;
+    return data.audio_url ? `${getApiBase()}${data.audio_url}` : null;
   } catch {
     return null;
   }
@@ -225,7 +273,7 @@ export async function speakOpenSource(text: string): Promise<string | null> {
 /** Check if the local backend (Ollama + Piper) is reachable. */
 export async function isOpenSourceBackendReady(): Promise<boolean> {
   try {
-    const res = await fetch(`${API_BASE}/health/status`, {
+    const res = await fetch(`${getApiBase()}/health/status`, {
       signal: AbortSignal.timeout(3000),
     });
     return res.ok;
@@ -246,7 +294,7 @@ export async function fetchRandomLeetCodeProblem(
     if (difficulty) params.append("difficulty", difficulty);
     if (category) params.append("category", category);
 
-    const res = await fetch(`${API_BASE}/interview/problem/random?${params.toString()}`);
+    const res = await fetch(`${getApiBase()}/interview/problem/random?${params.toString()}`);
     if (!res.ok) return null;
     return await res.json();
   } catch {
@@ -268,7 +316,7 @@ export async function fetchLeetCodeProblemList(
     if (category) params.append("category", category);
     if (difficulty) params.append("difficulty", difficulty);
 
-    const res = await fetch(`${API_BASE}/interview/problem/list?${params.toString()}`);
+    const res = await fetch(`${getApiBase()}/interview/problem/list?${params.toString()}`);
     if (!res.ok) return { total: 0, categories: ["All"], problems: [] };
     return await res.json();
   } catch {
@@ -284,7 +332,7 @@ export async function generateAiLeetCodeProblem(
   difficulty: string = "Medium"
 ) {
   try {
-    const res = await fetch(`${API_BASE}/interview/problem/generate`, {
+    const res = await fetch(`${getApiBase()}/interview/problem/generate`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ topic, difficulty }),
