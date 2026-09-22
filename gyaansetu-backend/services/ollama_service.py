@@ -427,7 +427,7 @@ async def stream_chat(
     logger.info(f"Streaming Ollama [{model}] task={task} lang={language} mode={mode} temp={temp}")
 
     try:
-        async with httpx.AsyncClient(timeout=300.0) as client:
+        async with httpx.AsyncClient(timeout=12.0) as client:
             async with client.stream("POST", f"{OLLAMA_BASE}/api/generate", json=payload) as resp:
                 resp.raise_for_status()
                 async for line in resp.aiter_lines():
@@ -484,7 +484,7 @@ async def complete(
 
         logger.info(f"Complete Gemini [{model}] task={task} lang={language} mode={mode} temp={temp}")
         try:
-            async with httpx.AsyncClient(timeout=300.0) as client:
+            async with httpx.AsyncClient(timeout=30.0) as client:
                 r = await client.post(url, json=payload)
                 r.raise_for_status()
                 data = r.json()
@@ -514,10 +514,11 @@ async def complete(
     }
 
     try:
-        async with httpx.AsyncClient(timeout=300.0) as client:
+        async with httpx.AsyncClient(timeout=12.0) as client:
             r = await client.post(f"{OLLAMA_BASE}/api/generate", json=payload)
             r.raise_for_status()
             return r.json().get("response", "")
     except Exception as e:
         logger.warning(f"Ollama complete error or 404 ({e}), using smart fallback")
         return generate_smart_tutor_fallback(prompt, system_prompt, mode, language)
+

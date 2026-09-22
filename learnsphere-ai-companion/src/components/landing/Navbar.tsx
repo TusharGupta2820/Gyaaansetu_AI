@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Menu, X, ArrowRight, Sparkles } from "lucide-react";
+import { Menu, X, ArrowRight, Sparkles, UserCheck } from "lucide-react";
+import { AnnouncementBar } from "./AnnouncementBar";
 
 export type SectionKey =
   | "home"
@@ -21,9 +22,9 @@ export function Navbar({ activeSection, setActiveSection }: NavbarProps) {
 
   const navItems: { key: SectionKey; label: string }[] = [
     { key: "home", label: "Home" },
-    { key: "product", label: "Product" },
+    { key: "product", label: "Features" },
     { key: "ai-tutor", label: "AI Tutor" },
-    { key: "learning", label: "Learning" },
+    { key: "learning", label: "Adaptive Paths" },
     { key: "students", label: "For Students" },
     { key: "educators", label: "For Educators" },
     { key: "resources", label: "Resources" }
@@ -36,128 +37,142 @@ export function Navbar({ activeSection, setActiveSection }: NavbarProps) {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-[#0b1530] text-white border-b border-blue-900/60 shadow-xl py-3.5 transition-all">
-      <div className="w-full max-w-[1800px] mx-auto px-6 md:px-12 lg:px-16 flex items-center justify-between">
-        
-        {/* Brand Logo & Wordmark (Links to Home) */}
-        <Link
-          to="/"
-          onClick={() => handleSelect("home")}
-          className="flex items-center gap-3 group cursor-pointer"
-        >
-          <img
-            src="/Gyaansetu AI logo.png"
-            alt="GyaanSetu-AI Logo"
-            className="h-9 w-9 object-contain rounded-xl bg-white p-0.5 shadow-sm border border-blue-400/30 transition-transform group-hover:scale-105"
-          />
-          <div className="flex flex-col">
-            <div className="font-display font-extrabold text-lg text-white tracking-tight leading-none group-hover:text-blue-300 transition-colors">
-              GyaanSetu-AI
+    <header className="fixed top-0 left-0 right-0 z-50 transition-all font-sans bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs">
+      
+      {/* 01. Modern SaaS Announcement Banner */}
+      <AnnouncementBar />
+
+      {/* 02. Main Clean SaaS Navigation Header */}
+      <div className="py-3.5 px-6 md:px-12 lg:px-16">
+        <div className="w-full max-w-[1800px] mx-auto flex items-center justify-between">
+          
+          {/* Brand Logo & Wordmark */}
+          <Link
+            to="/"
+            onClick={() => handleSelect("home")}
+            className="flex items-center gap-3 group cursor-pointer"
+          >
+            <img
+              src="/Gyaansetu AI logo.png"
+              alt="GyaanSetu-AI Logo"
+              className="h-10 w-10 object-contain rounded-2xl bg-white p-0.5 shadow-md border border-slate-200 group-hover:scale-105 transition-transform"
+            />
+
+            <div className="flex flex-col">
+              <div className="flex items-center gap-2">
+                <span className="font-display font-extrabold text-xl text-slate-900 tracking-tight leading-none group-hover:text-blue-600 transition-colors">
+                  GyaanSetu<span className="text-blue-600">.AI</span>
+                </span>
+                <span className="text-[10px] font-bold text-blue-600 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full">
+                  PRO
+                </span>
+              </div>
+              <div className="text-[11px] text-slate-500 font-medium tracking-wide mt-0.5">
+                The Personalised AI Learning Companion
+              </div>
             </div>
-            <div className="text-[10px] text-blue-300 font-medium tracking-wide">
-              Bridging Knowledge Through Personalised Learning
-            </div>
-          </div>
-        </Link>
-
-        {/* Desktop Section Selector Buttons */}
-        <nav className="hidden lg:flex items-center gap-2 bg-slate-900/80 p-1.5 rounded-2xl border border-blue-900/50">
-          {navItems.map((item) => {
-            const isSelected = activeSection === item.key;
-            return (
-              <button
-                key={item.key}
-                onClick={() => handleSelect(item.key)}
-                className={`px-4 py-1.5 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
-                  isSelected
-                    ? "bg-blue-600 text-white shadow-md font-bold scale-[1.02]"
-                    : "text-slate-200 hover:text-white hover:bg-blue-950/60"
-                }`}
-              >
-                {item.label}
-              </button>
-            );
-          })}
-        </nav>
-
-        {/* Desktop Auth Buttons */}
-        <div className="hidden sm:flex items-center gap-4">
-          <Link
-            to="/auth"
-            search={{ mode: "login" }}
-            className="text-xs sm:text-sm font-semibold text-slate-200 hover:text-white px-4 py-2 rounded-xl transition-colors"
-          >
-            Sign In
           </Link>
-          <Link
-            to="/auth"
-            search={{ mode: "register" }}
-            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white text-xs sm:text-sm font-semibold px-5 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98]"
-          >
-            Get Started <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
 
-        {/* Mobile Hamburger Button */}
-        <div className="flex lg:hidden items-center gap-2">
-          <Link
-            to="/auth"
-            search={{ mode: "register" }}
-            className="sm:hidden inline-flex items-center gap-1 bg-blue-600 text-white text-xs font-semibold px-3 py-1.5 rounded-lg"
-          >
-            Get Started
-          </Link>
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 text-slate-200 hover:text-white rounded-lg hover:bg-blue-900/60 transition-colors"
-            aria-label="Toggle menu"
-          >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
-        </div>
-      </div>
+          {/* Desktop Section Navigation Links */}
+          <nav className="hidden lg:flex items-center gap-1 bg-slate-100/80 p-1.5 rounded-2xl border border-slate-200">
+            {navItems.map((item) => {
+              const isSelected = activeSection === item.key;
+              return (
+                <button
+                  key={item.key}
+                  onClick={() => handleSelect(item.key)}
+                  className={`px-4 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                    isSelected
+                      ? "bg-white text-blue-600 shadow-sm font-bold scale-[1.02]"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-white/60"
+                  }`}
+                >
+                  {item.label}
+                </button>
+              );
+            })}
+          </nav>
 
-      {/* Mobile Menu Dropdown */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden bg-[#0b1530] border-b border-blue-900 px-6 py-6 shadow-2xl space-y-4">
-          <div className="text-xs font-mono text-blue-300 font-bold uppercase tracking-wider">
-            Navigate to:
-          </div>
-          <div className="flex flex-col gap-2 text-sm font-medium text-slate-200">
-            {navItems.map((item) => (
-              <button
-                key={item.key}
-                onClick={() => handleSelect(item.key)}
-                className={`text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors flex items-center justify-between ${
-                  activeSection === item.key
-                    ? "bg-blue-600 text-white font-bold"
-                    : "hover:bg-blue-900/60 text-slate-200"
-                }`}
-              >
-                <span>{item.label}</span>
-                {activeSection === item.key && <Sparkles className="w-4 h-4 text-blue-200" />}
-              </button>
-            ))}
-          </div>
-
-          <div className="pt-4 border-t border-blue-900/80 flex flex-col gap-2.5">
+          {/* Desktop SaaS Auth CTAs */}
+          <div className="hidden sm:flex items-center gap-4">
             <Link
               to="/auth"
               search={{ mode: "login" }}
-              className="w-full text-center py-2.5 rounded-xl border border-blue-800 font-semibold text-xs text-slate-200 hover:bg-blue-950"
+              className="text-xs sm:text-sm font-semibold text-slate-700 hover:text-blue-600 px-3 py-2 rounded-xl transition-colors"
             >
               Sign In
             </Link>
             <Link
               to="/auth"
               search={{ mode: "register" }}
-              className="w-full text-center py-2.5 rounded-xl bg-blue-600 font-semibold text-xs text-white hover:bg-blue-500 shadow-sm"
+              className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl shadow-md shadow-blue-600/25 transition-all hover:scale-[1.02] active:scale-[0.98]"
+            >
+              <span>Get Started Free</span> <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          {/* Mobile Hamburger Button */}
+          <div className="flex lg:hidden items-center gap-2">
+            <Link
+              to="/auth"
+              search={{ mode: "register" }}
+              className="sm:hidden inline-flex items-center gap-1 bg-blue-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg"
             >
               Get Started
             </Link>
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 text-slate-700 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition-colors"
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
           </div>
         </div>
-      )}
+
+        {/* Mobile Dropdown Menu */}
+        {mobileMenuOpen && (
+          <div className="lg:hidden bg-white border-b border-slate-200 px-6 py-6 shadow-2xl space-y-4 mt-3 rounded-2xl">
+            <div className="text-xs font-mono text-slate-400 font-bold uppercase tracking-wider">
+              Navigation:
+            </div>
+            <div className="flex flex-col gap-2 text-sm font-medium text-slate-700">
+              {navItems.map((item) => (
+                <button
+                  key={item.key}
+                  onClick={() => handleSelect(item.key)}
+                  className={`text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors flex items-center justify-between ${
+                    activeSection === item.key
+                      ? "bg-blue-50 text-blue-600 font-bold"
+                      : "hover:bg-slate-50 text-slate-700"
+                  }`}
+                >
+                  <span>{item.label}</span>
+                  {activeSection === item.key && <Sparkles className="w-4 h-4 text-blue-600" />}
+                </button>
+              ))}
+            </div>
+
+            <div className="pt-4 border-t border-slate-200 flex flex-col gap-2.5">
+              <Link
+                to="/auth"
+                search={{ mode: "login" }}
+                className="w-full text-center py-2.5 rounded-xl border border-slate-300 font-semibold text-xs text-slate-700 hover:bg-slate-50"
+              >
+                Sign In to Account
+              </Link>
+              <Link
+                to="/auth"
+                search={{ mode: "register" }}
+                className="w-full text-center py-2.5 rounded-xl bg-blue-600 font-bold text-xs text-white hover:bg-blue-700 shadow-sm"
+              >
+                Create Free Account
+              </Link>
+            </div>
+          </div>
+        )}
+      </div>
+
     </header>
   );
 }

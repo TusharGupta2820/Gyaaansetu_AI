@@ -3,7 +3,18 @@ export enum InterviewMode {
   CHAT = 'CHAT'
 }
 
-export type InterviewLanguage = 'typescript' | 'python';
+export type InterviewLanguage = 
+  | 'python' 
+  | 'javascript' 
+  | 'typescript' 
+  | 'cpp' 
+  | 'java' 
+  | 'csharp' 
+  | 'go' 
+  | 'rust' 
+  | 'sql' 
+  | 'c';
+
 
 export interface InterviewProblem {
   id: string;

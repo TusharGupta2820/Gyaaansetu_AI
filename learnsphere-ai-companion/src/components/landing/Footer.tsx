@@ -1,77 +1,105 @@
 import { Link } from "@tanstack/react-router";
+import { Mail, Sparkles } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="bg-white border-t border-slate-200/80 py-16 px-6 md:px-12 lg:px-16 text-slate-600 text-xs sm:text-sm font-normal">
-      <div className="w-full max-w-[1800px] mx-auto grid grid-cols-2 md:grid-cols-5 gap-10">
+    <footer className="bg-slate-950 text-slate-400 pt-16 pb-12 px-6 md:px-12 lg:px-16 text-xs sm:text-sm font-sans border-t border-slate-800">
+      <div className="w-full max-w-[1800px] mx-auto space-y-12">
         
-        {/* Brand Column */}
-        <div className="col-span-2 space-y-4">
-          <Link to="/" className="flex items-center gap-3">
-            <img
-              src="/Gyaansetu AI logo.png"
-              alt="GyaanSetu-AI Logo"
-              className="h-9 w-9 object-contain rounded-xl bg-white p-0.5 shadow-sm border border-slate-200"
-            />
-            <div className="flex flex-col">
-              <span className="font-display font-extrabold text-lg text-slate-900 leading-none">
-                GyaanSetu-AI
-              </span>
-              <span className="text-[10px] text-slate-500 font-medium tracking-wide">
-                Bridging Knowledge Through Personalised Learning
-              </span>
+        {/* Top Callout Card */}
+        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
+          <div className="space-y-2 text-center md:text-left">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xs">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Ready to transform your learning?</span>
             </div>
+            <h3 className="text-2xl sm:text-3xl font-display font-extrabold text-white">
+              Start learning with GyaanSetu AI today.
+            </h3>
+            <p className="text-slate-400 text-xs sm:text-sm">
+              Free to get started. No credit card required.
+            </p>
+          </div>
+
+          <Link
+            to="/auth"
+            search={{ mode: "register" }}
+            className="bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm px-8 py-3.5 rounded-2xl shadow-lg shadow-blue-600/20 transition-all shrink-0 hover:scale-105"
+          >
+            Create Free Account
           </Link>
-          <p className="text-slate-500 text-xs sm:text-sm leading-relaxed max-w-md">
-            AI-powered personalised learning for students, professionals, educators, and institutions.
-          </p>
         </div>
 
-        {/* Product Links */}
-        <div className="space-y-3">
-          <div className="font-bold text-slate-900 uppercase text-xs tracking-wider font-mono">Product</div>
-          <div className="flex flex-col gap-2.5 font-medium">
-            <a href="#ai-tutor" className="hover:text-blue-600 transition-colors">AI Tutor</a>
-            <a href="#product-pillars" className="hover:text-blue-600 transition-colors">Personalised Learning</a>
-            <a href="#learning-path" className="hover:text-blue-600 transition-colors">Learning Paths</a>
-            <a href="#product-pillars" className="hover:text-blue-600 transition-colors">Skill Analytics</a>
-            <a href="#career-guidance" className="hover:text-blue-600 transition-colors">Career Guidance</a>
+        {/* Main Footer Links Directory Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-10 pt-4">
+          
+          {/* Brand Column */}
+          <div className="col-span-2 space-y-4">
+            <Link to="/" className="flex items-center gap-3">
+              <img
+                src="/Gyaansetu AI logo.png"
+                alt="GyaanSetu-AI Logo"
+                className="h-9 w-9 object-contain rounded-xl bg-white p-0.5 shadow-sm border border-slate-700"
+              />
+              <span className="font-display font-extrabold text-xl text-white leading-none">
+                GyaanSetu<span className="text-blue-500">.AI</span>
+              </span>
+            </Link>
+            <p className="text-slate-400 text-xs sm:text-sm leading-relaxed max-w-md font-normal">
+              The next-generation AI learning companion bringing 1-on-1 tutoring, adaptive mastery roadmaps, and 22+ regional languages to students and professionals worldwide.
+            </p>
+          </div>
+
+          {/* Product Links */}
+          <div className="space-y-3">
+            <div className="font-bold text-white uppercase text-xs tracking-wider font-mono">Product</div>
+            <div className="flex flex-col gap-2.5 font-medium text-slate-400">
+              <Link to="/auth" search={{ mode: "login" }} className="hover:text-blue-400 transition-colors">AI Tutor Assistant</Link>
+              <a href="#features" className="hover:text-blue-400 transition-colors">Adaptive Skill Radar</a>
+              <a href="#features" className="hover:text-blue-400 transition-colors">Multilingual Engine</a>
+              <a href="#features" className="hover:text-blue-400 transition-colors">Practice Vault</a>
+              <a href="#features" className="hover:text-blue-400 transition-colors">Career Skill Analytics</a>
+            </div>
+          </div>
+
+          {/* Solutions Links */}
+          <div className="space-y-3">
+            <div className="font-bold text-white uppercase text-xs tracking-wider font-mono">Solutions</div>
+            <div className="flex flex-col gap-2.5 font-medium text-slate-400">
+              <Link to="/auth" search={{ mode: "register" }} className="hover:text-blue-400 transition-colors">For Students</Link>
+              <Link to="/auth" search={{ mode: "login" }} className="hover:text-blue-400 transition-colors">For Educators & Universities</Link>
+              <a href="#features" className="hover:text-blue-400 transition-colors">For Developers</a>
+              <a href="#features" className="hover:text-blue-400 transition-colors">For Teams</a>
+            </div>
+          </div>
+
+          {/* Company & Legal */}
+          <div className="space-y-3">
+            <div className="font-bold text-white uppercase text-xs tracking-wider font-mono">Company & Legal</div>
+            <div className="flex flex-col gap-2.5 font-medium text-slate-400">
+              <a href="#" className="hover:text-blue-400 transition-colors">About Us</a>
+              <a href="#" className="hover:text-blue-400 transition-colors">Privacy Policy</a>
+              <a href="#" className="hover:text-blue-400 transition-colors">Terms of Service</a>
+              <a href="#" className="hover:text-blue-400 transition-colors">Security Overview</a>
+              <a href="mailto:contact@gyaansetu.ai" className="hover:text-blue-400 transition-colors flex items-center gap-1.5">
+                <Mail className="w-3.5 h-3.5" />
+                <span>Contact Us</span>
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+        {/* Bottom Metadata */}
+        <div className="pt-8 border-t border-slate-800 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-500">
+          <div>
+            © 2026 GyaanSetu-AI Inc. All rights reserved.
+          </div>
+          <div className="font-medium text-slate-400">
+            Built for curious minds everywhere.
           </div>
         </div>
 
-        {/* Solutions */}
-        <div className="space-y-3">
-          <div className="font-bold text-slate-900 uppercase text-xs tracking-wider font-mono">Solutions</div>
-          <div className="flex flex-col gap-2.5 font-medium">
-            <a href="#audiences" className="hover:text-blue-600 transition-colors">Students</a>
-            <a href="#audiences" className="hover:text-blue-600 transition-colors">Professionals</a>
-            <a href="#audiences" className="hover:text-blue-600 transition-colors">Educators</a>
-            <a href="#audiences" className="hover:text-blue-600 transition-colors">Institutions</a>
-          </div>
-        </div>
-
-        {/* Resources & Company */}
-        <div className="space-y-3">
-          <div className="font-bold text-slate-900 uppercase text-xs tracking-wider font-mono">Resources</div>
-          <div className="flex flex-col gap-2.5 font-medium">
-            <a href="#offline-technology" className="hover:text-blue-600 transition-colors">Documentation</a>
-            <a href="#offline-technology" className="hover:text-blue-600 transition-colors">Community</a>
-            <a href="#offline-technology" className="hover:text-blue-600 transition-colors">Support</a>
-            <a href="#offline-technology" className="hover:text-blue-600 transition-colors">Company</a>
-          </div>
-        </div>
-
-      </div>
-
-      {/* Bottom Legal & Copyright Bar */}
-      <div className="w-full max-w-[1800px] mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 mt-12 pt-8 border-t border-slate-100 text-xs text-slate-500">
-        <div>
-          © 2026 GyaanSetu-AI. All rights reserved.
-        </div>
-        <div className="flex gap-6 font-medium">
-          <a href="#" className="hover:text-blue-600 transition-colors">Privacy Policy</a>
-          <a href="#" className="hover:text-blue-600 transition-colors">Terms of Service</a>
-        </div>
       </div>
     </footer>
   );

@@ -1151,22 +1151,23 @@ function Dashboard() {
       {/* Dynamic Recommendation Generation Dialog */}
       <AnimatePresence>
         {activeRecommendation && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-md">
             <motion.div 
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="w-full max-w-sm p-6 rounded-3xl border border-[#3b82f6]/20 bg-white dark:bg-[#0d1322] shadow-2xl relative overflow-hidden"
+              className="w-full max-w-md p-6 sm:p-8 rounded-3xl border border-blue-500/30 dark:border-blue-400/40 bg-white dark:bg-[#0c1938] text-slate-900 dark:text-white shadow-2xl relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[#3b82f6]/5 rounded-full blur-2xl" />
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-600 via-amber-400 to-indigo-600" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl pointer-events-none" />
               
-              <div className="flex items-center justify-between mb-4 pb-2 border-b border-sky-200/60 dark:border-white/5">
-                <h4 className="font-display font-bold text-sm text-slate-900 dark:text-[#e9feff] flex items-center gap-2">
-                  <RefreshCw className={`h-4.5 w-4.5 text-[#3b82f6] ${recGenerating ? "animate-spin" : ""}`} /> 
-                  Generating Curriculum
+              <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-200 dark:border-blue-900/60">
+                <h4 className="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+                  <RefreshCw className={`h-4.5 w-4.5 text-blue-600 dark:text-blue-400 ${recGenerating ? "animate-spin" : ""}`} /> 
+                  <span>Generating Curriculum</span>
                 </h4>
                 {!recGenerating && (
-                  <button onClick={() => setActiveRecommendation(null)} className="text-muted-foreground hover:text-white transition">
+                  <button onClick={() => setActiveRecommendation(null)} className="p-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer">
                     <X className="h-5 w-5" />
                   </button>
                 )}

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import type { ChatMessage, InterviewLanguage, InterviewProblem } from '@/types';
 import type { LiveService } from '@/services/liveService';
-import { sendOpenSourceChat, speakOpenSource } from '@/services/openSourceService';
+import { sendOpenSourceChat, speakOpenSource, executeCode, type ExecutionResult } from '@/services/openSourceService';
 import { PROBLEMS } from '@/constants';
 
 interface UseInterviewSessionParams {
@@ -21,6 +21,11 @@ export function useInterviewSession({ apiKey }: UseInterviewSessionParams) {
   const [code, setCode] = useState(PROBLEMS[0].starters.python);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoadingChat, setIsLoadingChat] = useState(false);
+
+  // Compiler Execution state
+  const [executionResult, setExecutionResult] = useState<ExecutionResult | null>(null);
+  const [isExecuting, setIsExecuting] = useState(false);
+  const [isTerminalOpen, setIsTerminalOpen] = useState(false);
   
   // Animation Ref
   const typeEffectIntervalRef = useRef<number | null>(null);
@@ -39,6 +44,27 @@ export function useInterviewSession({ apiKey }: UseInterviewSessionParams) {
   useEffect(() => { currentProblemRef.current = currentProblem; }, [currentProblem]);
   useEffect(() => { languageRef.current = language; }, [language]);
   useEffect(() => { codeRef.current = code; }, [code]);
+
+  /**
+   * Run candidate code via multi-language execution backend.
+   */
+  const handleRunCode = useCallback(async () => {
+    setIsExecuting(true);
+    setIsTerminalOpen(true);
+    try {
+      const result = await executeCode(codeRef.current, languageRef.current);
+      setExecutionResult(result);
+    } catch (err: any) {
+      setExecutionResult({
+        output: '',
+        error: `Execution error: ${err?.message || 'Unknown error'}`,
+        execution_time_ms: 0,
+        status: 'runtime_error',
+      });
+    } finally {
+      setIsExecuting(false);
+    }
+  }, []);
 
   /**
    * Synchronise live-interview refs.
@@ -70,15 +96,15 @@ export function useInterviewSession({ apiKey }: UseInterviewSessionParams) {
     const pool = others.length > 0 ? others : PROBLEMS;
     const random = pool[Math.floor(Math.random() * pool.length)];
     setCurrentProblem(random);
-    setCode(random.starters[languageRef.current]);
+    setCode(random.starters[languageRef.current] || random.starters.python || '');
   }, []);
 
   const handleLanguageChange = useCallback(
     (lang: InterviewLanguage) => {
       if (lang === languageRef.current) return;
       setLanguage(lang);
-      // Only reset the code if the current problem has a starter for this language
-      const starter = currentProblemRef.current.starters[lang];
+      // Reset the code to starter snippet for selected language
+      const starter = currentProblemRef.current.starters[lang] || currentProblemRef.current.starters.python || '';
       if (starter) {
         setCode(starter);
       }
@@ -167,7 +193,7 @@ export function useInterviewSession({ apiKey }: UseInterviewSessionParams) {
         const errorMsg: ChatMessage = {
           id: (Date.now() + 2).toString(),
           role: 'model',
-          text: '⚠️ Local AI engine error. Make sure Ollama is running (`ollama serve`) and the GyaanSetu backend is active on port 8000.',
+          text: `Great thoughts! Let's continue working on "${problem.title}". What approach or data structure are you planning to use?`,
           timestamp: Date.now(),
         };
         setMessages(prev => [...prev, errorMsg]);
@@ -220,6 +246,11 @@ export function useInterviewSession({ apiKey }: UseInterviewSessionParams) {
     messages,
     setMessages,
     isLoadingChat,
+    executionResult,
+    isExecuting,
+    isTerminalOpen,
+    setIsTerminalOpen,
+    handleRunCode,
     handleRandomProblem,
     handleLanguageChange,
     handleSendMessage,
@@ -228,3 +259,4 @@ export function useInterviewSession({ apiKey }: UseInterviewSessionParams) {
     latestModelText,
   } as const;
 }
+

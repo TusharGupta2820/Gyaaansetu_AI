@@ -92,6 +92,11 @@ const App: React.FC = () => {
               onLanguageChange={session.handleLanguageChange}
               theme={theme}
               onThemeToggle={toggleTheme}
+              onRunCode={session.handleRunCode}
+              isExecuting={session.isExecuting}
+              executionResult={session.executionResult}
+              isTerminalOpen={session.isTerminalOpen}
+              setIsTerminalOpen={session.setIsTerminalOpen}
             />
           </div>
         </div>

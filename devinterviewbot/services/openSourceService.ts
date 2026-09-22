@@ -54,6 +54,40 @@ const LANGUAGE_INSTRUCTIONS: Record<string, string> = {
 };
 
 /**
+ * Fallback AI Interviewer response generator if Ollama or backend is slow/offline.
+ */
+function generateFallbackInterviewerResponse(
+  userMessage: string,
+  problemTitle: string,
+  language: string,
+  currentCode: string
+): string {
+  const msg = userMessage.toLowerCase().trim();
+  
+  if (msg.includes("hi") || msg.includes("hello") || msg.includes("hey") || msg.includes("ready")) {
+    return `Hello! Great to have you here. We are solving "${problemTitle}" in ${language.toUpperCase()}.\n\nTo start off, could you briefly walk me through your initial thoughts or brute force approach before we write the optimal code?`;
+  }
+  
+  if (msg.includes("hash") || msg.includes("map") || msg.includes("dictionary")) {
+    return `Excellent intuition! Using a hash map is a great way to achieve O(N) time complexity for "${problemTitle}". How would you handle duplicate values or indexing in your implementation?`;
+  }
+
+  if (msg.includes("pointer") || msg.includes("two pointer") || msg.includes("sliding")) {
+    return `Good strategy. Using pointers works very efficiently here. What is the space complexity of this approach compared to a hash map?`;
+  }
+
+  if (msg.includes("test") || msg.includes("run") || msg.includes("output")) {
+    return `Feel free to hit the **Run Code** button at any time to compile and execute your ${language} solution! Let me know when you'd like me to review your time complexity.`;
+  }
+
+  if (currentCode.trim().length > 40) {
+    return `I see you've drafted some ${language} code for "${problemTitle}". Have you considered potential edge cases, such as empty inputs or negative values? Walk me through how your logic executes.`;
+  }
+
+  return `Thanks for sharing your thoughts on "${problemTitle}". How do you evaluate the overall time and space complexity of your current ${language} approach?`;
+}
+
+/**
  * Send a text message to the local DeepSeek-R1 / Llama3.1 interview assistant.
  * Routes through /tutor/chat/simple on the FastAPI backend (Ollama).
  */
@@ -92,25 +126,76 @@ ${currentCode.slice(0, 3000)}
 Guide them with hints, ask clarifying questions, evaluate their approach.
 Keep responses concise (2-4 sentences). Be encouraging but rigorous.`;
 
-  const res = await fetch(`${API_BASE}/tutor/chat/simple`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      message: fullPrompt,
-      system: systemContext,
-      task: useThinking ? "code" : "tutor", // "code" = deepseek-r1 (reasoning), "tutor" = llama3.1 (fast, offline)
-      mode: "Interview Mode",
-      language: detectedLanguage,
-      user_id: "devinterview-session",
-    }),
-  });
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout limit
 
-  if (!res.ok) {
-    throw new Error(`Backend chat error: ${res.status}`);
+    const res = await fetch(`${API_BASE}/tutor/chat/simple`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      signal: controller.signal,
+      body: JSON.stringify({
+        message: fullPrompt,
+        system: systemContext,
+        task: useThinking ? "code" : "tutor", // "code" = deepseek-r1 (reasoning), "tutor" = llama3.1 (fast, offline)
+        mode: "Interview Mode",
+        language: detectedLanguage,
+        user_id: "devinterview-session",
+      }),
+    });
+    clearTimeout(timeoutId);
+
+    if (!res.ok) {
+      return generateFallbackInterviewerResponse(userMessage, problemTitle, language, currentCode);
+    }
+
+    const data = await res.json();
+    return data.response || data.text || generateFallbackInterviewerResponse(userMessage, problemTitle, language, currentCode);
+  } catch {
+    return generateFallbackInterviewerResponse(userMessage, problemTitle, language, currentCode);
   }
+}
 
-  const data = await res.json();
-  return data.response || data.text || "No response from local model.";
+export interface ExecutionResult {
+  output: string;
+  error: string;
+  execution_time_ms: number;
+  status: 'success' | 'compilation_error' | 'runtime_error' | 'timeout';
+}
+
+/**
+ * Execute code in selected language via FastAPI compiler runner endpoint.
+ */
+export async function executeCode(
+  code: string,
+  language: string,
+  stdin: string = ""
+): Promise<ExecutionResult> {
+  try {
+    const res = await fetch(`${API_BASE}/interview/execute`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code, language, stdin }),
+    });
+
+    if (!res.ok) {
+      return {
+        output: "",
+        error: `Execution server returned error status ${res.status}`,
+        execution_time_ms: 0,
+        status: "runtime_error",
+      };
+    }
+
+    return await res.json();
+  } catch (err: any) {
+    return {
+      output: "",
+      error: `Could not reach execution backend: ${err?.message || "Network error"}`,
+      execution_time_ms: 0,
+      status: "runtime_error",
+    };
+  }
 }
 
 /**
@@ -148,3 +233,4 @@ export async function isOpenSourceBackendReady(): Promise<boolean> {
     return false;
   }
 }
+

@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Navbar, SectionKey } from "@/components/landing/Navbar";
 import { HeroSection } from "@/components/landing/HeroSection";
 import { CapabilityStrip } from "@/components/landing/CapabilityStrip";
+import { TrustBadgesSection } from "@/components/landing/TrustBadgesSection";
 import { ProblemStorySection } from "@/components/landing/ProblemStorySection";
 import { ProductPillarsSection } from "@/components/landing/ProductPillarsSection";
 import { AITutorShowcase } from "@/components/landing/AITutorShowcase";
@@ -22,11 +23,11 @@ import { ArrowLeft } from "lucide-react";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "GyaanSetu-AI — Bridging Knowledge Through Personalised Learning" },
+      { title: "GyaanSetu-AI — Personalised AI Learning Platform" },
       {
         name: "description",
         content:
-          "GyaanSetu-AI is a personalised AI learning ecosystem bringing intelligent tutoring, adaptive learning paths, skill analytics, and career guidance together."
+          "GyaanSetu-AI is a next-generation AI learning ecosystem bringing intelligent tutoring, adaptive learning paths, 22+ languages, and skill analytics together."
       }
     ]
   }),
@@ -49,23 +50,23 @@ function LandingPage() {
   };
 
   return (
-    <div className="bg-slate-50 text-slate-900 min-h-screen font-sans selection:bg-blue-500/20 selection:text-blue-900 overflow-x-hidden antialiased">
+    <div id="main-content" className="bg-white text-slate-900 min-h-screen font-sans selection:bg-blue-600 selection:text-white overflow-x-hidden antialiased">
       
-      {/* 01. Sticky Navy Blue Navbar */}
+      {/* 01. Sticky Header Navbar */}
       <Navbar activeSection={activeSection} setActiveSection={setActiveSection} />
 
       {/* Top Banner Indicator for Dedicated Views */}
       {activeSection !== "home" && (
-        <div className="pt-24 pb-4 px-6 md:px-12 bg-blue-950 text-white border-b border-blue-900 flex flex-wrap items-center justify-between gap-4">
+        <div className="pt-32 pb-4 px-6 md:px-12 bg-slate-900 text-white border-b border-slate-800 flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded-xl bg-blue-600 flex items-center justify-center text-slate-900 dark:text-white font-bold text-xs">
+            <div className="h-8 w-8 rounded-xl bg-blue-600 text-white flex items-center justify-center font-extrabold text-xs shadow">
               GS
             </div>
             <div>
-              <span className="text-xs font-mono text-blue-300 font-bold uppercase tracking-wider">
-                Viewing Page:
+              <span className="text-xs font-mono text-blue-400 font-bold uppercase tracking-wider">
+                Viewing Section:
               </span>
-              <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-tight">
+              <h2 className="text-sm sm:text-base font-bold text-white leading-tight">
                 {getSectionTitle(activeSection)}
               </h2>
             </div>
@@ -73,7 +74,7 @@ function LandingPage() {
 
           <button
             onClick={() => setActiveSection("home")}
-            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-4 py-2 rounded-xl shadow-sm transition-colors cursor-pointer"
+            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-md transition-colors cursor-pointer"
           >
             <ArrowLeft className="w-3.5 h-3.5" /> Back to Home Page
           </button>
@@ -85,6 +86,7 @@ function LandingPage() {
         <>
           <HeroSection />
           <CapabilityStrip />
+          <TrustBadgesSection />
           <ProblemStorySection />
           <FinalCTASection />
         </>

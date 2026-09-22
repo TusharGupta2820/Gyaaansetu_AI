@@ -16,6 +16,11 @@ export default defineConfig({
     server: { entry: "server" },
   },
   vite: {
+    server: {
+      host: true,
+      port: 3000,
+      strictPort: true
+    },
     build: {
       rollupOptions: {
         external: ["vinxi/http", "node:sqlite"],

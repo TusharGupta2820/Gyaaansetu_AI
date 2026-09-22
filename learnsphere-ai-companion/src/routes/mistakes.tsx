@@ -522,57 +522,63 @@ function MistakeDashboard() {
       </div>
 
       {/* Pop-up Modals for interactive logs */}
+      {/* Pop-up Modals for interactive logs */}
       <AnimatePresence>
         
         {/* Error Detail & Replay Practice Modal */}
         {selectedMistake && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-md">
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-sm bg-white dark:bg-[#0d1322] border border-[#3b82f6]/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden text-white"
+              className="w-full max-w-md bg-white dark:bg-[#0c1938] border border-blue-500/30 dark:border-blue-400/40 p-6 sm:p-8 rounded-3xl shadow-2xl relative overflow-hidden text-slate-900 dark:text-white"
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[#3b82f6]/5 rounded-full blur-2xl" />
+              {/* Creative Top Accent Strip */}
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-600 via-amber-400 to-indigo-600" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl pointer-events-none" />
 
-              <div className="flex items-center justify-between pb-3 border-b border-sky-200/60 dark:border-white/5 mb-4">
-                <h4 className="font-display font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
-                  <PlayCircle className="h-4.5 w-4.5 text-[#3b82f6]" />
-                  {practiceMode ? "Practice Pacer" : "AI Error Replay"}
+              <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-blue-900/60 mb-5">
+                <h4 className="font-display font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
+                  <PlayCircle className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                  <span>{practiceMode ? "Practice Pacer" : "AI Error Replay"}</span>
                 </h4>
-                <button onClick={() => setSelectedMistake(null)} className="text-slate-700 dark:text-slate-400 hover:text-white transition">
+                <button
+                  onClick={() => setSelectedMistake(null)}
+                  className="p-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
+                >
                   <X className="h-5 w-5" />
                 </button>
               </div>
 
               {!practiceMode ? (
                 <div className="space-y-4 text-xs">
-                  <div>
-                    <div className="text-[9px] text-blue-300 uppercase font-mono font-bold">Weak Topic</div>
-                    <div className="text-sm font-extrabold text-slate-900 dark:text-white mt-0.5">{selectedMistake.topic}</div>
+                  <div className="bg-slate-100 dark:bg-[#12244d] p-4 rounded-2xl border border-slate-200 dark:border-blue-800/80 shadow-xs">
+                    <div className="text-[10px] text-blue-700 dark:text-blue-300 uppercase font-mono font-bold tracking-wider">Weak Topic</div>
+                    <div className="text-base font-extrabold text-slate-900 dark:text-white mt-0.5">{selectedMistake.topic}</div>
                   </div>
 
-                  <div>
-                    <div className="text-[9px] text-blue-300 uppercase font-mono font-bold">Concept Slip Audit</div>
-                    <p className="mt-1 leading-relaxed text-slate-700 dark:text-slate-300">{selectedMistake.explanation}</p>
+                  <div className="bg-slate-100 dark:bg-[#12244d] p-4 rounded-2xl border border-slate-200 dark:border-blue-800/80 shadow-xs">
+                    <div className="text-[10px] text-blue-700 dark:text-blue-300 uppercase font-mono font-bold tracking-wider">Concept Slip Audit</div>
+                    <p className="mt-1 leading-relaxed text-slate-800 dark:text-slate-200 text-xs">{selectedMistake.explanation}</p>
                   </div>
 
-                  <div className="bg-[#3b82f6]/10 text-white p-3 rounded-xl border border-sky-200/60 dark:border-white/5 space-y-1">
-                    <div className="font-bold font-mono text-[9px] text-[#3b82f6] uppercase">AI Remedial Tip:</div>
-                    <p className="text-[10px] leading-relaxed font-mono">{selectedMistake.correction}</p>
+                  <div className="bg-blue-50 dark:bg-blue-950/80 text-blue-950 dark:text-blue-100 p-4 rounded-2xl border border-blue-200 dark:border-blue-800/80 space-y-1 shadow-xs">
+                    <div className="font-bold font-mono text-[10px] text-blue-700 dark:text-blue-300 uppercase tracking-wider">AI Remedial Tip:</div>
+                    <p className="text-xs leading-relaxed font-mono font-semibold">{selectedMistake.correction}</p>
                   </div>
 
                   <button
                     onClick={() => setPracticeMode(true)}
-                    className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#3b82f6] to-[#6366f1] text-[#050816] font-bold text-xs shadow-md glow-cyan"
+                    className="w-full py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-lg shadow-blue-600/25 transition-all cursor-pointer hover:scale-[1.02]"
                   >
                     Practice Similar Question
                   </button>
                 </div>
               ) : (
                 <div className="space-y-4 text-xs">
-                  <div>
-                    <div className="text-[9px] text-blue-300 uppercase font-mono font-bold">Remedial Quiz</div>
+                  <div className="bg-slate-100 dark:bg-[#12244d] p-4 rounded-2xl border border-slate-200 dark:border-blue-800/80">
+                    <div className="text-[10px] text-blue-700 dark:text-blue-300 uppercase font-mono font-bold tracking-wider">Remedial Quiz</div>
                     <div className="text-xs font-bold text-slate-900 dark:text-white mt-1 leading-relaxed">{selectedMistake.sampleQuestion}</div>
                   </div>
 
@@ -581,10 +587,10 @@ function MistakeDashboard() {
                       <button
                         key={idx}
                         onClick={() => { setSelectedOption(idx); setCheckedAnswer(null); }}
-                        className={`w-full p-3 text-left rounded-xl border transition-all text-xs ${
+                        className={`w-full p-3.5 text-left rounded-2xl border transition-all text-xs cursor-pointer ${
                           selectedOption === idx 
-                            ? "bg-[#3b82f6]/10 border-[#3b82f6]/40 text-slate-900 dark:text-white font-bold"
-                            : "bg-slate-900/40 border border-sky-200/60 dark:border-white/5 hover:bg-slate-900/60 text-slate-700 dark:text-slate-300"
+                            ? "bg-blue-600 text-white border-blue-600 font-bold shadow-md"
+                            : "bg-slate-100 dark:bg-[#12244d] border-slate-200 dark:border-blue-800/80 hover:border-blue-400 text-slate-800 dark:text-slate-200"
                         }`}
                       >
                         {opt}
@@ -593,26 +599,26 @@ function MistakeDashboard() {
                   </div>
 
                   {checkedAnswer !== null && (
-                    <div className={`p-2.5 rounded-xl border text-[10px] font-mono ${
-                      checkedAnswer ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" : "bg-red-500/10 text-red-400 border-red-500/20"
+                    <div className={`p-3 rounded-2xl border text-xs font-mono font-bold ${
+                      checkedAnswer ? "bg-emerald-50 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700" : "bg-rose-50 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300 border-rose-300 dark:border-rose-700"
                     }`}>
                       {checkedAnswer 
-                        ? "Correct Answer! That reduces your mistake recurrence score." 
-                        : "Incorrect. Try focusing on the inner derivative chains."}
+                        ? "✓ Correct Answer! That reduces your mistake recurrence score." 
+                        : "✕ Incorrect. Focus on concept step breakdown."}
                     </div>
                   )}
 
                   <div className="flex gap-2">
                     <button
                       onClick={() => setPracticeMode(false)}
-                      className="flex-1 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-bold transition"
+                      className="flex-1 py-3 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 text-xs font-bold transition cursor-pointer"
                     >
                       Back to Audit
                     </button>
                     <button
                       onClick={handlePracticeSubmit}
                       disabled={selectedOption === null}
-                      className="flex-1 py-2.5 rounded-xl bg-[#3b82f6] text-[#050816] text-xs font-bold transition disabled:opacity-50"
+                      className="flex-1 py-3 rounded-2xl bg-blue-600 text-white font-bold text-xs transition hover:bg-blue-700 disabled:opacity-50 cursor-pointer shadow-md"
                     >
                       Submit Answer
                     </button>
@@ -623,64 +629,79 @@ function MistakeDashboard() {
           </div>
         )}
 
-        {/* Dynamic tab modals */}
+        {/* Dynamic Tab Modals */}
         {activeTabPanel && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-md">
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-sm bg-white dark:bg-[#0d1322] border border-blue-500/20 p-6 rounded-3xl shadow-2xl relative overflow-hidden text-white"
+              className="w-full max-w-md bg-white dark:bg-[#0c1938] border border-blue-500/30 dark:border-blue-400/40 p-6 sm:p-8 rounded-3xl shadow-2xl relative overflow-hidden text-slate-900 dark:text-white"
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[#6366f1]/5 rounded-full blur-2xl" />
+              {/* Creative Top Accent Strip */}
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-600 via-amber-400 to-indigo-600" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl pointer-events-none" />
 
-              <div className="flex items-center justify-between pb-3 border-b border-sky-200/60 dark:border-white/5 mb-4">
-                <h4 className="font-display font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
-                  <BarChart2 className="h-4.5 w-4.5 text-[#6366f1]" />
-                  {activeTabPanel === "tracked" && "Tracked Mistakes Database"}
-                  {activeTabPanel === "weakest" && "Weakness Heatmaps"}
-                  {activeTabPanel === "patterns" && "Cognitive Audits"}
+              <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-blue-900/60 mb-5">
+                <h4 className="font-display font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
+                  <BarChart2 className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                  <span>
+                    {activeTabPanel === "tracked" && "Tracked Mistakes Database"}
+                    {activeTabPanel === "weakest" && "Weakness Heatmaps"}
+                    {activeTabPanel === "patterns" && "Cognitive Audits"}
+                  </span>
                 </h4>
-                <button onClick={() => setActiveTabPanel(null)} className="text-slate-700 dark:text-slate-400 hover:text-white transition">
+                <button
+                  onClick={() => setActiveTabPanel(null)}
+                  className="p-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
+                >
                   <X className="h-5 w-5" />
                 </button>
               </div>
 
               {activeTabPanel === "tracked" && (
-                <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
-                  <p className="text-[11px] text-slate-600 dark:text-blue-200/60 mb-2">Detailed log of recent testing slips:</p>
+                <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
+                  <p className="text-xs text-slate-600 dark:text-blue-200 font-medium mb-1">
+                    Detailed log of recent test failures & slips:
+                  </p>
                   {[
                     { title: "Calculus Limits Chain Rule", date: "Today, 10:15 AM", type: "Math" },
-                    { title: "Matrix Eigenvalues subtraction", date: "Yesterday, 3:45 PM", type: "Algebra" },
-                    { title: "CSS Absolute center translates", date: "June 9, 1:12 PM", type: "UI" }
+                    { title: "Matrix Eigenvalues Subtraction", date: "Yesterday, 3:45 PM", type: "Algebra" },
+                    { title: "CSS Absolute Center Translates", date: "June 9, 1:12 PM", type: "UI Design" }
                   ].map((it, idx) => (
-                    <div key={idx} className="p-3 bg-slate-900/40 border border-sky-200/60 dark:border-white/5 rounded-2xl flex justify-between items-center text-xs text-slate-900 dark:text-white">
+                    <div
+                      key={idx}
+                      className="p-3.5 bg-slate-100 dark:bg-[#12244d] border border-slate-200 dark:border-blue-800/80 rounded-2xl flex justify-between items-center text-xs shadow-xs hover:border-blue-500 transition-colors"
+                    >
                       <div>
-                        <div className="font-bold text-slate-900 dark:text-white">{it.title}</div>
-                        <div className="text-[9px] text-slate-600 dark:text-blue-200/60 mt-0.5">{it.date}</div>
+                        <div className="font-bold text-slate-900 dark:text-white text-sm">{it.title}</div>
+                        <div className="text-[10px] text-slate-500 dark:text-blue-300 font-mono mt-0.5">{it.date}</div>
                       </div>
-                      <span className="text-[9px] font-mono bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded font-bold">{it.type}</span>
+                      <span className="text-[10px] font-mono font-bold bg-blue-600 text-white px-2.5 py-1 rounded-full shadow-xs">
+                        {it.type}
+                      </span>
                     </div>
                   ))}
                 </div>
               )}
 
               {activeTabPanel === "weakest" && (
-                <div className="space-y-3 text-xs text-slate-700 dark:text-slate-300">
-                  <p>Subject weak metrics based on testing repetitions:</p>
-                  <div className="space-y-2.5 bg-slate-900/40 p-4 rounded-2xl border border-sky-200/60 dark:border-white/5">
-                    <div className="flex justify-between items-center text-[11px]">
-                      <span>Calculus (Limits & Integrals)</span>
-                      <span className="font-bold text-red-400">82% error index</span>
+                <div className="space-y-4 text-xs text-slate-700 dark:text-slate-200">
+                  <p className="font-medium text-slate-600 dark:text-blue-200">Subject weakness index based on practice repetition:</p>
+                  <div className="space-y-3 bg-slate-100 dark:bg-[#12244d] p-4 rounded-2xl border border-slate-200 dark:border-blue-800/80 shadow-xs">
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="font-bold text-slate-900 dark:text-white">Calculus (Limits & Integrals)</span>
+                      <span className="font-mono font-extrabold text-rose-600 dark:text-rose-400">82% error index</span>
                     </div>
-                    <div className="w-full bg-white/5 h-2 rounded-full overflow-hidden">
-                      <div className="h-full bg-red-500 rounded-full" style={{ width: "82%" }} />
+                    <div className="w-full bg-slate-200 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden">
+                      <div className="h-full bg-rose-500 rounded-full" style={{ width: "82%" }} />
                     </div>
-                    <div className="flex justify-between items-center text-[11px] mt-2">
-                      <span>Algebra (Matrices & Equs)</span>
-                      <span className="font-bold text-amber-400">68% error index</span>
+
+                    <div className="flex justify-between items-center text-xs pt-2">
+                      <span className="font-bold text-slate-900 dark:text-white">Algebra (Matrices & Equations)</span>
+                      <span className="font-mono font-extrabold text-amber-600 dark:text-amber-400">68% error index</span>
                     </div>
-                    <div className="w-full bg-white/5 h-2 rounded-full overflow-hidden">
+                    <div className="w-full bg-slate-200 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden">
                       <div className="h-full bg-amber-500 rounded-full" style={{ width: "68%" }} />
                     </div>
                   </div>
@@ -688,18 +709,24 @@ function MistakeDashboard() {
               )}
 
               {activeTabPanel === "patterns" && (
-                <div className="space-y-3.5 text-xs text-slate-700 dark:text-slate-300">
-                  <p>Cognitive audits derived from mistake types:</p>
-                  <div className="p-3 bg-slate-900/40 rounded-2xl border border-sky-200/60 dark:border-white/5 space-y-2 text-[10px] font-mono leading-relaxed text-slate-700 dark:text-slate-300">
-                    <div>• <b>Sign Flip Pattern:</b> 12 occurrences of forgetting negative multiplier indices.</div>
-                    <div>• <b>Nested Loop Scope:</b> 4 occurrences of using function scope var instead of let block bindings.</div>
+                <div className="space-y-3.5 text-xs text-slate-700 dark:text-slate-200">
+                  <p className="font-medium text-slate-600 dark:text-blue-200">Cognitive error patterns derived from testing logs:</p>
+                  <div className="p-4 bg-slate-100 dark:bg-[#12244d] rounded-2xl border border-slate-200 dark:border-blue-800/80 space-y-3 text-xs leading-relaxed shadow-xs">
+                    <div className="flex items-start gap-2.5">
+                      <span className="h-2 w-2 rounded-full bg-rose-500 mt-1.5 shrink-0" />
+                      <div><b className="text-slate-900 dark:text-white font-bold">Sign Flip Pattern:</b> 12 occurrences of forgetting negative multiplier indices.</div>
+                    </div>
+                    <div className="flex items-start gap-2.5">
+                      <span className="h-2 w-2 rounded-full bg-amber-500 mt-1.5 shrink-0" />
+                      <div><b className="text-slate-900 dark:text-white font-bold">Nested Loop Scope:</b> 4 occurrences of using function scope var instead of let block bindings.</div>
+                    </div>
                   </div>
                 </div>
               )}
 
               <button
                 onClick={() => setActiveTabPanel(null)}
-                className="w-full mt-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-bold transition"
+                className="w-full mt-6 py-3 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-900 dark:text-white text-xs font-bold transition cursor-pointer border border-slate-200 dark:border-slate-700 shadow-xs"
               >
                 Close Panel
               </button>
