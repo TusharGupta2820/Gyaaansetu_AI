@@ -28,53 +28,55 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ messages, onSendMessage, isLoadin
     <div className="flex flex-col h-full bg-panel border-l border-subtle transition-colors duration-300">
       
       {/* Header */}
-      <div className="h-14 px-6 flex items-center justify-between border-b border-subtle bg-panel-head transition-colors duration-300">
-        <span className="text-xs font-medium text-secondary uppercase tracking-widest">Transcript</span>
+      <div className="h-14 px-5 flex items-center justify-between border-b border-subtle bg-panel-head transition-colors duration-300">
+        <span className="text-xs font-bold text-primary uppercase tracking-wider">Interview Transcript</span>
         
+        {/* High-contrast Reasoning Toggle Button */}
         <button
           onClick={() => setUseThinking(!useThinking)}
-          className={`group flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-medium uppercase tracking-wide transition-all border ${
+          className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider transition-all border shadow-sm ${
             useThinking
-              ? 'bg-subtle text-primary border-subtle'
-              : 'bg-transparent text-secondary border-transparent hover:border-subtle'
+              ? 'bg-emerald-600 text-white border-emerald-500 shadow-emerald-600/20'
+              : 'bg-slate-800/80 hover:bg-slate-700 text-slate-100 border-slate-700'
           }`}
+          title={useThinking ? "Reasoning mode is ON (DeepSeek-R1)" : "Click to enable Reasoning mode"}
         >
           {useThinking ? (
-            <BrainCircuit className="w-3 h-3 text-emerald-500" />
+            <BrainCircuit className="w-3.5 h-3.5 text-white animate-pulse" />
           ) : (
-            <Sparkles className="w-3 h-3 group-hover:text-primary" />
+            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
           )}
-          <span>Reasoning {useThinking ? 'On' : 'Off'}</span>
+          <span>Reasoning {useThinking ? 'ON' : 'OFF'}</span>
         </button>
       </div>
 
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-8 bg-panel transition-colors duration-300">
+      <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-panel transition-colors duration-300">
         {messages.length === 0 && (
           <div className="h-full flex flex-col items-center justify-center text-secondary">
             <div className="w-12 h-12 rounded-2xl bg-app flex items-center justify-center mb-4 border border-subtle">
                 <GripHorizontal className="w-5 h-5 opacity-50" />
             </div>
-            <p className="text-sm">Ready to interview.</p>
+            <p className="text-sm font-medium">Ready to start interview session.</p>
           </div>
         )}
         
         {messages.map((msg) => (
-          <div key={msg.id} className={`flex flex-col gap-2 ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
-            <div className={`text-[10px] font-medium tracking-wide uppercase ${msg.role === 'user' ? 'text-secondary' : 'text-secondary'}`}>
+          <div key={msg.id} className={`flex flex-col gap-1.5 ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
+            <div className={`text-[11px] font-bold tracking-wider uppercase ${msg.role === 'user' ? 'text-indigo-400' : 'text-emerald-400'}`}>
                 {msg.role === 'user' ? 'Candidate' : 'Interviewer'}
             </div>
             <div
-              className={`max-w-[90%] text-sm leading-7 ${
+              className={`max-w-[92%] text-sm leading-relaxed ${
                 msg.role === 'user'
-                  ? 'text-primary bg-app px-5 py-3 rounded-2xl rounded-tr-sm border border-subtle shadow-sm'
-                  : 'text-primary px-0 py-0'
+                  ? 'text-primary bg-indigo-950/40 dark:bg-indigo-950/60 px-4 py-3 rounded-2xl rounded-tr-xs border border-indigo-500/30 shadow-sm'
+                  : 'text-primary bg-slate-900/40 dark:bg-slate-900/70 px-4 py-3 rounded-2xl rounded-tl-xs border border-subtle shadow-sm'
               }`}
             >
               {msg.isThinking && msg.role === 'model' && (
-                <div className="flex items-center gap-2 text-xs text-secondary mb-2 font-mono">
-                    <BrainCircuit className="w-3 h-3" />
-                    <span>Thought Process</span>
+                <div className="flex items-center gap-1.5 text-xs text-amber-400 mb-2 font-mono font-semibold">
+                    <BrainCircuit className="w-3.5 h-3.5" />
+                    <span>Deep Reasoner Output</span>
                 </div>
               )}
               <div className="whitespace-pre-wrap">{msg.text}</div>
@@ -83,12 +85,13 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ messages, onSendMessage, isLoadin
         ))}
         
         {isLoading && (
-           <div className="flex flex-col items-start gap-2">
-             <div className="text-[10px] font-medium tracking-wide uppercase text-secondary">Interviewer</div>
-             <div className="flex items-center gap-1.5 px-1 h-6">
-                 <span className="w-1.5 h-1.5 bg-secondary rounded-full animate-bounce [animation-delay:-0.3s]"></span>
-                 <span className="w-1.5 h-1.5 bg-secondary rounded-full animate-bounce [animation-delay:-0.15s]"></span>
-                 <span className="w-1.5 h-1.5 bg-secondary rounded-full animate-bounce"></span>
+           <div className="flex flex-col items-start gap-1.5">
+             <div className="text-[11px] font-bold tracking-wider uppercase text-emerald-400">Interviewer</div>
+             <div className="flex items-center gap-2 px-3 py-2 bg-slate-900/50 rounded-xl border border-subtle">
+                 <span className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                 <span className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                 <span className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce"></span>
+                 <span className="text-xs text-slate-400 font-medium ml-1">Thinking...</span>
              </div>
            </div>
         )}
@@ -96,21 +99,23 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ messages, onSendMessage, isLoadin
       </div>
 
       {/* Input Area */}
-      <div className="p-6 bg-panel border-t border-subtle transition-colors duration-300">
-        <form onSubmit={handleSubmit} className="relative group">
+      <div className="p-4 bg-panel border-t border-subtle transition-colors duration-300">
+        <form onSubmit={handleSubmit} className="flex items-center gap-2">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Type your response..."
-            className="w-full bg-app border border-subtle text-primary rounded-lg pl-4 pr-12 py-3.5 focus:border-secondary transition-all text-sm placeholder-secondary shadow-sm"
+            placeholder="Type your response to the interviewer..."
+            className="flex-1 bg-app border border-subtle text-primary rounded-xl px-4 py-3 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-sm placeholder-secondary shadow-sm font-medium"
           />
           <button
             type="submit"
             disabled={!input.trim() || isLoading}
-            className="absolute right-2 top-2 p-1.5 text-secondary hover:text-primary disabled:opacity-30 disabled:hover:text-secondary transition-colors"
+            className="flex items-center gap-2 px-4 py-3 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 disabled:opacity-40 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md shrink-0"
+            title="Send Response"
           >
-            <Send className="w-4 h-4" />
+            <Send className="w-4 h-4 fill-current" />
+            <span className="hidden sm:inline">Send</span>
           </button>
         </form>
       </div>

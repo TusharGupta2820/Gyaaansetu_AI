@@ -221,23 +221,23 @@ const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(({
       )}
 
       {/* Status Bar & Controls */}
-      <div className="h-11 border-t border-subtle bg-app flex items-center justify-between px-4 sm:px-6 text-[11px] font-medium text-secondary select-none transition-colors duration-300 shrink-0">
+      <div className="h-11 border-t border-subtle bg-panel-head flex items-center justify-between px-4 sm:px-6 text-xs font-semibold text-primary select-none transition-colors duration-300 shrink-0">
         
         {/* Left: Stats & Terminal Toggle */}
         <div className="flex items-center gap-4 tracking-wide">
-          <span>UTF-8</span>
-          <span>{code.length} chars</span>
+          <span className="text-secondary text-xs">UTF-8</span>
+          <span className="text-secondary text-xs">{code.length} chars</span>
           
           <button
             onClick={() => setIsTerminalOpen?.(!isTerminalOpen)}
-            className={`flex items-center gap-1.5 px-2 py-1 rounded text-xs transition-colors border ${
+            className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-bold transition-all border shadow-sm ${
               isTerminalOpen
-                ? 'bg-subtle/50 text-primary border-subtle'
-                : 'text-secondary border-transparent hover:text-primary hover:bg-subtle/30'
+                ? 'bg-emerald-950/60 text-emerald-400 border-emerald-500/50'
+                : 'bg-slate-800 hover:bg-slate-700 text-slate-100 border-slate-700'
             }`}
           >
-            <Terminal className="w-3.5 h-3.5 text-emerald-500" />
-            <span>Terminal</span>
+            <Terminal className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Terminal {isTerminalOpen ? 'ON' : 'OFF'}</span>
           </button>
         </div>
 
@@ -248,7 +248,7 @@ const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(({
             <button
               onClick={onRunCode}
               disabled={isExecuting}
-              className="flex items-center gap-1.5 px-3 py-1 rounded bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-semibold text-xs transition-all shadow-md disabled:opacity-50"
+              className="flex items-center gap-1.5 px-3.5 py-1 rounded-md bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md disabled:opacity-50"
               title="Run Code (Ctrl + Enter)"
             >
               {isExecuting ? (
@@ -263,21 +263,22 @@ const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(({
           {/* Theme Toggle Button */}
           <button
             onClick={onThemeToggle}
-            className="p-1.5 text-secondary hover:text-primary transition-colors rounded hover:bg-subtle/30"
+            className="flex items-center gap-1.5 px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700 rounded-md text-xs font-semibold shadow-sm transition-all"
             title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
           >
-            {theme === 'dark' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+            {theme === 'dark' ? <Sun className="w-3.5 h-3.5 text-amber-400" /> : <Moon className="w-3.5 h-3.5 text-indigo-400" />}
+            <span className="hidden sm:inline">{theme === 'dark' ? 'Light' : 'Dark'}</span>
           </button>
 
-          <div className="w-px h-4 bg-subtle"></div>
+          <div className="w-px h-4 bg-slate-700"></div>
 
           {/* Multi-Language Dropdown Selector */}
-          <div className="flex items-center gap-1.5 bg-panel border border-subtle px-2 py-0.5 rounded shadow-sm">
-            <span className="text-[10px] text-secondary font-semibold uppercase">Lang:</span>
+          <div className="flex items-center gap-1.5 bg-slate-900 border border-slate-700 px-2.5 py-1 rounded-md shadow-sm">
+            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Language:</span>
             <select
               value={language}
               onChange={(e) => onLanguageChange(e.target.value as InterviewLanguage)}
-              className="bg-transparent text-primary text-xs font-semibold focus:outline-none cursor-pointer py-0.5"
+              className="bg-transparent text-slate-100 text-xs font-bold focus:outline-none cursor-pointer"
             >
               {LANGUAGE_OPTIONS.map((opt) => (
                 <option key={opt.id} value={opt.id} className="bg-slate-900 text-slate-100">

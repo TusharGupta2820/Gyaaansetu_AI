@@ -137,26 +137,31 @@ interface HeaderProps {
 function Header({ currentProblem, onRandomProblem, live }: HeaderProps) {
   const difficultyClass =
     currentProblem.difficulty === 'Easy'
-      ? 'border-emerald-900/50 text-emerald-500'
+      ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/40'
       : currentProblem.difficulty === 'Medium'
-        ? 'border-amber-900/50 text-amber-500'
-        : 'border-rose-900/50 text-rose-500';
+        ? 'bg-amber-500/15 text-amber-400 border-amber-500/40'
+        : 'bg-rose-500/15 text-rose-400 border-rose-500/40';
 
   return (
-    <header className="relative h-16 border-b border-subtle bg-app flex items-center justify-between px-4 sm:px-6 shrink-0 z-50">
-      <div className="flex items-center gap-2 sm:gap-4">
-        <div className="hidden sm:flex items-center gap-2 text-primary">
-          <Terminal className="w-5 h-5 text-secondary" />
-          <span className="font-medium tracking-tight text-sm">DevInterview</span>
+    <header className="relative h-16 border-b border-subtle bg-panel-head flex items-center justify-between px-4 sm:px-6 shrink-0 z-50">
+      <div className="flex items-center gap-3">
+        <div className="hidden sm:flex items-center gap-2 text-primary font-bold">
+          <Terminal className="w-5 h-5 text-indigo-400" />
+          <span className="font-bold tracking-tight text-base text-primary">DevInterview AI</span>
         </div>
-        <div className="hidden sm:block h-4 w-px bg-subtle mx-2" />
-        <div className="flex items-center gap-1.5 sm:gap-3">
-          <span className="text-xs sm:text-sm font-medium text-primary truncate max-w-[120px] sm:max-w-none">{currentProblem.title}</span>
-          <span className={`text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded border ${difficultyClass} uppercase tracking-wider`}>
+        <div className="hidden sm:block h-5 w-px bg-subtle mx-1" />
+        <div className="flex items-center gap-2 sm:gap-3">
+          <span className="text-xs sm:text-sm font-bold text-primary truncate max-w-[140px] sm:max-w-none">{currentProblem.title}</span>
+          <span className={`text-[10px] px-2 py-0.5 rounded-full border font-bold ${difficultyClass} uppercase tracking-wider`}>
             {currentProblem.difficulty}
           </span>
-          <button onClick={onRandomProblem} className="p-1.5 text-secondary hover:text-primary transition-colors" title="Next Problem">
-            <RefreshCw className="w-3.5 h-3.5" />
+          <button 
+            onClick={onRandomProblem} 
+            className="flex items-center gap-1.5 px-2.5 py-1 bg-slate-800 hover:bg-slate-700 active:bg-slate-900 text-slate-100 border border-slate-700 rounded-md text-xs font-semibold shadow-sm transition-all"
+            title="Next Practice Problem"
+          >
+            <RefreshCw className="w-3.5 h-3.5 text-indigo-400" />
+            <span className="hidden md:inline">Next Problem</span>
           </button>
         </div>
       </div>
