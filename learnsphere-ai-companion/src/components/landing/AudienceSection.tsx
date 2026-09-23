@@ -47,27 +47,27 @@ export function AudienceSection() {
           </p>
         </div>
 
-        {/* 4 Audience Cards */}
+        {/* 4 Audience Cards - Navy Cards on Light BG */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {AUDIENCES.map((aud, i) => {
             const Icon = aud.icon;
             return (
               <div
                 key={i}
-                className="bg-white border border-slate-200 rounded-3xl p-8 flex flex-col justify-between space-y-6 hover:shadow-md hover:border-slate-300 transition-all"
+                className="bg-[#0b1530] text-white border border-sky-400/30 rounded-3xl p-8 flex flex-col justify-between space-y-6 hover:shadow-xl hover:border-sky-400 transition-all"
               >
                 <div className="space-y-4">
-                  <div className="h-12 w-12 rounded-2xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center">
+                  <div className="h-12 w-12 rounded-2xl bg-sky-900 border border-sky-700 text-sky-300 flex items-center justify-center">
                     <Icon className="w-6 h-6" />
                   </div>
-                  <h3 className="text-xl font-display font-bold text-slate-900">{aud.title}</h3>
-                  <p className="text-sm text-slate-600 leading-relaxed font-normal">{aud.description}</p>
+                  <h3 className="text-xl font-display font-bold text-white">{aud.title}</h3>
+                  <p className="text-sm text-sky-200 leading-relaxed font-normal">{aud.description}</p>
                 </div>
 
-                <div className="space-y-2.5 pt-4 border-t border-slate-100 text-xs sm:text-sm text-slate-700 font-medium">
+                <div className="space-y-2.5 pt-4 border-t border-sky-900/60 text-xs sm:text-sm text-sky-100 font-medium">
                   {aud.highlights.map((h, idx) => (
                     <div key={idx} className="flex items-center gap-2.5">
-                      <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />
+                      <CheckCircle2 className="w-4 h-4 text-sky-400 shrink-0" />
                       <span>{h}</span>
                     </div>
                   ))}

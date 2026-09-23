@@ -47,21 +47,21 @@ export function BrandPrinciplesSection() {
           </p>
         </div>
 
-        {/* 5 Principles Grid */}
+        {/* 5 Principles Grid - Navy Cards on Light BG */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-6">
           {PRINCIPLES.map((p, i) => {
             const Icon = p.icon;
             return (
               <div
                 key={i}
-                className="bg-white border border-slate-200 rounded-3xl p-6 lg:p-8 space-y-4 hover:shadow-md hover:border-slate-300 transition-all flex flex-col justify-between"
+                className="bg-[#0b1530] text-white border border-sky-400/30 rounded-3xl p-6 lg:p-8 space-y-4 hover:shadow-xl hover:border-sky-400 transition-all flex flex-col justify-between"
               >
                 <div className="space-y-4">
-                  <div className="h-12 w-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100">
+                  <div className="h-12 w-12 rounded-2xl bg-sky-900 text-sky-300 flex items-center justify-center border border-sky-700">
                     <Icon className="w-6 h-6" />
                   </div>
-                  <h3 className="text-lg font-display font-bold text-slate-900">{p.title}</h3>
-                  <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed">{p.desc}</p>
+                  <h3 className="text-lg font-display font-bold text-white">{p.title}</h3>
+                  <p className="text-xs sm:text-sm text-sky-200 font-normal leading-relaxed">{p.desc}</p>
                 </div>
               </div>
             );

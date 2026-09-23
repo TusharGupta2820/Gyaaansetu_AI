@@ -22,73 +22,73 @@ export function ProblemStorySection() {
           </p>
         </div>
 
-        {/* Story Comparison Grid */}
+        {/* Story Comparison Grid - Navy Cards on White BG */}
         <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-stretch">
           
-          {/* Legacy Traditional System */}
-          <div className="bg-slate-50 border border-slate-200 rounded-3xl p-8 lg:p-12 space-y-8 flex flex-col justify-between shadow-xs">
+          {/* Legacy Traditional System - Navy Blue Card */}
+          <div className="bg-[#0b1530] text-white border border-sky-400/30 rounded-3xl p-8 lg:p-12 space-y-8 flex flex-col justify-between shadow-xl">
             <div className="space-y-5">
-              <div className="h-12 w-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center border border-amber-200 shadow-xs">
+              <div className="h-12 w-12 rounded-2xl bg-amber-950/80 text-amber-300 flex items-center justify-center border border-amber-800 shadow-xs">
                 <ShieldAlert className="w-6 h-6" />
               </div>
               <div>
-                <span className="text-xs font-mono font-bold text-amber-800 uppercase tracking-widest">The Traditional Way</span>
-                <h3 className="text-2xl font-display font-bold text-slate-900 mt-1">One-Size-Fits-All Lectures</h3>
+                <span className="text-xs font-mono font-bold text-amber-400 uppercase tracking-widest">The Traditional Way</span>
+                <h3 className="text-2xl font-display font-bold text-white mt-1">One-Size-Fits-All Lectures</h3>
               </div>
-              <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+              <p className="text-sky-200 text-sm sm:text-base leading-relaxed">
                 Passive 2-hour video lectures with no instant feedback, rigid timelines, and zero support when you get stuck on a concept.
               </p>
             </div>
 
-            <div className="space-y-3.5 pt-6 border-t border-slate-200 text-xs sm:text-sm font-semibold text-slate-700">
+            <div className="space-y-3.5 pt-6 border-t border-sky-900/60 text-xs sm:text-sm font-semibold text-sky-100">
               <div className="flex items-center gap-3">
-                <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
+                <span className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
                 <span>No instant answers when you have a question</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
+                <span className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
                 <span>Language barriers causing frustration</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
+                <span className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
                 <span>No alignment between coursework and real tech jobs</span>
               </div>
             </div>
           </div>
 
-          {/* GyaanSetu-AI Modern Platform */}
-          <div className="bg-slate-900 text-white border border-slate-800 rounded-3xl p-8 lg:p-12 space-y-8 flex flex-col justify-between shadow-2xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-80 h-80 bg-blue-600/20 rounded-full blur-3xl pointer-events-none" />
+          {/* GyaanSetu-AI Modern Platform - Navy Blue Card */}
+          <div className="bg-[#081026] text-white border border-sky-400/40 rounded-3xl p-8 lg:p-12 space-y-8 flex flex-col justify-between shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-80 h-80 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
 
             <div className="space-y-5 relative z-10">
-              <div className="h-12 w-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-lg font-bold">
+              <div className="h-12 w-12 rounded-2xl bg-sky-500 text-slate-950 flex items-center justify-center shadow-lg font-bold">
                 <Sparkles className="w-6 h-6" />
               </div>
               <div>
-                <span className="text-xs font-mono font-bold text-blue-400 uppercase tracking-widest">The GyaanSetu AI Way</span>
+                <span className="text-xs font-mono font-bold text-sky-400 uppercase tracking-widest">The GyaanSetu AI Way</span>
                 <h3 className="text-2xl font-display font-bold text-white mt-1">Adaptive 1-on-1 AI Tutor Companion</h3>
               </div>
-              <p className="text-slate-300 text-sm sm:text-base leading-relaxed font-normal">
+              <p className="text-sky-200 text-sm sm:text-base leading-relaxed font-normal">
                 Identifies your exact conceptual gaps, breaks down complex topics step-by-step in 22+ languages, and adapts practice exercises in real time.
               </p>
             </div>
 
             {/* Setu Evolution Line */}
-            <div className="space-y-4 pt-6 border-t border-slate-800 relative z-10">
-              <div className="text-xs font-bold text-blue-400 uppercase tracking-wider font-mono flex items-center justify-between">
+            <div className="space-y-4 pt-6 border-t border-sky-900/80 relative z-10">
+              <div className="text-xs font-bold text-sky-400 uppercase tracking-wider font-mono flex items-center justify-between">
                 <span>Your Accelerated Path To Mastery:</span>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center text-xs sm:text-sm font-semibold">
-                <div className="bg-slate-800 border border-slate-700 py-3 px-2 rounded-xl text-slate-200">
+                <div className="bg-sky-950 border border-sky-800 py-3 px-2 rounded-xl text-sky-200">
                   1. Diagnose
                 </div>
-                <div className="bg-slate-800 border border-slate-700 py-3 px-2 rounded-xl text-slate-200">
+                <div className="bg-sky-950 border border-sky-800 py-3 px-2 rounded-xl text-sky-200">
                   2. Learn 1-on-1
                 </div>
-                <div className="bg-slate-800 border border-slate-700 py-3 px-2 rounded-xl text-slate-200">
+                <div className="bg-sky-950 border border-sky-800 py-3 px-2 rounded-xl text-sky-200">
                   3. Practice
                 </div>
-                <div className="bg-blue-600 text-white py-3 px-2 rounded-xl font-bold shadow-md">
+                <div className="bg-sky-500 text-slate-950 py-3 px-2 rounded-xl font-extrabold shadow-md">
                   4. Master
                 </div>
               </div>

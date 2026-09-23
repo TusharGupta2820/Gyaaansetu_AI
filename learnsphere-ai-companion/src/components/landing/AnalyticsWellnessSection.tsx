@@ -20,48 +20,48 @@ export function AnalyticsWellnessSection() {
           </p>
         </div>
 
-        {/* 3 Productivity & Wellness Cards */}
+        {/* 3 Productivity & Wellness Cards - Navy Cards on White BG */}
         <div className="grid md:grid-cols-3 gap-8">
           
-          <div className="bg-slate-50 border border-slate-200 rounded-3xl p-8 space-y-5">
-            <div className="h-12 w-12 rounded-2xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center">
+          <div className="bg-[#0b1530] text-white border border-sky-400/30 rounded-3xl p-8 space-y-5 shadow-lg">
+            <div className="h-12 w-12 rounded-2xl bg-sky-900 text-sky-300 border border-sky-700 flex items-center justify-center">
               <Clock className="w-6 h-6" />
             </div>
-            <h3 className="text-xl font-display font-bold text-slate-900">Focus Rooms & Pomodoro</h3>
-            <p className="text-sm text-slate-600 leading-relaxed">
+            <h3 className="text-xl font-display font-bold text-white">Focus Rooms & Pomodoro</h3>
+            <p className="text-sm text-sky-200 leading-relaxed">
               Integrated focus timers with structured 25-minute study sprints and 5-minute restorative breaks.
             </p>
-            <div className="p-4 bg-white border border-slate-200 rounded-2xl text-xs sm:text-sm font-semibold text-slate-700 flex justify-between">
+            <div className="p-4 bg-sky-950 border border-sky-800 rounded-2xl text-xs sm:text-sm font-semibold text-sky-200 flex justify-between">
               <span>Today's Sessions:</span>
-              <span className="text-blue-600">4 Completed (100 mins)</span>
+              <span className="text-sky-400 font-bold">4 Completed (100 mins)</span>
             </div>
           </div>
 
-          <div className="bg-slate-50 border border-slate-200 rounded-3xl p-8 space-y-5">
-            <div className="h-12 w-12 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center">
-              <HeartPulse className="w-6 h-6" />
+          <div className="bg-[#0b1530] text-white border border-sky-400/30 rounded-3xl p-8 space-y-5 shadow-lg">
+            <div className="h-12 w-12 rounded-2xl bg-sky-900 text-sky-300 border border-sky-700 flex items-center justify-center">
+              <HeartPulse className="w-6 h-6 text-emerald-400" />
             </div>
-            <h3 className="text-xl font-display font-bold text-slate-900">Focus Health Index</h3>
-            <p className="text-sm text-slate-600 leading-relaxed">
+            <h3 className="text-xl font-display font-bold text-white">Focus Health Index</h3>
+            <p className="text-sm text-sky-200 leading-relaxed">
               Monitors study intensity trends to prevent burnout and recommend optimal rest intervals.
             </p>
-            <div className="p-4 bg-white border border-slate-200 rounded-2xl text-xs sm:text-sm font-semibold text-slate-700 flex justify-between">
+            <div className="p-4 bg-sky-950 border border-sky-800 rounded-2xl text-xs sm:text-sm font-semibold text-sky-200 flex justify-between">
               <span>Wellness Score:</span>
-              <span className="text-emerald-600">92 / 100 (Optimal)</span>
+              <span className="text-emerald-400 font-bold">92 / 100 (Optimal)</span>
             </div>
           </div>
 
-          <div className="bg-slate-50 border border-slate-200 rounded-3xl p-8 space-y-5">
-            <div className="h-12 w-12 rounded-2xl bg-indigo-50 text-indigo-600 border border-indigo-100 flex items-center justify-center">
+          <div className="bg-[#0b1530] text-white border border-sky-400/30 rounded-3xl p-8 space-y-5 shadow-lg">
+            <div className="h-12 w-12 rounded-2xl bg-sky-900 text-sky-300 border border-sky-700 flex items-center justify-center">
               <BarChart3 className="w-6 h-6" />
             </div>
-            <h3 className="text-xl font-display font-bold text-slate-900">Retention & Progress Analytics</h3>
-            <p className="text-sm text-slate-600 leading-relaxed">
+            <h3 className="text-xl font-display font-bold text-white">Retention & Progress Analytics</h3>
+            <p className="text-sm text-sky-200 leading-relaxed">
               Track how effectively your memory retains concepts over time through spaced repetition reviews.
             </p>
-            <div className="p-4 bg-white border border-slate-200 rounded-2xl text-xs sm:text-sm font-semibold text-slate-700 flex justify-between">
+            <div className="p-4 bg-sky-950 border border-sky-800 rounded-2xl text-xs sm:text-sm font-semibold text-sky-200 flex justify-between">
               <span>Long-Term Retention:</span>
-              <span className="text-indigo-600">89% Average</span>
+              <span className="text-sky-400 font-bold">89% Average</span>
             </div>
           </div>
 

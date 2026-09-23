@@ -11,17 +11,17 @@ const CAPABILITIES = [
 
 export function CapabilityStrip() {
   return (
-    <section className="py-10 bg-slate-900 text-white border-y border-slate-800 font-sans shadow-md">
+    <section className="py-10 bg-[#0b1530] text-white border-y border-blue-900/50 font-sans shadow-lg">
       <div className="w-full max-w-[1800px] mx-auto px-6 md:px-12 lg:px-16">
         
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-800">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6 pb-4 border-b border-blue-900/50">
           <div className="flex items-center gap-2">
-            <span className="h-2.5 w-2.5 rounded-full bg-blue-400 animate-pulse" />
-            <span className="text-xs font-mono font-bold text-blue-400 uppercase tracking-widest">
+            <span className="h-2.5 w-2.5 rounded-full bg-sky-400 animate-pulse" />
+            <span className="text-xs font-mono font-extrabold text-sky-300 uppercase tracking-widest">
               Core Platform Features
             </span>
           </div>
-          <div className="text-xs text-slate-400 font-medium">
+          <div className="text-xs text-sky-200 font-semibold">
             Designed for High-Speed Learning & Maximum Retention
           </div>
         </div>
@@ -32,19 +32,19 @@ export function CapabilityStrip() {
             return (
               <div
                 key={i}
-                className="flex flex-col justify-between p-4 rounded-2xl bg-slate-800/80 border border-slate-700/80 hover:border-blue-500/80 transition-all hover:bg-slate-800 shadow-sm"
+                className="flex flex-col justify-between p-4 rounded-2xl bg-white border border-sky-200 hover:border-sky-400 transition-all shadow-md hover:shadow-lg group"
               >
                 <div className="flex items-center justify-between gap-2 mb-3">
-                  <div className="h-9 w-9 rounded-xl bg-blue-600/20 border border-blue-500/40 text-blue-400 flex items-center justify-center shrink-0">
+                  <div className="h-9 w-9 rounded-xl bg-sky-100 border border-sky-300 text-sky-700 flex items-center justify-center shrink-0 group-hover:bg-sky-600 group-hover:text-white transition-colors">
                     <Icon className="w-4.5 h-4.5" />
                   </div>
-                  <span className="text-[9px] font-mono font-bold text-blue-300 bg-blue-950/80 border border-blue-800 px-1.5 py-0.5 rounded-full">
+                  <span className="text-[9px] font-mono font-extrabold text-sky-900 bg-sky-100 border border-sky-300 px-2 py-0.5 rounded-full">
                     {cap.tag}
                   </span>
                 </div>
                 <div>
-                  <div className="text-xs sm:text-sm font-bold text-slate-100">{cap.label}</div>
-                  <div className="text-[11px] text-slate-400 font-normal leading-tight mt-1">{cap.desc}</div>
+                  <div className="text-xs sm:text-sm font-extrabold text-sky-950 group-hover:text-sky-700 transition-colors">{cap.label}</div>
+                  <div className="text-[11px] text-sky-800 font-medium leading-tight mt-1">{cap.desc}</div>
                 </div>
               </div>
             );

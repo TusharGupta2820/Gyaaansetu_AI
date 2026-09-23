@@ -20,7 +20,7 @@ export function VoiceAccessibilitySection() {
           </p>
         </div>
 
-        {/* 4 Step Voice Flow */}
+        {/* 4 Step Voice Flow - Navy Cards on White BG */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {[
             { step: "01", label: "Speak", desc: "Ask questions using your natural voice", icon: Mic },
@@ -30,13 +30,13 @@ export function VoiceAccessibilitySection() {
           ].map((item, idx) => {
             const Icon = item.icon;
             return (
-              <div key={idx} className="bg-slate-50 border border-slate-200 p-6 rounded-2xl space-y-4">
+              <div key={idx} className="bg-[#0b1530] text-white border border-sky-400/30 p-6 rounded-2xl space-y-4 shadow-md hover:shadow-lg transition-all">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-mono font-bold text-blue-600">STEP {item.step}</span>
-                  <Icon className="w-5 h-5 text-slate-600" />
+                  <span className="text-xs font-mono font-bold text-sky-400">STEP {item.step}</span>
+                  <Icon className="w-5 h-5 text-sky-300" />
                 </div>
-                <h4 className="font-display font-bold text-lg text-slate-900">{item.label}</h4>
-                <p className="text-xs sm:text-sm text-slate-500 font-normal leading-snug">{item.desc}</p>
+                <h4 className="font-display font-bold text-lg text-white">{item.label}</h4>
+                <p className="text-xs sm:text-sm text-sky-200 font-normal leading-snug">{item.desc}</p>
               </div>
             );
           })}

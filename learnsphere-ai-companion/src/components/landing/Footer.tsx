@@ -6,17 +6,17 @@ export function Footer() {
     <footer className="bg-slate-950 text-slate-400 pt-16 pb-12 px-6 md:px-12 lg:px-16 text-xs sm:text-sm font-sans border-t border-slate-800">
       <div className="w-full max-w-[1800px] mx-auto space-y-12">
         
-        {/* Top Callout Card */}
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
+        {/* Top Callout Card - Pure White Card on Dark BG */}
+        <div className="bg-white text-sky-950 border border-sky-200 rounded-3xl p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
           <div className="space-y-2 text-center md:text-left">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xs">
-              <Sparkles className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-100 text-sky-900 font-extrabold text-xs border border-sky-300">
+              <Sparkles className="w-3.5 h-3.5 text-sky-700" />
               <span>Ready to transform your learning?</span>
             </div>
-            <h3 className="text-2xl sm:text-3xl font-display font-extrabold text-white">
+            <h3 className="text-2xl sm:text-3xl font-display font-extrabold text-sky-950">
               Start learning with GyaanSetu AI today.
             </h3>
-            <p className="text-slate-400 text-xs sm:text-sm">
+            <p className="text-sky-800 text-xs sm:text-sm font-medium">
               Free to get started. No credit card required.
             </p>
           </div>
@@ -24,7 +24,7 @@ export function Footer() {
           <Link
             to="/auth"
             search={{ mode: "register" }}
-            className="bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm px-8 py-3.5 rounded-2xl shadow-lg shadow-blue-600/20 transition-all shrink-0 hover:scale-105"
+            className="bg-sky-600 hover:bg-sky-500 text-white font-extrabold text-sm px-8 py-3.5 rounded-2xl shadow-lg shadow-sky-600/20 transition-all shrink-0 hover:scale-105"
           >
             Create Free Account
           </Link>

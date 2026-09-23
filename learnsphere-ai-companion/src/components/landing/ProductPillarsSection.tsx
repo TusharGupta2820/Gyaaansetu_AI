@@ -22,7 +22,7 @@ export function ProductPillarsSection() {
         {/* PILLAR 01: Understand */}
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           <div className="lg:col-span-6 space-y-6">
-            <div className="text-xs sm:text-sm font-mono font-bold text-blue-600 uppercase tracking-widest">
+            <div className="text-xs sm:text-sm font-mono font-bold text-sky-600 uppercase tracking-widest">
               01 — UNDERSTAND
             </div>
             <h3 className="text-2xl sm:text-4xl font-display font-extrabold text-slate-900 leading-snug">
@@ -33,48 +33,48 @@ export function ProductPillarsSection() {
             </p>
             <div className="space-y-3 pt-2 text-sm sm:text-base text-slate-700 font-medium">
               <div className="flex items-center gap-3">
-                <CheckCircle2 className="w-5 h-5 text-blue-600 shrink-0" />
+                <CheckCircle2 className="w-5 h-5 text-sky-600 shrink-0" />
                 <span>Adjusts complexity automatically from beginner to advanced</span>
               </div>
               <div className="flex items-center gap-3">
-                <CheckCircle2 className="w-5 h-5 text-blue-600 shrink-0" />
+                <CheckCircle2 className="w-5 h-5 text-sky-600 shrink-0" />
                 <span>Supports code review, visual diagram analysis, and audio notes</span>
               </div>
               <div className="flex items-center gap-3">
-                <CheckCircle2 className="w-5 h-5 text-blue-600 shrink-0" />
+                <CheckCircle2 className="w-5 h-5 text-sky-600 shrink-0" />
                 <span>Multilingual support across 10+ regional languages</span>
               </div>
             </div>
           </div>
 
-          {/* Visual Card 01 */}
+          {/* Visual Card 01 - Navy Blue Card on Light BG */}
           <div className="lg:col-span-6">
-            <div className="bg-white border border-slate-200 rounded-3xl p-8 shadow-xl space-y-5">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-                <div className="flex items-center gap-2.5 text-sm font-bold text-slate-900">
-                  <Bot className="w-5 h-5 text-blue-600" />
+            <div className="bg-[#0b1530] text-white border border-sky-400/30 rounded-3xl p-8 shadow-xl space-y-5">
+              <div className="flex items-center justify-between border-b border-sky-900/60 pb-4">
+                <div className="flex items-center gap-2.5 text-sm font-bold text-white">
+                  <Bot className="w-5 h-5 text-sky-400" />
                   <span>Interactive Concept Resolver</span>
                 </div>
-                <span className="text-xs bg-blue-50 text-blue-700 font-semibold px-3 py-1 rounded-full">
+                <span className="text-xs bg-sky-900/60 text-sky-300 font-semibold px-3 py-1 rounded-full border border-sky-400/30">
                   Adaptive Response
                 </span>
               </div>
 
               <div className="space-y-4 font-sans text-xs sm:text-sm">
-                <div className="bg-slate-50 border border-slate-200/80 p-4 rounded-2xl">
-                  <span className="font-semibold text-slate-900">User Query:</span> "How does a database index speed up SQL queries?"
+                <div className="bg-sky-950/80 border border-sky-800/60 p-4 rounded-2xl">
+                  <span className="font-semibold text-sky-300">User Query:</span> <span className="text-slate-200">"How does a database index speed up SQL queries?"</span>
                 </div>
-                <div className="bg-blue-50/80 border border-blue-100 p-5 rounded-2xl text-slate-800 space-y-2.5">
-                  <div className="font-bold text-blue-900">GyaanSetu-AI Analogy:</div>
-                  <p className="leading-relaxed">
+                <div className="bg-sky-900/40 border border-sky-700/50 p-5 rounded-2xl text-slate-200 space-y-2.5">
+                  <div className="font-bold text-sky-300">GyaanSetu-AI Analogy:</div>
+                  <p className="leading-relaxed text-slate-300">
                     Think of a 500-page book. Without an index, finding a word requires reading page by page. A database index is like the book's index at the back—it points directly to the exact page number!
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-2 text-xs text-slate-500 font-medium">
+              <div className="flex items-center justify-between pt-2 text-xs text-sky-300 font-medium">
                 <span>Concept Mastery Impact: +18%</span>
-                <span className="text-blue-600 font-semibold">Suggested Practice Ready</span>
+                <span className="text-sky-400 font-semibold">Suggested Practice Ready</span>
               </div>
             </div>
           </div>
@@ -83,22 +83,23 @@ export function ProductPillarsSection() {
         {/* PILLAR 02: Learn */}
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           <div className="lg:col-span-6 order-2 lg:order-1">
-            <div className="bg-slate-900 text-white border border-slate-800 rounded-3xl p-8 shadow-xl space-y-5">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+            {/* Visual Card 02 - Navy Blue Card on Light BG */}
+            <div className="bg-[#0b1530] text-white border border-sky-400/30 rounded-3xl p-8 shadow-xl space-y-5">
+              <div className="flex items-center justify-between border-b border-sky-900/60 pb-4">
                 <div className="flex items-center gap-2.5 text-sm font-bold text-white">
-                  <Compass className="w-5 h-5 text-blue-400" />
+                  <Compass className="w-5 h-5 text-sky-400" />
                   <span>Adaptive Learning Path</span>
                 </div>
-                <span className="text-xs bg-slate-800 text-blue-300 font-mono px-3 py-1 rounded-full">
+                <span className="text-xs bg-sky-900/60 text-sky-300 font-mono px-3 py-1 rounded-full border border-sky-400/30">
                   Updated Today
                 </span>
               </div>
 
               <div className="space-y-3.5 text-xs sm:text-sm">
                 {[
-                  { step: "01", title: "React Component Lifecycle & State", status: "Completed", color: "bg-emerald-500/20 border-emerald-500/40 text-emerald-300" },
-                  { step: "02", title: "REST API Architecture & Express", status: "In Progress", color: "bg-blue-500/20 border-blue-500/40 text-blue-300" },
-                  { step: "03", title: "PostgreSQL Database Normalization", status: "Upcoming", color: "bg-slate-800 border-slate-700 text-slate-400" }
+                  { step: "01", title: "React Component Lifecycle & State", status: "Completed", color: "bg-emerald-950/60 border-emerald-500/40 text-emerald-300" },
+                  { step: "02", title: "REST API Architecture & Express", status: "In Progress", color: "bg-sky-900/60 border-sky-400/50 text-sky-300" },
+                  { step: "03", title: "PostgreSQL Database Normalization", status: "Upcoming", color: "bg-sky-950/60 border-sky-800/50 text-sky-400/70" }
                 ].map((item, idx) => (
                   <div key={idx} className={`p-4 rounded-2xl border flex items-center justify-between ${item.color}`}>
                     <div className="flex items-center gap-3">
@@ -113,7 +114,7 @@ export function ProductPillarsSection() {
           </div>
 
           <div className="lg:col-span-6 space-y-6 order-1 lg:order-2">
-            <div className="text-xs sm:text-sm font-mono font-bold text-blue-600 uppercase tracking-widest">
+            <div className="text-xs sm:text-sm font-mono font-bold text-sky-600 uppercase tracking-widest">
               02 — LEARN
             </div>
             <h3 className="text-2xl sm:text-4xl font-display font-extrabold text-slate-900 leading-snug">
@@ -124,11 +125,11 @@ export function ProductPillarsSection() {
             </p>
             <div className="space-y-3 pt-2 text-sm sm:text-base text-slate-700 font-medium">
               <div className="flex items-center gap-3">
-                <CheckCircle2 className="w-5 h-5 text-blue-600 shrink-0" />
+                <CheckCircle2 className="w-5 h-5 text-sky-600 shrink-0" />
                 <span>Dynamic roadmap generation based on goal targets</span>
               </div>
               <div className="flex items-center gap-3">
-                <CheckCircle2 className="w-5 h-5 text-blue-600 shrink-0" />
+                <CheckCircle2 className="w-5 h-5 text-sky-600 shrink-0" />
                 <span>Consistently recalibrates module difficulty based on practice</span>
               </div>
             </div>
@@ -138,7 +139,7 @@ export function ProductPillarsSection() {
         {/* PILLAR 03: Practice */}
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           <div className="lg:col-span-6 space-y-6">
-            <div className="text-xs sm:text-sm font-mono font-bold text-blue-600 uppercase tracking-widest">
+            <div className="text-xs sm:text-sm font-mono font-bold text-sky-600 uppercase tracking-widest">
               03 — PRACTICE
             </div>
             <h3 className="text-2xl sm:text-4xl font-display font-extrabold text-slate-900 leading-snug">
@@ -149,38 +150,39 @@ export function ProductPillarsSection() {
             </p>
             <div className="space-y-3 pt-2 text-sm sm:text-base text-slate-700 font-medium">
               <div className="flex items-center gap-3">
-                <CheckCircle2 className="w-5 h-5 text-blue-600 shrink-0" />
+                <CheckCircle2 className="w-5 h-5 text-sky-600 shrink-0" />
                 <span>Automatic Mistake Analyzer categorizes error patterns</span>
               </div>
               <div className="flex items-center gap-3">
-                <CheckCircle2 className="w-5 h-5 text-blue-600 shrink-0" />
+                <CheckCircle2 className="w-5 h-5 text-sky-600 shrink-0" />
                 <span>Personalised remedial quizzes to prevent recurring mistakes</span>
               </div>
             </div>
           </div>
 
+          {/* Visual Card 03 - Navy Blue Card on Light BG */}
           <div className="lg:col-span-6">
-            <div className="bg-white border border-slate-200 rounded-3xl p-8 shadow-xl space-y-5">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-                <div className="flex items-center gap-2.5 text-sm font-bold text-slate-900">
-                  <Target className="w-5 h-5 text-blue-600" />
+            <div className="bg-[#0b1530] text-white border border-sky-400/30 rounded-3xl p-8 shadow-xl space-y-5">
+              <div className="flex items-center justify-between border-b border-sky-900/60 pb-4">
+                <div className="flex items-center gap-2.5 text-sm font-bold text-white">
+                  <Target className="w-5 h-5 text-sky-400" />
                   <span>Targeted Remedial Quiz</span>
                 </div>
-                <span className="text-xs bg-emerald-50 text-emerald-700 font-semibold px-3 py-1 rounded-full">
+                <span className="text-xs bg-emerald-950/60 text-emerald-300 font-semibold px-3 py-1 rounded-full border border-emerald-500/30">
                   Skill Target: High
                 </span>
               </div>
 
-              <div className="bg-slate-50 border border-slate-200 p-5 rounded-2xl space-y-4 text-xs sm:text-sm">
-                <div className="font-semibold text-slate-900">
+              <div className="bg-sky-950/80 border border-sky-800/60 p-5 rounded-2xl space-y-4 text-xs sm:text-sm">
+                <div className="font-semibold text-white">
                   Q: Which lifecycle method or hook is used for side-effects in React?
                 </div>
                 <div className="space-y-2.5">
-                  <div className="p-3 rounded-xl border border-blue-500 bg-blue-50 text-blue-900 font-semibold flex items-center justify-between">
+                  <div className="p-3 rounded-xl border border-sky-400 bg-sky-900/80 text-white font-semibold flex items-center justify-between">
                     <span>A) useEffect()</span>
-                    <span className="text-xs font-bold bg-blue-600 text-white px-2.5 py-0.5 rounded-md">Correct</span>
+                    <span className="text-xs font-bold bg-sky-500 text-white px-2.5 py-0.5 rounded-md">Correct</span>
                   </div>
-                  <div className="p-3 rounded-xl border border-slate-200 bg-white text-slate-600">
+                  <div className="p-3 rounded-xl border border-sky-800/60 bg-sky-950/50 text-sky-300">
                     B) useState()
                   </div>
                 </div>
@@ -192,39 +194,40 @@ export function ProductPillarsSection() {
         {/* PILLAR 04: Grow */}
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           <div className="lg:col-span-6 order-2 lg:order-1">
-            <div className="bg-white border border-slate-200 rounded-3xl p-8 shadow-xl space-y-5">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-                <div className="flex items-center gap-2.5 text-sm font-bold text-slate-900">
-                  <Award className="w-5 h-5 text-blue-600" />
+            {/* Visual Card 04 - Navy Blue Card on Light BG */}
+            <div className="bg-[#0b1530] text-white border border-sky-400/30 rounded-3xl p-8 shadow-xl space-y-5">
+              <div className="flex items-center justify-between border-b border-sky-900/60 pb-4">
+                <div className="flex items-center gap-2.5 text-sm font-bold text-white">
+                  <Award className="w-5 h-5 text-sky-400" />
                   <span>Career Skill Alignment</span>
                 </div>
-                <span className="text-xs bg-blue-50 text-blue-700 font-semibold px-3 py-1 rounded-full">
+                <span className="text-xs bg-sky-900/60 text-sky-300 font-semibold px-3 py-1 rounded-full border border-sky-400/30">
                   Role Target: Full Stack Dev
                 </span>
               </div>
 
               <div className="space-y-4 text-xs sm:text-sm">
                 <div className="space-y-2">
-                  <div className="flex justify-between font-semibold text-slate-700">
+                  <div className="flex justify-between font-semibold text-sky-200">
                     <span>Frontend Engineering (React / TS)</span>
-                    <span className="text-blue-600 font-bold">88%</span>
+                    <span className="text-sky-400 font-bold">88%</span>
                   </div>
-                  <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
-                    <div className="bg-blue-600 h-full w-[88%]" />
+                  <div className="w-full bg-sky-950 h-2.5 rounded-full overflow-hidden border border-sky-900">
+                    <div className="bg-sky-400 h-full w-[88%]" />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <div className="flex justify-between font-semibold text-slate-700">
+                  <div className="flex justify-between font-semibold text-sky-200">
                     <span>Backend & Database Systems</span>
-                    <span className="text-blue-600 font-bold">74%</span>
+                    <span className="text-sky-400 font-bold">74%</span>
                   </div>
-                  <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
-                    <div className="bg-blue-600 h-full w-[74%]" />
+                  <div className="w-full bg-sky-950 h-2.5 rounded-full overflow-hidden border border-sky-900">
+                    <div className="bg-sky-400 h-full w-[74%]" />
                   </div>
                 </div>
 
-                <div className="p-4 bg-blue-50 border border-blue-100 rounded-2xl text-xs text-blue-900 font-medium">
+                <div className="p-4 bg-sky-950/80 border border-sky-800/60 rounded-2xl text-xs text-sky-300 font-medium">
                   Recommended Project: Build a real-time collaborative note app to bridge database sync skills.
                 </div>
               </div>
@@ -232,7 +235,7 @@ export function ProductPillarsSection() {
           </div>
 
           <div className="lg:col-span-6 space-y-6 order-1 lg:order-2">
-            <div className="text-xs sm:text-sm font-mono font-bold text-blue-600 uppercase tracking-widest">
+            <div className="text-xs sm:text-sm font-mono font-bold text-sky-600 uppercase tracking-widest">
               04 — GROW
             </div>
             <h3 className="text-2xl sm:text-4xl font-display font-extrabold text-slate-900 leading-snug">
@@ -243,11 +246,11 @@ export function ProductPillarsSection() {
             </p>
             <div className="space-y-3 pt-2 text-sm sm:text-base text-slate-700 font-medium">
               <div className="flex items-center gap-3">
-                <CheckCircle2 className="w-5 h-5 text-blue-600 shrink-0" />
+                <CheckCircle2 className="w-5 h-5 text-sky-600 shrink-0" />
                 <span>Skill radar mapping against modern industry job roles</span>
               </div>
               <div className="flex items-center gap-3">
-                <CheckCircle2 className="w-5 h-5 text-blue-600 shrink-0" />
+                <CheckCircle2 className="w-5 h-5 text-sky-600 shrink-0" />
                 <span>Resume parsing & career roadmap suggestions</span>
               </div>
             </div>

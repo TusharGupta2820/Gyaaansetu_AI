@@ -52,44 +52,44 @@ export function AITutorShowcase() {
           </p>
         </div>
 
-        {/* Expanded Interactive Sandbox Card */}
-        <div className="max-w-6xl mx-auto bg-slate-900 text-white rounded-3xl border border-slate-800 shadow-2xl overflow-hidden">
+        {/* Expanded Interactive Sandbox Card - Navy Blue Card on White BG */}
+        <div className="max-w-6xl mx-auto bg-[#0b1530] text-white rounded-3xl border border-sky-400/30 shadow-2xl overflow-hidden">
           
           {/* Top Control Toolbar */}
-          <div className="bg-slate-950 p-5 border-b border-slate-800 flex flex-wrap items-center justify-between gap-4">
+          <div className="bg-[#081026] p-5 border-b border-sky-900/60 flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="h-9 w-9 rounded-xl bg-blue-600 flex items-center justify-center font-bold text-white text-xs sm:text-sm">
+              <div className="h-9 w-9 rounded-xl bg-sky-500 flex items-center justify-center font-extrabold text-slate-950 text-xs sm:text-sm">
                 GS
               </div>
               <div>
                 <div className="text-sm font-bold text-white">GyaanSetu-AI Tutor Interface</div>
-                <div className="text-xs text-slate-400">Offline & Fast Local Inference</div>
+                <div className="text-xs text-sky-300 font-medium">Offline & Fast Local Inference</div>
               </div>
             </div>
 
             <div className="flex items-center gap-3">
               {/* Language Picker */}
-              <div className="flex items-center gap-2 bg-slate-800 px-3.5 py-2 rounded-xl border border-slate-700 text-xs sm:text-sm">
-                <Globe className="w-4 h-4 text-blue-400" />
+              <div className="flex items-center gap-2 bg-sky-950 px-3.5 py-2 rounded-xl border border-sky-800 text-xs sm:text-sm">
+                <Globe className="w-4 h-4 text-sky-400" />
                 <select
                   value={selectedLang}
                   onChange={(e) => setSelectedLang(e.target.value)}
-                  className="bg-transparent text-slate-200 font-medium outline-none cursor-pointer"
+                  className="bg-transparent text-sky-200 font-medium outline-none cursor-pointer"
                 >
-                  <option value="English" className="bg-slate-900 text-white">English</option>
-                  <option value="Hindi" className="bg-slate-900 text-white">हिन्दी (Hindi)</option>
-                  <option value="Marathi" className="bg-slate-900 text-white">मराठी (Marathi)</option>
-                  <option value="Bengali" className="bg-slate-900 text-white">বাংলা (Bengali)</option>
+                  <option value="English" className="bg-[#0b1530] text-white">English</option>
+                  <option value="Hindi" className="bg-[#0b1530] text-white">हिन्दी (Hindi)</option>
+                  <option value="Marathi" className="bg-[#0b1530] text-white">मराठी (Marathi)</option>
+                  <option value="Bengali" className="bg-[#0b1530] text-white">বাংলা (Bengali)</option>
                 </select>
               </div>
 
               {/* Audio Reader Toggle */}
               <button
                 onClick={() => setIsAudioPlaying(!isAudioPlaying)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-xs sm:text-sm font-medium transition-colors ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${
                   isAudioPlaying
-                    ? "bg-blue-600 border-blue-500 text-white"
-                    : "bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-750"
+                    ? "bg-sky-500 border-sky-400 text-slate-950"
+                    : "bg-sky-950 border-sky-800 text-sky-200 hover:bg-sky-900"
                 }`}
               >
                 <Volume2 className="w-4 h-4" />
@@ -99,16 +99,16 @@ export function AITutorShowcase() {
           </div>
 
           {/* Action Modifier Presets */}
-          <div className="bg-slate-800/60 p-4 border-b border-slate-800 flex items-center gap-3 overflow-x-auto">
-            <span className="text-xs font-bold text-slate-400 px-2 uppercase tracking-wider shrink-0">Actions:</span>
+          <div className="bg-sky-950/60 p-4 border-b border-sky-900/60 flex items-center gap-3 overflow-x-auto">
+            <span className="text-xs font-bold text-sky-400 px-2 uppercase tracking-wider shrink-0 font-mono">Actions:</span>
             {TUTOR_PRESETS.map((preset) => (
               <button
                 key={preset.id}
                 onClick={() => setActivePreset(preset)}
-                className={`text-xs sm:text-sm font-semibold px-4 py-2 rounded-xl whitespace-nowrap transition-all ${
+                className={`text-xs sm:text-sm font-semibold px-4 py-2 rounded-xl whitespace-nowrap transition-all cursor-pointer ${
                   activePreset.id === preset.id
-                    ? "bg-blue-600 text-white shadow-sm"
-                    : "bg-slate-800 border border-slate-700 text-slate-300 hover:border-slate-600"
+                    ? "bg-sky-500 text-slate-950 font-bold shadow-sm"
+                    : "bg-sky-900/60 border border-sky-700/60 text-sky-200 hover:bg-sky-800"
                 }`}
               >
                 {preset.name}
@@ -120,8 +120,8 @@ export function AITutorShowcase() {
           <div className="p-8 space-y-6 min-h-[300px]">
             
             {/* User Input Prompt */}
-            <div className="bg-slate-800/80 border border-slate-700/80 p-5 rounded-2xl space-y-1.5">
-              <div className="text-xs font-mono font-bold text-blue-400 uppercase tracking-wider">
+            <div className="bg-sky-950 border border-sky-800/80 p-5 rounded-2xl space-y-1.5">
+              <div className="text-xs font-mono font-bold text-sky-400 uppercase tracking-wider">
                 Active Prompt Request:
               </div>
               <div className="text-base font-semibold text-white">
@@ -130,15 +130,15 @@ export function AITutorShowcase() {
             </div>
 
             {/* AI Explanation Stream Output */}
-            <div className="bg-slate-950 border border-slate-800 p-6 rounded-2xl space-y-4">
-              <div className="flex items-center justify-between text-xs font-medium text-slate-400 border-b border-slate-800 pb-3">
-                <span className="text-blue-400 font-bold flex items-center gap-2">
+            <div className="bg-[#081026] border border-sky-900/80 p-6 rounded-2xl space-y-4">
+              <div className="flex items-center justify-between text-xs font-medium text-sky-300 border-b border-sky-900/80 pb-3">
+                <span className="text-sky-400 font-bold flex items-center gap-2">
                   <Sparkles className="w-4 h-4" /> GyaanSetu-AI Response ({selectedLang})
                 </span>
-                <span className="text-emerald-400 font-mono">Status: Stream Complete</span>
+                <span className="text-emerald-400 font-mono font-bold">Status: Stream Complete</span>
               </div>
 
-              <p className="text-slate-200 text-sm sm:text-base leading-relaxed whitespace-pre-line font-normal">
+              <p className="text-sky-100 text-sm sm:text-base leading-relaxed whitespace-pre-line font-normal">
                 {activePreset.response}
               </p>
             </div>

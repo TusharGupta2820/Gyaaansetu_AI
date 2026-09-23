@@ -98,21 +98,21 @@ export function MultilingualSection() {
           })}
         </div>
 
-        {/* Interactive Language Display Box */}
-        <div className="max-w-4xl mx-auto bg-white border border-slate-200 rounded-3xl p-8 shadow-sm space-y-5">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-            <div className="flex items-center gap-2.5 text-sm font-bold text-slate-900">
-              <Sparkles className="w-5 h-5 text-blue-600" />
+        {/* Interactive Language Display Box - Navy Blue Card on Light BG */}
+        <div className="max-w-4xl mx-auto bg-[#0b1530] text-white border border-sky-400/30 rounded-3xl p-8 shadow-xl space-y-5">
+          <div className="flex items-center justify-between border-b border-sky-900/60 pb-4">
+            <div className="flex items-center gap-2.5 text-sm font-bold text-white">
+              <Sparkles className="w-5 h-5 text-sky-400" />
               <span>GyaanSetu-AI Output — {selectedLang.native} ({selectedLang.name})</span>
             </div>
-            <div className="flex items-center gap-1.5 text-xs text-blue-600 bg-blue-50 font-semibold px-3 py-1 rounded-full">
-              <Volume2 className="w-3.5 h-3.5" /> Audio Native
+            <div className="flex items-center gap-1.5 text-xs text-sky-300 bg-sky-900/60 font-semibold px-3 py-1 rounded-full border border-sky-400/30">
+              <Volume2 className="w-3.5 h-3.5 text-sky-400" /> Audio Native
             </div>
           </div>
 
-          <div className="p-5 bg-slate-50 border border-slate-200/80 rounded-2xl">
-            <div className="text-xs font-semibold text-slate-500 mb-1.5">Concept Explanation Sample:</div>
-            <p className="text-slate-900 text-base sm:text-lg leading-relaxed font-medium">
+          <div className="p-5 bg-sky-950/80 border border-sky-800/60 rounded-2xl">
+            <div className="text-xs font-semibold text-sky-300 mb-1.5 font-mono">Concept Explanation Sample:</div>
+            <p className="text-white text-base sm:text-lg leading-relaxed font-medium">
               "{selectedLang.sample}"
             </p>
           </div>

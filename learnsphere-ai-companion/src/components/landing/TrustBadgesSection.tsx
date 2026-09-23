@@ -58,25 +58,26 @@ export function TrustBadgesSection() {
           </div>
         </div>
 
+        {/* 6 Trust Cards - Navy Cards on Light BG */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
           {TRUST_BADGES.map((b, i) => {
             const Icon = b.icon;
             return (
               <div
                 key={i}
-                className="bg-white border border-slate-200 hover:border-blue-500 p-4 rounded-2xl transition-all shadow-xs hover:shadow-md flex flex-col justify-between"
+                className="bg-[#0b1530] text-white border border-sky-400/30 hover:border-sky-400 p-4 rounded-2xl transition-all shadow-md hover:shadow-lg flex flex-col justify-between"
               >
                 <div className="flex items-start justify-between gap-2 mb-3">
-                  <div className="h-10 w-10 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center shrink-0">
+                  <div className="h-10 w-10 rounded-xl bg-sky-900 text-sky-300 border border-sky-700 flex items-center justify-center shrink-0">
                     <Icon className="w-5 h-5" />
                   </div>
-                  <span className="text-[10px] font-mono font-bold text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] font-mono font-bold text-sky-300 bg-sky-950 border border-sky-800 px-2 py-0.5 rounded-full">
                     {b.tag}
                   </span>
                 </div>
                 <div>
-                  <div className="text-xs sm:text-sm font-bold text-slate-900">{b.title}</div>
-                  <div className="text-[11px] text-slate-600 font-normal mt-1 leading-snug">{b.desc}</div>
+                  <div className="text-xs sm:text-sm font-bold text-white">{b.title}</div>
+                  <div className="text-[11px] text-sky-200 font-normal mt-1 leading-snug">{b.desc}</div>
                 </div>
               </div>
             );
