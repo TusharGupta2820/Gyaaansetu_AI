@@ -16,7 +16,8 @@ faster-whisper==1.1.0
 
 # ── Text-to-Speech (offline — Piper TTS binary required separately) ──────────
 # Piper is a standalone binary. This package provides a Python wrapper.
-piper-tts==1.2.0
+# piper-tts==1.2.0
+
 
 # ── OCR (offline) ────────────────────────────────────────────────────────────
 paddlepaddle==2.6.2

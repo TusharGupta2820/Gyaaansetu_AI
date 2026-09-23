@@ -162,13 +162,19 @@ async def get_best_available_model(task: TaskType) -> str:
         if inst.lower().startswith(target_model.lower() + ":") or target_model.lower().startswith(inst.lower() + ":"):
             return inst
 
-    # 3. Fallback to default (llama3.1:8b) if it is installed
+    # 3. Check for qwen3 / qwen2.5 if present (excellent for multilingual Indian languages)
+    for inst in _installed_models:
+        if "qwen3" in inst.lower() or "qwen2.5" in inst.lower():
+            if target_model == MODEL_DEFAULT or target_model == "qwen3:8b":
+                return inst
+
+    # 4. Fallback to default (llama3.1:8b) if it is installed
     default_lower = MODEL_DEFAULT.lower()
     for inst in _installed_models:
         if inst.lower() == default_lower or inst.lower().startswith(default_lower + ":"):
             return inst
 
-    # 4. Fallback to fast model (phi3) if installed
+    # 5. Fallback to fast model (phi3) if installed
     fast_lower = MODEL_FAST.lower()
     for inst in _installed_models:
         if inst.lower() == fast_lower or inst.lower().startswith(fast_lower + ":"):
@@ -187,7 +193,7 @@ async def check_ollama_health() -> bool:
     if GEMINI_API_KEY:
         return True
     try:
-        async with httpx.AsyncClient(timeout=3) as client:
+        async with httpx.AsyncClient(timeout=1.0) as client:
             r = await client.get(f"{OLLAMA_BASE}/api/tags")
             return r.status_code == 200
     except Exception:
@@ -199,7 +205,7 @@ async def list_models() -> list[str]:
     if GEMINI_API_KEY:
         return ["gemini-2.5-flash", "gemini-2.5-pro"]
     try:
-        async with httpx.AsyncClient(timeout=5) as client:
+        async with httpx.AsyncClient(timeout=1.5) as client:
             r = await client.get(f"{OLLAMA_BASE}/api/tags")
             data = r.json()
             return [m["name"] for m in data.get("models", [])]
@@ -273,11 +279,16 @@ async def stream_chat(
         return
 
     model = await get_best_available_model(task)
+    # For multilingual: prefer llama3.1 which handles Indian scripts better than phi3
+    if language != "English" and "phi3" in model.lower():
+        model = MODEL_DEFAULT  # fall back to llama3.1:8b
     options = {
         "temperature": temp,
-        "num_predict": 1536, # Allow longer reasoning replies
-        "num_ctx": 8192,     # Large context window for better memory retrieval
+        "num_predict": 512 if task == "fast" else 1536,
+        "num_ctx": 8192,
         "top_p": 0.9,
+        "repeat_penalty": 1.15,  # Prevents repetition loops in multilingual output
+        "repeat_last_n": 64,
     }
 
     payload = {
@@ -318,158 +329,103 @@ def extract_clean_topic(prompt: str) -> str:
 
 
 def generate_smart_tutor_fallback(prompt: str, system_prompt: str, mode: str, language: str) -> str:
-    """Generate a high-quality, subject-aware ChatGPT/Gemini-style educational response."""
+    """
+    Offline educational fallback - only triggered when Ollama is completely unreachable.
+    Real-time multilingual responses are handled by Ollama/Gemini via
+    _append_language_instruction() in the system prompt - no hardcoded translations needed.
+    """
     topic = extract_clean_topic(prompt)
     prompt_lower = prompt.lower()
     full_text = f"{system_prompt}\n{prompt}".lower()
-    
+
     # 1. Check for student uploaded notes / RAG document analysis
     if "student notes:" in full_text:
         notes = ""
         parts = prompt.split("STUDENT NOTES:")
         if len(parts) > 1:
             notes = parts[1].split("QUESTION:")[0].strip()
-        
         clean_notes = re.sub(r'AI Tutor:.*', '', notes, flags=re.DOTALL).strip()
         if len(clean_notes) > 500:
             clean_notes = clean_notes[:500] + "..."
-
         return (
-            f"### 📄 Document Analysis & Response: **{topic}**\n\n"
+            f"### Document Analysis: **{topic}**\n\n"
             f"**Key Insights From Your Uploaded Notes:**\n"
             f"> {clean_notes if clean_notes else 'Relevant sections extracted from your uploaded study materials.'}\n\n"
-            f"**Detailed Breakdown Regarding '{topic}':**\n"
-            f"Based on your notes, this section outlines the foundational definitions, key relationships, and core concepts. "
-            f"Review the highlighted terms above. Would you like me to create practice questions based on this document?"
+            f"Would you like me to create practice questions based on this document?"
         )
 
-    # 2. Physics & Motion (Newton's Laws, Gravity, Velocity, Forces, Mechanics)
+    # 2. Physics
     if any(k in prompt_lower for k in ["newton", "motion", "inertia", "gravity", "force", "velocity", "acceleration", "friction", "physics"]):
-        if "first law" in prompt_lower or "1st law" in prompt_lower or "inertia" in prompt_lower or "newton first" in prompt_lower:
+        if "first law" in prompt_lower or "1st law" in prompt_lower or ("inertia" in prompt_lower and "newton" in prompt_lower):
             return (
-                "### 📘 AI Tutor Explanation: **Newton's First Law of Motion (Law of Inertia)**\n\n"
-                "**1. Core Concept & Definition**\n"
-                "Newton's First Law states that **an object will remain at rest or continue moving in a straight line at a constant speed unless acted upon by a net external force.**\n\n"
-                "This principle is also known as the **Law of Inertia**, where *inertia* is the natural tendency of an object to resist changes in its state of motion.\n\n"
-                "**2. Real-World Examples**\n"
-                "- **Passengers in a Braking Car:** When a moving car brakes suddenly, your body continues moving forward because of inertia. This is why wearing seatbelts is essential!\n"
-                "- **A Book on a Table:** A textbook lying on your desk stays completely still unless someone applies a pushing or pulling force.\n"
-                "- **Space Probes:** A spacecraft traveling through deep space will keep moving at the same speed forever without fuel, because there is no air friction in a vacuum to slow it down.\n\n"
-                "**3. Mathematical Expression**\n"
-                "$$\\sum \\vec{F} = 0 \\implies \\frac{d\\vec{v}}{dt} = 0 \\quad (\\vec{v} = \\text{constant})$$\n\n"
-                "If the sum of external forces ($\\sum F$) is zero, acceleration ($a$) is zero, and velocity ($v$) remains constant.\n\n"
-                "**4. Quick Study Tip for Exams**\n"
-                "Remember: Force is not required to *keep* an object moving at constant speed—force is only required to *change* an object's speed or direction!"
+                "### AI Tutor: Newton\'s First Law of Motion (Law of Inertia)\n\n"
+                "An object remains at rest or in uniform motion unless acted upon by a net external force.\n\n"
+                "$$\\sum \\vec{F} = 0 \\implies \\frac{d\\vec{v}}{dt} = 0$$\n\n"
+                "**Examples:** Seatbelts save lives (inertia), space probes travel forever in vacuum.\n"
+                "**Exam Tip:** Force is only needed to *change* velocity, not to *maintain* it."
             )
-        elif "second law" in prompt_lower or "2nd law" in prompt_lower or "f=ma" in prompt_lower or "newton second" in prompt_lower:
+        elif "second law" in prompt_lower or "f=ma" in prompt_lower:
             return (
-                "### 📘 AI Tutor Explanation: **Newton's Second Law of Motion ($F = ma$)**\n\n"
-                "**1. Core Concept & Definition**\n"
-                "Newton's Second Law states that **the acceleration of an object is directly proportional to the net force acting on it and inversely proportional to its mass.**\n\n"
-                "**2. Key Formula**\n"
-                "$$\\vec{F}_{net} = m \\cdot \\vec{a}$$\n"
-                "- **$F$**: Net Force in Newtons ($N$ or $\\text{kg}\\cdot\\text{m/s}^2$)\n"
-                "- **$m$**: Mass in kilograms ($\\text{kg}$)\n"
-                "- **$a$**: Acceleration in meters per second squared ($\\text{m/s}^2$)\n\n"
-                "**3. Key Insights**\n"
-                "- **More Force $\\implies$ More Acceleration:** Pushing a shopping cart harder makes it speed up faster.\n"
-                "- **More Mass $\\implies$ Less Acceleration:** A heavy truck requires much more force to accelerate than a lightweight bicycle.\n\n"
-                "**4. Exam Tip**\n"
-                "Always resolve forces along perpendicular axes ($X$ and $Y$) when solving 2D mechanics problems!"
+                "### AI Tutor: Newton\'s Second Law ($F = ma$)\n\n"
+                "$$\\vec{F}_{net} = m \\cdot \\vec{a}$$\n\n"
+                "More force = more acceleration. More mass = less acceleration.\n"
+                "**Exam Tip:** Draw a Free-Body Diagram first to map all forces."
             )
-        elif "third law" in prompt_lower or "3rd law" in prompt_lower or "action" in prompt_lower or "newton third" in prompt_lower:
+        elif "third law" in prompt_lower or ("action" in prompt_lower and "reaction" in prompt_lower):
             return (
-                "### 📘 AI Tutor Explanation: **Newton's Third Law of Motion (Action & Reaction)**\n\n"
-                "**1. Core Concept & Definition**\n"
-                "Newton's Third Law states that **for every action force, there is an equal and opposite reaction force.**\n\n"
-                "Forces always occur in pairs! If object $A$ exerts a force on object $B$, object $B$ exerts an equal force in the opposite direction on object $A$.\n\n"
+                "### AI Tutor: Newton\'s Third Law\n\n"
+                "Every action has an equal and opposite reaction.\n"
                 "$$\\vec{F}_{A \\to B} = -\\vec{F}_{B \\to A}$$\n\n"
-                "**2. Real-World Applications**\n"
-                "- **Rocket Propulsion:** A rocket pushes hot exhaust gases downward (action), and the gases push the rocket upward (reaction).\n"
-                "- **Swimming:** You push water backward with your hands, and the water pushes you forward.\n"
-                "- **Walking:** Your foot pushes backward on the ground, and friction pushes your body forward."
+                "Examples: rockets, swimming, walking."
             )
         else:
             return (
-                f"### 📘 AI Tutor Explanation: **{topic}**\n\n"
-                "**1. Core Principles of Physics & Motion**\n"
-                f"**{topic}** forms a foundational pillar in classical mechanics and physical dynamics. It governs how forces, mass, and acceleration interact to describe motion in our physical universe.\n\n"
-                "**2. Fundamental Laws of Motion**\n"
-                "1. **1st Law (Inertia):** Objects resist changes in their motion state unless forced by an external net force.\n"
-                "2. **2nd Law ($F = ma$):** Force equals mass multiplied by acceleration.\n"
-                "3. **3rd Law (Action/Reaction):** Forces always exist in equal and opposite interaction pairs.\n\n"
-                "**3. Practice Guidance**\n"
-                "When solving physics problems, draw a Free-Body Diagram (FBD) first to map all force vectors!"
+                f"### AI Tutor: **{topic}**\n\n"
+                f"**{topic}** is a core mechanics topic. Review Newton\'s 3 Laws, energy conservation, "
+                "and Free-Body Diagrams (FBDs) for problem-solving."
             )
 
-    # 3. Computer Science / Programming / Algorithms / Python / JS
+    # 3. Computer Science
     if any(k in prompt_lower for k in ["recursion", "python", "javascript", "algorithm", "function", "array", "tree", "data structure", "code", "programming", "sql"]):
         if "recursion" in prompt_lower:
             return (
-                "### 💻 AI Tutor Explanation: **Recursion in Computer Science**\n\n"
-                "**1. Core Concept**\n"
-                "Recursion is a programming technique where **a function calls itself** to solve a smaller instance of the same problem, until it reaches a base condition.\n\n"
-                "**2. Essential Components**\n"
-                "1. **Base Case:** The termination condition that stops recursion (prevents infinite loops and stack overflow).\n"
-                "2. **Recursive Case:** The step where the function calls itself with modified arguments moving toward the base case.\n\n"
-                "**3. Python Code Example (Factorial)**\n"
+                "### AI Tutor: Recursion\n\n"
+                "A function that calls itself until a base case is reached.\n\n"
                 "```python\n"
                 "def factorial(n):\n"
-                "    # Base case\n"
-                "    if n <= 1:\n"
-                "        return 1\n"
-                "    # Recursive case\n"
-                "    return n * factorial(n - 1)\n\n"
-                "print(factorial(5)) # Output: 120\n"
+                "    if n <= 1: return 1        # base case\n"
+                "    return n * factorial(n-1)  # recursive case\n"
+                "print(factorial(5))  # 120\n"
                 "```\n\n"
-                "**4. Execution Stack Trace for `factorial(3)`**\n"
-                "- `factorial(3)` calls `factorial(2)`\n"
-                "- `factorial(2)` calls `factorial(1)`\n"
-                "- `factorial(1)` returns `1` (Base case!)\n"
-                "- Returns bubble up: $1 \\times 2 = 2 \\implies 2 \\times 3 = 6$."
+                "**Always define a base case** to prevent infinite recursion."
             )
         else:
             return (
-                f"### 💻 AI Tutor Explanation: **{topic}**\n\n"
-                "**1. Conceptual Overview**\n"
-                f"**{topic}** is a vital topic in computer science and software engineering. Mastering this concept enables writing efficient, modular, and scalable code.\n\n"
-                "**2. Key Technical Principles**\n"
-                "- **Time & Space Complexity:** Evaluate Big-O performance ($O(1)$, $O(n)$, $O(n \\log n)$).\n"
-                "- **Clean Code Practices:** Write single-purpose functions, use meaningful names, and avoid unnecessary side effects.\n"
-                "- **Robust Error Handling:** Validate edge cases and inputs gracefully.\n\n"
-                "**3. How to Practice**\n"
-                "Implement a minimal working example in your code editor and test edge case inputs to verify correctness!"
+                f"### AI Tutor: **{topic}**\n\n"
+                f"**{topic}** is a key CS concept. Focus on time/space complexity (Big-O notation), "
+                "correctness, edge cases, and clean code."
             )
 
-    # 4. Biology / Chemistry / Science
+    # 4. Biology / Chemistry
     if any(k in prompt_lower for k in ["photosynthesis", "cell", "biology", "chemistry", "atom", "molecule", "dna", "reaction", "organic"]):
         if "photosynthesis" in prompt_lower:
             return (
-                "### 🌿 AI Tutor Explanation: **Photosynthesis**\n\n"
-                "**1. Core Definition**\n"
-                "Photosynthesis is the biological process by which green plants, algae, and some bacteria convert light energy (sunlight) into chemical energy stored in glucose molecules.\n\n"
-                "**2. Chemical Equation**\n"
-                "$$6\\text{CO}_2 + 6\\text{H}_2\\text{O} \\xrightarrow{\\text{Sunlight + Chlorophyll}} \\text{C}_6\\text{H}_{12}\\text{O}_6 + 6\\text{O}_2$$\n\n"
-                "- **Reactants:** Carbon Dioxide ($\\text{CO}_2$) + Water ($\\text{H}_2\\text{O}$)\n"
-                "- **Products:** Glucose ($\\text{C}_6\\text{H}_{12}\\text{O}_6$) + Oxygen gas ($\\text{O}_2$)\n\n"
-                "**3. Key Stages**\n"
-                "1. **Light-Dependent Reactions:** Occur in thylakoid membranes; sunlight splits water to produce ATP and NADPH while releasing oxygen.\n"
-                "2. **Calvin Cycle (Light-Independent):** Occurs in the stroma; uses ATP and NADPH to convert carbon dioxide into sugar."
+                "### AI Tutor: Photosynthesis\n\n"
+                "$$6\\text{CO}_2 + 6\\text{H}_2\\text{O} \\xrightarrow{\\text{light + chlorophyll}} \\text{C}_6\\text{H}_{12}\\text{O}_6 + 6\\text{O}_2$$\n\n"
+                "Two stages: Light-dependent reactions (thylakoids) produce ATP; Calvin Cycle (stroma) fixes CO2 into glucose."
             )
 
-    # 5. General Academic Tutor Fallback (ChatGPT / Gemini Style)
+    # 5. General academic fallback
     return (
-        f"### 📘 AI Tutor Explanation: **{topic}**\n\n"
-        f"**1. Overview & Core Definition**\n"
-        f"**{topic}** is an essential topic for academic mastery. "
-        f"Understanding this concept requires breaking down its primary principles, real-world examples, and key applications.\n\n"
-        f"**2. Key Study Principles**\n"
-        f"- **Foundational Logic:** Master the core definitions and fundamental rules governing **{topic}**.\n"
-        f"- **Practical Application:** Apply concepts to real-world problem scenarios to solidify memory.\n"
-        f"- **Exam Focus:** Pay close attention to standard problem structures and common exam traps.\n\n"
-        f"**3. Next Step**\n"
-        f"Would you like me to provide a step-by-step example, a quiz question, or a detailed breakdown to help you master **{topic}**?"
+        f"### AI Tutor: **{topic}**\n\n"
+        f"**{topic}** is an important academic concept. To master it:\n"
+        f"- Understand the core definition and governing rules\n"
+        f"- Study real-world examples and applications\n"
+        f"- Practice with varied problem types\n\n"
+        f"Would you like a worked example, quiz question, or deeper explanation?"
     )
+
+
 
 async def stream_chat(
     prompt: str,
@@ -526,11 +482,16 @@ async def stream_chat(
         return
 
     model = await get_best_available_model(task)
+    # For multilingual: prefer llama3.1 which handles Indian scripts better than phi3
+    if language != "English" and "phi3" in model.lower():
+        model = MODEL_DEFAULT
     options = {
         "temperature": temp,
-        "num_predict": 1536,
+        "num_predict": 512 if task == "fast" else 1536,
         "num_ctx": 8192,
         "top_p": 0.9,
+        "repeat_penalty": 1.15,
+        "repeat_last_n": 64,
     }
 
     payload = {
@@ -544,7 +505,7 @@ async def stream_chat(
     logger.info(f"Streaming Ollama [{model}] task={task} lang={language} mode={mode} temp={temp}")
 
     try:
-        async with httpx.AsyncClient(timeout=12.0) as client:
+        async with httpx.AsyncClient(timeout=httpx.Timeout(180.0, connect=10.0)) as client:
             async with client.stream("POST", f"{OLLAMA_BASE}/api/generate", json=payload) as resp:
                 resp.raise_for_status()
                 async for line in resp.aiter_lines():
@@ -615,11 +576,16 @@ async def complete(
             return f"⚠️ Gemini error: {str(e)}"
 
     model = await get_best_available_model(task)
+    # For multilingual: prefer llama3.1 which handles Indian scripts better than phi3
+    if language != "English" and "phi3" in model.lower():
+        model = MODEL_DEFAULT
     options = {
         "temperature": temp,
-        "num_predict": max_tokens,
+        "num_predict": 512 if task == "fast" else max_tokens,
         "num_ctx": 8192,
         "top_p": 0.9,
+        "repeat_penalty": 1.15,
+        "repeat_last_n": 64,
     }
 
     payload = {
@@ -631,7 +597,7 @@ async def complete(
     }
 
     try:
-        async with httpx.AsyncClient(timeout=12.0) as client:
+        async with httpx.AsyncClient(timeout=httpx.Timeout(180.0, connect=10.0)) as client:
             r = await client.post(f"{OLLAMA_BASE}/api/generate", json=payload)
             r.raise_for_status()
             return r.json().get("response", "")

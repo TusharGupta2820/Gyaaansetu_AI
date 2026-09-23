@@ -4,11 +4,11 @@ Offline Neural Education Ecosystem AI Engine
 All processing runs locally via Ollama, Whisper, Piper, PaddleOCR, ChromaDB
 """
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
-import os, logging, json, re
+import os, logging, json, re, asyncio
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
 logger = logging.getLogger("gyaansetu")
@@ -84,6 +84,25 @@ async def db_context_middleware(request: Request, call_next):
     finally:
         current_user_id.reset(token)
 
+
+# ── Long-timeout middleware for local Ollama complete() calls ─────────────────
+# The SSE streaming /tutor/chat handles its own lifecycle.
+# All blocking complete() calls (quiz, career, feynman, mistakes, etc.) need up to 5 min.
+@app.middleware("http")
+async def long_timeout_middleware(request: Request, call_next):
+    # Streaming SSE endpoint — do not wrap in a timeout
+    if request.url.path in ("/tutor/chat", "/tutor/voice"):
+        return await call_next(request)
+    try:
+        return await asyncio.wait_for(call_next(request), timeout=300.0)
+    except asyncio.TimeoutError:
+        logger.warning(f"Request timed out after 300s: {request.url.path}")
+        return Response(
+            content='{"detail": "Request timed out — the local AI model is still loading. Please retry."}',
+            status_code=504,
+            media_type="application/json",
+        )
+
 # ── CORS: allow all local React frontends ─────────────────────────────────────
 app.add_middleware(
     CORSMiddleware,
@@ -131,10 +150,12 @@ async def root():
 
 @app.get("/health", tags=["System"])
 async def health_endpoint():
+    from services import ollama_service
+    ollama_ok = await ollama_service.check_ollama_health()
     return {
         "status": "online",
         "version": "2.0.0",
-        "ollama_connected": True,
+        "ollama_connected": ollama_ok,
     }
 
 

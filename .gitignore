@@ -62,8 +62,10 @@ coverage.xml
 gyaansetu-backend/audio_out/
 gyaansetu-backend/chroma_store/
 gyaansetu-backend/piper_models/
+gyaansetu-backend/db_users/
 learnsphere-ai-companion/db_users/
 learnsphere-ai-companion/scratch/
+test_hindi.txt
 
 # Environments (contains API keys/secrets)
 .env

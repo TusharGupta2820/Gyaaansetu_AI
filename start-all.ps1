@@ -22,11 +22,15 @@ Write-Host ""
 if (-not $FrontendOnly) {
     Write-Host "[1/5] Checking Ollama..." -ForegroundColor Yellow
 
-    $ollamaExe = "ollama"
-    if (Test-Path "D:\Ollama\ollama.exe") {
-        $ollamaExe = "D:\Ollama\ollama.exe"
-    } elseif (Test-Path "$env:LOCALAPPDATA\Programs\Ollama\ollama.exe") {
-        $ollamaExe = "$env:LOCALAPPDATA\Programs\Ollama\ollama.exe"
+    $ollamaExe = "D:\Ollama\ollama.exe"
+    if (-not (Test-Path $ollamaExe)) {
+        if (Test-Path "$env:LOCALAPPDATA\Programs\Ollama\ollama.exe") {
+            $ollamaExe = "$env:LOCALAPPDATA\Programs\Ollama\ollama.exe"
+        } elseif (Test-Path "C:\Program Files\WinGet\Packages\Ollama.Ollama_Microsoft.Winget.Source_8wekyb3d8bbwe\ollama.exe") {
+            $ollamaExe = "C:\Program Files\WinGet\Packages\Ollama.Ollama_Microsoft.Winget.Source_8wekyb3d8bbwe\ollama.exe"
+        } else {
+            $ollamaExe = "ollama"
+        }
     }
 
     $ollamaRunning = $false
