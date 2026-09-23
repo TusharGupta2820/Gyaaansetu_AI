@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { ShieldCheck, Award, Lock, FileCheck, Zap, Globe2 } from "lucide-react";
 
 const TRUST_BADGES = [
@@ -44,7 +45,13 @@ export function TrustBadgesSection() {
     <section className="py-12 bg-slate-50 text-slate-900 border-b border-slate-200/80 font-sans">
       <div className="w-full max-w-[1800px] mx-auto px-6 md:px-12 lg:px-16">
         
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
+        <motion.div
+          initial={{ opacity: 0, y: 25 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.5 }}
+          className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8"
+        >
           <div>
             <div className="text-xs font-mono font-bold text-blue-600 uppercase tracking-widest">
               Enterprise Security & Quality Standards
@@ -56,15 +63,25 @@ export function TrustBadgesSection() {
           <div className="text-xs text-slate-600 font-medium max-w-md">
             GyaanSetu-AI combines state-of-the-art neural models with enterprise-grade data privacy and industry-aligned skill roadmaps.
           </div>
-        </div>
+        </motion.div>
 
         {/* 6 Trust Cards - Navy Cards on Light BG */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.6 }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4"
+        >
           {TRUST_BADGES.map((b, i) => {
             const Icon = b.icon;
             return (
-              <div
+              <motion.div
                 key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.08 }}
                 className="bg-[#0b1530] text-white border border-sky-400/30 hover:border-sky-400 p-4 rounded-2xl transition-all shadow-md hover:shadow-lg flex flex-col justify-between"
               >
                 <div className="flex items-start justify-between gap-2 mb-3">
@@ -79,10 +96,10 @@ export function TrustBadgesSection() {
                   <div className="text-xs sm:text-sm font-bold text-white">{b.title}</div>
                   <div className="text-[11px] text-sky-200 font-normal mt-1 leading-snug">{b.desc}</div>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
 
       </div>
     </section>

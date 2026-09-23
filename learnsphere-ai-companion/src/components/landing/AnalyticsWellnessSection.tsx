@@ -1,12 +1,19 @@
+import { motion } from "framer-motion";
 import { BarChart3, HeartPulse, Clock } from "lucide-react";
 
 export function AnalyticsWellnessSection() {
   return (
-    <section className="py-24 bg-white border-b border-slate-200/80">
+    <section className="py-24 bg-white border-b border-slate-200/80 font-sans">
       <div className="w-full max-w-[1800px] mx-auto px-6 md:px-12 lg:px-16 space-y-16">
         
         {/* Header */}
-        <div className="max-w-4xl mx-auto text-center space-y-4">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6 }}
+          className="max-w-4xl mx-auto text-center space-y-4"
+        >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs sm:text-sm font-semibold">
             <HeartPulse className="w-4 h-4" />
             <span>Sustainable Learning</span>
@@ -18,12 +25,24 @@ export function AnalyticsWellnessSection() {
           <p className="text-slate-600 text-base sm:text-lg leading-relaxed font-normal">
             Learning effectively requires consistent focus and healthy study habits—not late-night cramming.
           </p>
-        </div>
+        </motion.div>
 
         {/* 3 Productivity & Wellness Cards - Navy Cards on White BG */}
-        <div className="grid md:grid-cols-3 gap-8">
+        <motion.div
+          initial={{ opacity: 0, y: 35 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6 }}
+          className="grid md:grid-cols-3 gap-8"
+        >
           
-          <div className="bg-[#0b1530] text-white border border-sky-400/30 rounded-3xl p-8 space-y-5 shadow-lg">
+          <motion.div
+            initial={{ opacity: 0, y: 25 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="bg-[#0b1530] text-white border border-sky-400/30 rounded-3xl p-8 space-y-5 shadow-lg cursor-pointer"
+          >
             <div className="h-12 w-12 rounded-2xl bg-sky-900 text-sky-300 border border-sky-700 flex items-center justify-center">
               <Clock className="w-6 h-6" />
             </div>
@@ -35,9 +54,15 @@ export function AnalyticsWellnessSection() {
               <span>Today's Sessions:</span>
               <span className="text-sky-400 font-bold">4 Completed (100 mins)</span>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="bg-[#0b1530] text-white border border-sky-400/30 rounded-3xl p-8 space-y-5 shadow-lg">
+          <motion.div
+            initial={{ opacity: 0, y: 25 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="bg-[#0b1530] text-white border border-sky-400/30 rounded-3xl p-8 space-y-5 shadow-lg cursor-pointer"
+          >
             <div className="h-12 w-12 rounded-2xl bg-sky-900 text-sky-300 border border-sky-700 flex items-center justify-center">
               <HeartPulse className="w-6 h-6 text-emerald-400" />
             </div>
@@ -49,9 +74,15 @@ export function AnalyticsWellnessSection() {
               <span>Wellness Score:</span>
               <span className="text-emerald-400 font-bold">92 / 100 (Optimal)</span>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="bg-[#0b1530] text-white border border-sky-400/30 rounded-3xl p-8 space-y-5 shadow-lg">
+          <motion.div
+            initial={{ opacity: 0, y: 25 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="bg-[#0b1530] text-white border border-sky-400/30 rounded-3xl p-8 space-y-5 shadow-lg cursor-pointer"
+          >
             <div className="h-12 w-12 rounded-2xl bg-sky-900 text-sky-300 border border-sky-700 flex items-center justify-center">
               <BarChart3 className="w-6 h-6" />
             </div>
@@ -63,9 +94,9 @@ export function AnalyticsWellnessSection() {
               <span>Long-Term Retention:</span>
               <span className="text-sky-400 font-bold">89% Average</span>
             </div>
-          </div>
+          </motion.div>
 
-        </div>
+        </motion.div>
 
       </div>
     </section>

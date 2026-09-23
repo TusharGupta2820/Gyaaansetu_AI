@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { useState } from "react";
 import { Bot, Volume2, Globe, Sparkles } from "lucide-react";
 
@@ -34,11 +35,17 @@ export function AITutorShowcase() {
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
 
   return (
-    <section id="ai-tutor" className="py-24 bg-white border-b border-slate-200/80">
+    <section id="ai-tutor" className="py-24 bg-white border-b border-slate-200/80 font-sans">
       <div className="w-full max-w-[1800px] mx-auto px-6 md:px-12 lg:px-16 space-y-16">
         
         {/* Header */}
-        <div className="max-w-4xl mx-auto text-center space-y-4">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6 }}
+          className="max-w-4xl mx-auto text-center space-y-4"
+        >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs sm:text-sm font-semibold">
             <Bot className="w-4 h-4" />
             <span>AI Tutor Showcase</span>
@@ -50,10 +57,16 @@ export function AITutorShowcase() {
           <p className="text-slate-600 text-base sm:text-lg leading-relaxed font-normal">
             Ask questions naturally. Get explanations at your exact level. Learn in the language that works for you.
           </p>
-        </div>
+        </motion.div>
 
         {/* Expanded Interactive Sandbox Card - Navy Blue Card on White BG */}
-        <div className="max-w-6xl mx-auto bg-[#0b1530] text-white rounded-3xl border border-sky-400/30 shadow-2xl overflow-hidden">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6 }}
+          className="max-w-6xl mx-auto bg-[#0b1530] text-white rounded-3xl border border-sky-400/30 shadow-2xl overflow-hidden"
+        >
           
           {/* Top Control Toolbar */}
           <div className="bg-[#081026] p-5 border-b border-sky-900/60 flex flex-wrap items-center justify-between gap-4">
@@ -145,7 +158,7 @@ export function AITutorShowcase() {
 
           </div>
 
-        </div>
+        </motion.div>
 
       </div>
     </section>

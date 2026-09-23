@@ -1,10 +1,17 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
 
 export function FinalCTASection() {
   return (
     <section className="py-24 bg-white px-6 md:px-12 lg:px-16 font-sans">
-      <div className="w-full max-w-[1800px] mx-auto bg-[#0b1530] text-white rounded-3xl p-10 sm:p-20 text-center space-y-8 relative overflow-hidden shadow-2xl border border-sky-400/30">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 30 }}
+        whileInView={{ opacity: 1, scale: 1, y: 0 }}
+        viewport={{ once: true, margin: "-60px" }}
+        transition={{ duration: 0.6 }}
+        className="w-full max-w-[1800px] mx-auto bg-[#0b1530] text-white rounded-3xl p-10 sm:p-20 text-center space-y-8 relative overflow-hidden shadow-2xl border border-sky-400/30"
+      >
         
         {/* Background Radial Accent */}
         <div className="absolute inset-0 bg-sky-500/10 blur-3xl pointer-events-none" />
@@ -41,7 +48,7 @@ export function FinalCTASection() {
           </a>
         </div>
 
-      </div>
+      </motion.div>
     </section>
   );
 }

@@ -1,12 +1,19 @@
+import { motion } from "framer-motion";
 import { Target, CheckCircle2, Clock, Circle } from "lucide-react";
 
 export function CareerGuidanceSection() {
   return (
-    <section id="career-guidance" className="py-24 bg-white border-b border-slate-200/80">
+    <section id="career-guidance" className="py-24 bg-white border-b border-slate-200/80 font-sans">
       <div className="w-full max-w-[1800px] mx-auto px-6 md:px-12 lg:px-16 space-y-16">
         
         {/* Header */}
-        <div className="max-w-4xl mx-auto text-center space-y-4">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6 }}
+          className="max-w-4xl mx-auto text-center space-y-4"
+        >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs sm:text-sm font-semibold">
             <Target className="w-4 h-4" />
             <span>Career Alignment</span>
@@ -18,10 +25,16 @@ export function CareerGuidanceSection() {
           <p className="text-slate-600 text-base sm:text-lg leading-relaxed font-normal">
             GyaanSetu-AI bridges the gap between what you learn today and the skills required for high-impact roles tomorrow.
           </p>
-        </div>
+        </motion.div>
 
         {/* Career Progression Flow Card - Navy Card on White BG */}
-        <div className="max-w-6xl mx-auto bg-[#0b1530] text-white rounded-3xl p-8 lg:p-10 border border-sky-400/30 shadow-2xl space-y-8">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6 }}
+          className="max-w-6xl mx-auto bg-[#0b1530] text-white rounded-3xl p-8 lg:p-10 border border-sky-400/30 shadow-2xl space-y-8"
+        >
           <div className="flex flex-wrap items-center justify-between gap-4 border-b border-sky-900/60 pb-5">
             <div>
               <div className="text-xs font-mono text-sky-400 font-semibold uppercase">Skill Gap Analyzer</div>
@@ -94,7 +107,7 @@ export function CareerGuidanceSection() {
             </div>
 
           </div>
-        </div>
+        </motion.div>
 
       </div>
     </section>

@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { GraduationCap, Briefcase, Users, Building2, CheckCircle2 } from "lucide-react";
 
 const AUDIENCES = [
@@ -29,11 +30,17 @@ const AUDIENCES = [
 
 export function AudienceSection() {
   return (
-    <section id="audiences" className="py-24 bg-slate-50 border-b border-slate-200/80">
+    <section id="audiences" className="py-24 bg-slate-50 border-b border-slate-200/80 font-sans">
       <div className="w-full max-w-[1800px] mx-auto px-6 md:px-12 lg:px-16 space-y-16">
         
         {/* Header */}
-        <div className="max-w-4xl mx-auto text-center space-y-4">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6 }}
+          className="max-w-4xl mx-auto text-center space-y-4"
+        >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs sm:text-sm font-semibold">
             <Users className="w-4 h-4" />
             <span>Solutions for Everyone</span>
@@ -45,16 +52,26 @@ export function AudienceSection() {
           <p className="text-slate-600 text-base sm:text-lg leading-relaxed font-normal">
             Whether you are preparing for your first tech role, upskilling in your career, or mentoring an entire university cohort.
           </p>
-        </div>
+        </motion.div>
 
         {/* 4 Audience Cards - Navy Cards on Light BG */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <motion.div
+          initial={{ opacity: 0, y: 35 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6 }}
+          className="grid md:grid-cols-2 lg:grid-cols-4 gap-8"
+        >
           {AUDIENCES.map((aud, i) => {
             const Icon = aud.icon;
             return (
-              <div
+              <motion.div
                 key={i}
-                className="bg-[#0b1530] text-white border border-sky-400/30 rounded-3xl p-8 flex flex-col justify-between space-y-6 hover:shadow-xl hover:border-sky-400 transition-all"
+                initial={{ opacity: 0, y: 25 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                className="bg-[#0b1530] text-white border border-sky-400/30 rounded-3xl p-8 flex flex-col justify-between space-y-6 hover:shadow-xl hover:border-sky-400 transition-all cursor-pointer"
               >
                 <div className="space-y-4">
                   <div className="h-12 w-12 rounded-2xl bg-sky-900 border border-sky-700 text-sky-300 flex items-center justify-center">
@@ -72,10 +89,10 @@ export function AudienceSection() {
                     </div>
                   ))}
                 </div>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
 
       </div>
     </section>

@@ -1,12 +1,19 @@
+import { motion } from "framer-motion";
 import { Bot, Compass, CheckCircle2, Award, Target } from "lucide-react";
 
 export function ProductPillarsSection() {
   return (
-    <section id="product-pillars" className="py-24 bg-slate-50 border-b border-slate-200/80">
+    <section id="product-pillars" className="py-24 bg-slate-50 border-b border-slate-200/80 font-sans">
       <div className="w-full max-w-[1800px] mx-auto px-6 md:px-12 lg:px-16 space-y-28">
         
         {/* Section Header */}
-        <div className="max-w-4xl mx-auto text-center space-y-4">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="max-w-4xl mx-auto text-center space-y-4"
+        >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs sm:text-sm font-semibold">
             <span>Product Ecosystem</span>
           </div>
@@ -17,10 +24,16 @@ export function ProductPillarsSection() {
           <p className="text-slate-600 text-base sm:text-lg leading-relaxed font-normal">
             From initial concept breakdown to career milestones, GyaanSetu-AI supports every stage of learning with intelligent, adaptive tools.
           </p>
-        </div>
+        </motion.div>
 
         {/* PILLAR 01: Understand */}
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center"
+        >
           <div className="lg:col-span-6 space-y-6">
             <div className="text-xs sm:text-sm font-mono font-bold text-sky-600 uppercase tracking-widest">
               01 — UNDERSTAND
@@ -78,10 +91,16 @@ export function ProductPillarsSection() {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* PILLAR 02: Learn */}
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center"
+        >
           <div className="lg:col-span-6 order-2 lg:order-1">
             {/* Visual Card 02 - Navy Blue Card on Light BG */}
             <div className="bg-[#0b1530] text-white border border-sky-400/30 rounded-3xl p-8 shadow-xl space-y-5">
@@ -134,10 +153,16 @@ export function ProductPillarsSection() {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* PILLAR 03: Practice */}
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center"
+        >
           <div className="lg:col-span-6 space-y-6">
             <div className="text-xs sm:text-sm font-mono font-bold text-sky-600 uppercase tracking-widest">
               03 — PRACTICE
@@ -189,10 +214,16 @@ export function ProductPillarsSection() {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* PILLAR 04: Grow */}
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center"
+        >
           <div className="lg:col-span-6 order-2 lg:order-1">
             {/* Visual Card 04 - Navy Blue Card on Light BG */}
             <div className="bg-[#0b1530] text-white border border-sky-400/30 rounded-3xl p-8 shadow-xl space-y-5">
@@ -255,7 +286,7 @@ export function ProductPillarsSection() {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
       </div>
     </section>

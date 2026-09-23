@@ -1,12 +1,19 @@
+import { motion } from "framer-motion";
 import { LayoutDashboard, Zap } from "lucide-react";
 
 export function DashboardPreviewSection() {
   return (
-    <section className="py-24 bg-slate-50 border-b border-slate-200/80">
+    <section className="py-24 bg-slate-50 border-b border-slate-200/80 font-sans">
       <div className="w-full max-w-[1800px] mx-auto px-6 md:px-12 lg:px-16 space-y-16">
         
         {/* Header */}
-        <div className="max-w-4xl mx-auto text-center space-y-4">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6 }}
+          className="max-w-4xl mx-auto text-center space-y-4"
+        >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs sm:text-sm font-semibold">
             <LayoutDashboard className="w-4 h-4" />
             <span>Product Ecosystem Preview</span>
@@ -18,10 +25,16 @@ export function DashboardPreviewSection() {
           <p className="text-slate-600 text-base sm:text-lg leading-relaxed font-normal">
             GyaanSetu-AI analyzes your activity to pinpoint weak concepts, highlight mastery, and guide your next study session.
           </p>
-        </div>
+        </motion.div>
 
         {/* Realistic Dashboard Card Mockup - Navy Card on Light BG */}
-        <div className="max-w-6xl mx-auto bg-[#0b1530] text-white border border-sky-400/30 rounded-3xl p-8 lg:p-10 shadow-2xl space-y-8">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6 }}
+          className="max-w-6xl mx-auto bg-[#0b1530] text-white border border-sky-400/30 rounded-3xl p-8 lg:p-10 shadow-2xl space-y-8"
+        >
           
           {/* Top Bar */}
           <div className="flex flex-wrap items-center justify-between gap-4 border-b border-sky-900/60 pb-5">
@@ -96,7 +109,7 @@ export function DashboardPreviewSection() {
             </button>
           </div>
 
-        </div>
+        </motion.div>
 
       </div>
     </section>

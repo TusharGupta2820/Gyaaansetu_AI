@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { ShieldAlert, Sparkles, Zap } from "lucide-react";
 
 export function ProblemStorySection() {
@@ -6,7 +7,13 @@ export function ProblemStorySection() {
       <div className="w-full max-w-[1800px] mx-auto px-6 md:px-12 lg:px-16">
         
         {/* Section Header */}
-        <div className="max-w-4xl mx-auto text-center space-y-4 mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6 }}
+          className="max-w-4xl mx-auto text-center space-y-4 mb-16"
+        >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold tracking-wide uppercase">
             <Zap className="w-3.5 h-3.5 text-blue-600" />
             <span>Why GyaanSetu AI?</span>
@@ -20,13 +27,25 @@ export function ProblemStorySection() {
           <p className="text-slate-600 text-base sm:text-lg leading-relaxed font-normal max-w-3xl mx-auto">
             Traditional learning treats everyone identically with long videos and rigid schedules. GyaanSetu-AI crafts a personalized bridge tailored to your exact pace and goals.
           </p>
-        </div>
+        </motion.div>
 
         {/* Story Comparison Grid - Navy Cards on White BG */}
-        <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-stretch">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6 }}
+          className="grid md:grid-cols-2 gap-8 lg:gap-12 items-stretch"
+        >
           
           {/* Legacy Traditional System - Navy Blue Card */}
-          <div className="bg-[#0b1530] text-white border border-sky-400/30 rounded-3xl p-8 lg:p-12 space-y-8 flex flex-col justify-between shadow-xl">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="bg-[#0b1530] text-white border border-sky-400/30 rounded-3xl p-8 lg:p-12 space-y-8 flex flex-col justify-between shadow-xl"
+          >
             <div className="space-y-5">
               <div className="h-12 w-12 rounded-2xl bg-amber-950/80 text-amber-300 flex items-center justify-center border border-amber-800 shadow-xs">
                 <ShieldAlert className="w-6 h-6" />
@@ -54,10 +73,16 @@ export function ProblemStorySection() {
                 <span>No alignment between coursework and real tech jobs</span>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* GyaanSetu-AI Modern Platform - Navy Blue Card */}
-          <div className="bg-[#081026] text-white border border-sky-400/40 rounded-3xl p-8 lg:p-12 space-y-8 flex flex-col justify-between shadow-2xl relative overflow-hidden">
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="bg-[#081026] text-white border border-sky-400/40 rounded-3xl p-8 lg:p-12 space-y-8 flex flex-col justify-between shadow-2xl relative overflow-hidden"
+          >
             <div className="absolute top-0 right-0 w-80 h-80 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
 
             <div className="space-y-5 relative z-10">
@@ -94,9 +119,9 @@ export function ProblemStorySection() {
               </div>
             </div>
 
-          </div>
+          </motion.div>
 
-        </div>
+        </motion.div>
 
       </div>
     </section>

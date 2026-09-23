@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Cpu, HardDrive, RefreshCw } from "lucide-react";
+import { motion } from "framer-motion";
 
 const OFFLINE_DEMOS = [
   {
@@ -46,7 +47,13 @@ export function OfflineTechnologySection() {
       <div className="w-full max-w-[1800px] mx-auto px-6 md:px-12 lg:px-16 space-y-16">
         
         {/* Header */}
-        <div className="max-w-4xl mx-auto text-center space-y-4">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6 }}
+          className="max-w-4xl mx-auto text-center space-y-4"
+        >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-sky-950/80 border border-sky-800 text-sky-300 text-xs sm:text-sm font-semibold">
             <Cpu className="w-4 h-4" />
             <span>Local Neural Architecture</span>
@@ -58,7 +65,7 @@ export function OfflineTechnologySection() {
           <p className="text-sky-200 text-base sm:text-lg leading-relaxed font-normal">
             GyaanSetu-AI runs neural AI models locally using consumer hardware—ensuring fast, accessible, and private learning anywhere.
           </p>
-        </div>
+        </motion.div>
 
         {/* Local Architecture Grid - Pure White Cards on Dark BG */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -68,18 +75,31 @@ export function OfflineTechnologySection() {
             { title: "Offline Voice TTS", desc: "Natural local speech synthesis directly on your device", tech: "Piper TTS" },
             { title: "Local Vector RAG", desc: "Private note embeddings stored locally in ChromaDB", tech: "ChromaDB + MiniLM" }
           ].map((item, idx) => (
-            <div key={idx} className="bg-white border border-sky-200 p-6 rounded-2xl space-y-3 shadow-md hover:shadow-lg transition-all">
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 25 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.5, delay: idx * 0.1 }}
+              className="bg-white border border-sky-200 p-6 rounded-2xl space-y-3 shadow-md hover:shadow-lg transition-all"
+            >
               <div className="text-[11px] font-mono font-bold text-sky-900 bg-sky-100 border border-sky-300 px-3 py-1 rounded-full w-fit">
                 {item.tech}
               </div>
               <h4 className="font-display font-bold text-lg text-sky-950">{item.title}</h4>
               <p className="text-xs sm:text-sm text-sky-800 font-medium leading-relaxed">{item.desc}</p>
-            </div>
+            </motion.div>
           ))}
         </div>
 
         {/* Interactive Local Inference Sandbox - Pure White Card on Dark BG */}
-        <div className="max-w-6xl mx-auto bg-white border border-sky-200 text-sky-950 rounded-3xl p-8 lg:p-10 space-y-6 shadow-2xl">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="max-w-6xl mx-auto bg-white border border-sky-200 text-sky-950 rounded-3xl p-8 lg:p-10 space-y-6 shadow-2xl"
+        >
           <div className="flex flex-wrap items-center justify-between gap-4 border-b border-sky-200 pb-5">
             <div className="flex items-center gap-2.5 text-sm font-bold text-sky-950">
               <HardDrive className="w-5 h-5 text-sky-600" />
@@ -133,7 +153,7 @@ export function OfflineTechnologySection() {
               )}
             </div>
           </div>
-        </div>
+        </motion.div>
 
       </div>
     </section>

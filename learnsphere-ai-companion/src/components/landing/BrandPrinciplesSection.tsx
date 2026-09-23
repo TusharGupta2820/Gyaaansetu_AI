@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { Compass, Globe, Zap, Target, ShieldCheck, Heart } from "lucide-react";
 
 const PRINCIPLES = [
@@ -30,11 +31,17 @@ const PRINCIPLES = [
 
 export function BrandPrinciplesSection() {
   return (
-    <section className="py-24 bg-slate-50 border-b border-slate-200/80">
+    <section className="py-24 bg-slate-50 border-b border-slate-200/80 font-sans">
       <div className="w-full max-w-[1800px] mx-auto px-6 md:px-12 lg:px-16 space-y-16">
         
         {/* Header */}
-        <div className="max-w-4xl mx-auto text-center space-y-4">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6 }}
+          className="max-w-4xl mx-auto text-center space-y-4"
+        >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs sm:text-sm font-semibold">
             <Heart className="w-4 h-4 text-blue-600 fill-blue-600" />
             <span>Product Principles</span>
@@ -45,16 +52,26 @@ export function BrandPrinciplesSection() {
           <p className="text-slate-600 text-base sm:text-lg leading-relaxed font-normal">
             Our engineering decisions are guided by five core principles to ensure learning remains human, adaptive, and practical.
           </p>
-        </div>
+        </motion.div>
 
         {/* 5 Principles Grid - Navy Cards on Light BG */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-6">
+        <motion.div
+          initial={{ opacity: 0, y: 35 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6 }}
+          className="grid sm:grid-cols-2 lg:grid-cols-5 gap-6"
+        >
           {PRINCIPLES.map((p, i) => {
             const Icon = p.icon;
             return (
-              <div
+              <motion.div
                 key={i}
-                className="bg-[#0b1530] text-white border border-sky-400/30 rounded-3xl p-6 lg:p-8 space-y-4 hover:shadow-xl hover:border-sky-400 transition-all flex flex-col justify-between"
+                initial={{ opacity: 0, y: 25 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.08 }}
+                className="bg-[#0b1530] text-white border border-sky-400/30 rounded-3xl p-6 lg:p-8 space-y-4 hover:shadow-xl hover:border-sky-400 transition-all flex flex-col justify-between cursor-pointer"
               >
                 <div className="space-y-4">
                   <div className="h-12 w-12 rounded-2xl bg-sky-900 text-sky-300 flex items-center justify-center border border-sky-700">
@@ -63,10 +80,10 @@ export function BrandPrinciplesSection() {
                   <h3 className="text-lg font-display font-bold text-white">{p.title}</h3>
                   <p className="text-xs sm:text-sm text-sky-200 font-normal leading-relaxed">{p.desc}</p>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
 
       </div>
     </section>

@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { useState } from "react";
 import { Globe, Check, Sparkles, Volume2 } from "lucide-react";
 
@@ -56,11 +57,17 @@ export function MultilingualSection() {
   const [selectedLang, setSelectedLang] = useState(LANGUAGES[1]); // Default Hindi
 
   return (
-    <section className="py-24 bg-slate-50 border-b border-slate-200/80">
+    <section className="py-24 bg-slate-50 border-b border-slate-200/80 font-sans">
       <div className="w-full max-w-[1800px] mx-auto px-6 md:px-12 lg:px-16 space-y-16">
         
         {/* Header */}
-        <div className="max-w-4xl mx-auto text-center space-y-4">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6 }}
+          className="max-w-4xl mx-auto text-center space-y-4"
+        >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs sm:text-sm font-semibold">
             <Globe className="w-4 h-4" />
             <span>Multilingual Accessibility</span>
@@ -72,17 +79,23 @@ export function MultilingualSection() {
           <p className="text-slate-600 text-base sm:text-lg leading-relaxed font-normal">
             Language should never be a barrier to mastering complex concepts. GyaanSetu-AI explains technical topics across India's regional languages.
           </p>
-        </div>
+        </motion.div>
 
         {/* Language Chips */}
-        <div className="flex flex-wrap justify-center gap-3 max-w-5xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 25 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.5 }}
+          className="flex flex-wrap justify-center gap-3 max-w-5xl mx-auto"
+        >
           {LANGUAGES.map((lang) => {
             const isSelected = selectedLang.code === lang.code;
             return (
               <button
                 key={lang.code}
                 onClick={() => setSelectedLang(lang)}
-                className={`px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2.5 ${
+                className={`px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2.5 cursor-pointer ${
                   isSelected
                     ? "bg-blue-600 text-white shadow-md scale-105"
                     : "bg-white border border-slate-200 text-slate-700 hover:border-slate-300 hover:bg-slate-50"
@@ -96,10 +109,16 @@ export function MultilingualSection() {
               </button>
             );
           })}
-        </div>
+        </motion.div>
 
         {/* Interactive Language Display Box - Navy Blue Card on Light BG */}
-        <div className="max-w-4xl mx-auto bg-[#0b1530] text-white border border-sky-400/30 rounded-3xl p-8 shadow-xl space-y-5">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6 }}
+          className="max-w-4xl mx-auto bg-[#0b1530] text-white border border-sky-400/30 rounded-3xl p-8 shadow-xl space-y-5"
+        >
           <div className="flex items-center justify-between border-b border-sky-900/60 pb-4">
             <div className="flex items-center gap-2.5 text-sm font-bold text-white">
               <Sparkles className="w-5 h-5 text-sky-400" />
@@ -116,7 +135,7 @@ export function MultilingualSection() {
               "{selectedLang.sample}"
             </p>
           </div>
-        </div>
+        </motion.div>
 
       </div>
     </section>

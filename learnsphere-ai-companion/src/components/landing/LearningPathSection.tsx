@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { Compass, CheckCircle2, Circle, Clock } from "lucide-react";
 
 const STEPS = [
@@ -11,11 +12,17 @@ const STEPS = [
 
 export function LearningPathSection() {
   return (
-    <section id="learning-path" className="py-24 bg-white border-b border-slate-200/80">
+    <section id="learning-path" className="py-24 bg-white border-b border-slate-200/80 font-sans">
       <div className="w-full max-w-[1800px] mx-auto px-6 md:px-12 lg:px-16 space-y-16">
         
         {/* Header */}
-        <div className="max-w-4xl mx-auto text-center space-y-4">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6 }}
+          className="max-w-4xl mx-auto text-center space-y-4"
+        >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs sm:text-sm font-semibold">
             <Compass className="w-4 h-4" />
             <span>Structured Progression</span>
@@ -27,14 +34,24 @@ export function LearningPathSection() {
           <p className="text-slate-600 text-base sm:text-lg leading-relaxed font-normal">
             A clear 6-step evolution that transforms your learning goals into a structured, adaptable pathway.
           </p>
-        </div>
+        </motion.div>
 
         {/* 6 Step Horizontal Flow - Navy Cards on White BG */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+        <motion.div
+          initial={{ opacity: 0, y: 35 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6 }}
+          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6"
+        >
           {STEPS.map((s, idx) => (
-            <div
+            <motion.div
               key={idx}
-              className="bg-[#0b1530] border border-sky-400/30 rounded-2xl p-5 flex flex-col justify-between space-y-4 hover:border-sky-400 hover:shadow-lg transition-all text-white"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: idx * 0.08 }}
+              className="bg-[#0b1530] border border-sky-400/30 rounded-2xl p-5 flex flex-col justify-between space-y-4 hover:border-sky-400 hover:shadow-lg transition-all text-white cursor-pointer"
             >
               <div className="text-xs font-mono font-bold text-sky-400">
                 STEP {s.step}
@@ -43,12 +60,18 @@ export function LearningPathSection() {
                 <h4 className="font-display font-bold text-base text-white">{s.title}</h4>
                 <p className="text-xs text-sky-200 mt-1.5 leading-snug">{s.desc}</p>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {/* Sample Personalised Roadmap Card - Navy Card on White BG */}
-        <div className="max-w-6xl mx-auto bg-[#0b1530] text-white rounded-3xl p-8 lg:p-10 border border-sky-400/30 shadow-2xl space-y-8">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6 }}
+          className="max-w-6xl mx-auto bg-[#0b1530] text-white rounded-3xl p-8 lg:p-10 border border-sky-400/30 shadow-2xl space-y-8"
+        >
           <div className="flex flex-wrap items-center justify-between gap-4 border-b border-sky-900/60 pb-5">
             <div>
               <div className="text-xs font-mono text-sky-400 uppercase font-semibold">Live Personalised Roadmap</div>
@@ -116,7 +139,7 @@ export function LearningPathSection() {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
       </div>
     </section>

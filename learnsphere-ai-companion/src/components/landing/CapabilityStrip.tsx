@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { Bot, Compass, Globe, Mic, BarChart3, Target, ShieldCheck, Zap } from "lucide-react";
 
 const CAPABILITIES = [
@@ -26,13 +27,23 @@ export function CapabilityStrip() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4"
+        >
           {CAPABILITIES.map((cap, i) => {
             const Icon = cap.icon;
             return (
-              <div
+              <motion.div
                 key={i}
-                className="flex flex-col justify-between p-4 rounded-2xl bg-white border border-sky-200 hover:border-sky-400 transition-all shadow-md hover:shadow-lg group"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.08 }}
+                className="flex flex-col justify-between p-4 rounded-2xl bg-white border border-sky-200 hover:border-sky-400 transition-all shadow-md hover:shadow-lg group cursor-pointer"
               >
                 <div className="flex items-center justify-between gap-2 mb-3">
                   <div className="h-9 w-9 rounded-xl bg-sky-100 border border-sky-300 text-sky-700 flex items-center justify-center shrink-0 group-hover:bg-sky-600 group-hover:text-white transition-colors">
@@ -46,10 +57,10 @@ export function CapabilityStrip() {
                   <div className="text-xs sm:text-sm font-extrabold text-sky-950 group-hover:text-sky-700 transition-colors">{cap.label}</div>
                   <div className="text-[11px] text-sky-800 font-medium leading-tight mt-1">{cap.desc}</div>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
 
       </div>
     </section>
