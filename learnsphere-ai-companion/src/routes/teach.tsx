@@ -167,19 +167,19 @@ function TeachBackPage() {
                   value={topic}
                   onChange={(e) => setTopic(e.target.value)}
                   placeholder="e.g. Recursion, Photosynthesis, Gravity"
-                  className="w-full bg-[#070e20] border border-blue-500/20 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white outline-none focus:border-[#3b82f6]/50 transition"
+                  className="w-full bg-white border border-sky-300 rounded-xl px-3 py-2 text-xs text-sky-950 placeholder-sky-400 outline-none focus:border-sky-500 font-medium transition shadow-xs"
                 />
               </div>
 
               {/* Explanation Textarea */}
               <div className="space-y-1 flex-1 flex flex-col">
                 <div className="flex justify-between items-center">
-                  <label className="text-[10px] text-slate-600 dark:text-blue-200/60 font-mono uppercase font-bold">Your Explanation</label>
+                  <label className="text-[10px] text-sky-800 font-mono uppercase font-bold">Your Explanation</label>
                   <button
                     onClick={handleDictate}
                     disabled={recording}
                     className={`inline-flex items-center gap-1 text-[9px] px-2 py-0.5 rounded transition ${
-                      recording ? "bg-red-500/20 text-red-400 animate-pulse" : "bg-[#3b82f6]/10 text-[#3b82f6] hover:bg-[#3b82f6]/20"
+                      recording ? "bg-sky-200 text-sky-900 animate-pulse" : "bg-sky-100 text-sky-700 hover:bg-sky-200"
                     }`}
                   >
                     <Mic className="h-3 w-3" /> {recording ? "Listening..." : "Dictate Explanation"}
@@ -189,7 +189,7 @@ function TeachBackPage() {
                   value={explanation}
                   onChange={(e) => setExplanation(e.target.value)}
                   placeholder="Explain the topic as simply as possible, using metaphors and avoiding complex jargon..."
-                  className="w-full flex-1 min-h-[220px] bg-[#070e20] border border-blue-500/20 rounded-xl p-3 text-xs text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]/50 resize-none font-sans"
+                  className="w-full flex-1 min-h-[220px] bg-white border border-sky-300 rounded-xl p-3 text-xs text-sky-950 placeholder-sky-400 focus:outline-none focus:border-sky-500 resize-none font-sans font-medium shadow-xs"
                 />
               </div>
             </div>
