@@ -199,12 +199,12 @@ export const AvatarInterviewer = forwardRef<AvatarInterviewerHandle, AvatarInter
   // and `canvasRef` remain hidden — they are only used for capture and for the
   // tracking pipeline; the visible UI is the 3D Canvas and a small status label.
   return (
-    <section className="pointer-events-none absolute right-4 top-4 z-20 h-[210px] w-[210px] sm:h-[260px] sm:w-[260px] lg:h-[320px] lg:w-[320px] rounded-2xl border border-subtle bg-panel/85 shadow-lg overflow-hidden">
+    <section className="pointer-events-none absolute right-4 top-4 z-20 h-[210px] w-[210px] sm:h-[260px] sm:w-[260px] lg:h-[320px] lg:w-[320px] rounded-2xl border border-sky-300 bg-white/95 shadow-xl overflow-hidden">
       {/* Hidden canvas used by MediaPipe and capture API */}
       <canvas ref={canvasRef} className="hidden" />
 
       {/* Webcam preview with landmark dots so user can see live tracking */}
-      <div className="fixed top-4 right-4 z-[9999] w-48 h-auto rounded-xl border border-white/20 shadow-lg overflow-hidden">
+      <div className="fixed top-4 right-4 z-[9999] w-48 h-auto rounded-xl border border-sky-300 shadow-lg overflow-hidden bg-sky-950">
         <video
           ref={tracking.videoRef}
           playsInline
@@ -218,14 +218,14 @@ export const AvatarInterviewer = forwardRef<AvatarInterviewerHandle, AvatarInter
           style={{ transform: 'scaleX(-1)' }}
         />
         {!isLiveConnected && (
-          <p className="text-xs text-white/50 animate-pulse mt-1">Connecting to Live AI...</p>
+          <p className="text-xs text-sky-200 animate-pulse mt-1 text-center font-bold pb-1">Connecting to Live AI...</p>
         )}
       </div>
 
       <Canvas camera={{ position: [0, 0.04, 0.98], fov: 32 }} style={{ background: 'transparent' }}>
         <ambientLight intensity={1.05} />
         <directionalLight position={[2, 4, 3]} intensity={1.2} />
-        <directionalLight position={[-2, 1.5, -2]} intensity={0.5} color="#b8c4ff" />
+        <directionalLight position={[-2, 1.5, -2]} intensity={0.5} color="#bae6fd" />
         <Suspense fallback={null}>
           {/* VRMHead contains the VRM load + per-frame face/pose ticks */}
           <VRMHead speechLevel={speechLevel} trackingRef={tracking.trackingRef} />
@@ -234,24 +234,24 @@ export const AvatarInterviewer = forwardRef<AvatarInterviewerHandle, AvatarInter
 
       {/* Agent State Badge */}
       {isLiveConnected && agentState && agentState !== 'idle' && (
-        <div className="absolute top-4 left-4 bg-panel/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-subtle shadow-sm flex items-center gap-2 animate-in fade-in zoom-in duration-300 z-10">
-          {agentState === 'listening' && <Mic className="w-3.5 h-3.5 text-emerald-500 animate-pulse" />}
-          {agentState === 'thinking' && <Loader2 className="w-3.5 h-3.5 text-blue-500 animate-spin" />}
-          {agentState === 'speaking' && <Volume2 className="w-3.5 h-3.5 text-primary animate-pulse" />}
-          <span className="text-[10px] font-bold tracking-wider text-secondary uppercase">
+        <div className="absolute top-4 left-4 bg-sky-100/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-sky-300 shadow-sm flex items-center gap-2 animate-in fade-in zoom-in duration-300 z-10">
+          {agentState === 'listening' && <Mic className="w-3.5 h-3.5 text-sky-600 animate-pulse" />}
+          {agentState === 'thinking' && <Loader2 className="w-3.5 h-3.5 text-sky-700 animate-spin" />}
+          {agentState === 'speaking' && <Volume2 className="w-3.5 h-3.5 text-sky-950 animate-pulse" />}
+          <span className="text-[10px] font-extrabold tracking-wider text-sky-950 uppercase">
             {agentState}
           </span>
         </div>
       )}
 
-      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 text-[10px] uppercase text-secondary/80 z-10">
+      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 text-[10px] uppercase font-bold text-sky-800 z-10">
         {isLiveConnected ? 'Listening' : 'Interviewer'}
       </div>
 
       {subtitles && (
         <div className="absolute bottom-6 left-0 right-0 px-4 flex justify-center pointer-events-none z-10">
-          <div className="bg-black/70 backdrop-blur-md px-4 py-2 rounded-xl border border-white/10 shadow-xl max-w-full">
-            <p className="text-white text-[11px] font-medium text-center leading-snug drop-shadow-md">
+          <div className="bg-sky-950/90 backdrop-blur-md px-4 py-2 rounded-xl border border-sky-700 shadow-xl max-w-full">
+            <p className="text-sky-100 text-[11px] font-semibold text-center leading-snug drop-shadow-md">
               {subtitles}
             </p>
           </div>

@@ -29,29 +29,28 @@
       }
     </script>
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
       
       :root {
-        /* Dark Mode (Default) */
-        --bg-app: #09090b;
-        --bg-panel: #0c0c0e;
-        --bg-panel-head: #121215;
-        --border-subtle: #27272a;
-        --text-primary: #f4f4f5;
-        --text-secondary: #a1a1aa;
-        --accent: #ffffff;
-        --accent-contrast: #000000;
+        /* Pure Sky Blue & White Theme */
+        --bg-app: #f0f9ff;          /* sky-50 */
+        --bg-panel: #ffffff;        /* pure white */
+        --bg-panel-head: #e0f2fe;   /* sky-100 */
+        --border-subtle: #bae6fd;   /* sky-200 */
+        --text-primary: #082f49;    /* sky-950 */
+        --text-secondary: #0369a1;  /* sky-700 */
+        --accent: #0284c7;          /* sky-600 */
+        --accent-contrast: #ffffff;
       }
 
       .light {
-        /* Light Mode */
-        --bg-app: #ffffff;
-        --bg-panel: #fbfbfb;
-        --bg-panel-head: #f4f4f5;
-        --border-subtle: #e4e4e7;
-        --text-primary: #18181b;
-        --text-secondary: #71717a;
-        --accent: #18181b;
+        --bg-app: #f0f9ff;
+        --bg-panel: #ffffff;
+        --bg-panel-head: #e0f2fe;
+        --border-subtle: #bae6fd;
+        --text-primary: #082f49;
+        --text-secondary: #0369a1;
+        --accent: #0284c7;
         --accent-contrast: #ffffff;
       }
 
@@ -68,7 +67,7 @@
         font-family: 'JetBrains Mono', monospace;
       }
 
-      /* Refined scrollbar */
+      /* Refined sky-blue scrollbar */
       ::-webkit-scrollbar {
         width: 6px;
         height: 6px;
@@ -77,11 +76,11 @@
         background: transparent;
       }
       ::-webkit-scrollbar-thumb {
-        background: var(--border-subtle); 
+        background: #bae6fd; 
         border-radius: 3px;
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: var(--text-secondary); 
+        background: #0284c7; 
       }
       
       *:focus {

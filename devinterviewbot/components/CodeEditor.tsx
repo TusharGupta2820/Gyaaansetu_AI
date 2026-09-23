@@ -112,7 +112,7 @@ const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(({
   const lineCount = code.split('\n').length;
 
   return (
-    <div className={`relative w-full h-full flex flex-col bg-app transition-colors duration-300 ${className}`}>
+    <div className={`relative w-full h-full flex flex-col bg-sky-50 transition-colors duration-300 ${className}`}>
       {/* Hidden canvas for AI vision */}
       <canvas ref={canvasRef} className="hidden" />
 
@@ -122,7 +122,7 @@ const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(({
         {/* Line Numbers Column */}
         <div 
             ref={lineNumbersRef}
-            className="w-12 pt-4 pb-4 text-right pr-3 bg-app border-r border-subtle text-secondary font-mono text-sm leading-6 select-none overflow-hidden"
+            className="w-12 pt-4 pb-4 text-right pr-3 bg-sky-100/70 border-r border-sky-200 text-sky-700 font-mono text-sm leading-6 select-none overflow-hidden"
             style={{ fontFamily: '"JetBrains Mono", monospace', lineHeight: '1.5rem' }}
         >
             {Array.from({ length: Math.max(lineCount, 1) }).map((_, i) => (
@@ -137,7 +137,7 @@ const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(({
           onChange={(e) => onChange(e.target.value)}
           onKeyDown={handleKeyDown}
           onScroll={handleScroll}
-          className="flex-1 w-full h-full bg-transparent text-primary font-mono text-sm leading-6 p-4 resize-none focus:outline-none placeholder-secondary/50 selection:bg-subtle selection:text-primary whitespace-pre transition-colors duration-300"
+          className="flex-1 w-full h-full bg-white text-sky-950 font-mono text-sm leading-6 p-4 resize-none focus:outline-none placeholder-sky-400 selection:bg-sky-200 selection:text-sky-950 whitespace-pre transition-colors duration-300 font-medium"
           style={{ fontFamily: '"JetBrains Mono", monospace', lineHeight: '1.5rem', tabSize: 4 }}
           spellCheck={false}
           autoCapitalize="off"
@@ -149,30 +149,30 @@ const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(({
 
       {/* Output Terminal Pane */}
       {isTerminalOpen && (
-        <div className="h-48 border-t border-subtle bg-slate-950 text-slate-100 flex flex-col shadow-2xl transition-all duration-300">
+        <div className="h-48 border-t border-sky-800 bg-sky-950 text-white flex flex-col shadow-2xl transition-all duration-300">
           {/* Terminal Header */}
-          <div className="h-9 px-4 bg-slate-900 border-b border-slate-800 flex items-center justify-between text-xs select-none">
+          <div className="h-9 px-4 bg-sky-900 border-b border-sky-800 flex items-center justify-between text-xs select-none">
             <div className="flex items-center gap-2">
-              <Terminal className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="font-semibold text-slate-200">Execution Terminal</span>
+              <Terminal className="w-3.5 h-3.5 text-sky-400" />
+              <span className="font-bold text-sky-100">Execution Terminal</span>
               
               {isExecuting ? (
-                <span className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 text-[10px] font-medium border border-blue-500/30">
-                  <Loader2 className="w-3 h-3 animate-spin" /> Compiling & Running...
+                <span className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-sky-500/20 text-sky-200 text-[10px] font-bold border border-sky-400/40">
+                  <Loader2 className="w-3 h-3 animate-spin text-sky-300" /> Compiling & Running...
                 </span>
               ) : executionResult ? (
-                <span className={`flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-medium border ${
+                <span className={`flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold border ${
                   executionResult.status === 'success' 
-                    ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
-                    : 'bg-rose-500/20 text-rose-400 border-rose-500/30'
+                    ? 'bg-sky-500/20 text-sky-200 border-sky-400/50'
+                    : 'bg-sky-700/40 text-sky-100 border-sky-500/50'
                 }`}>
                   {executionResult.status === 'success' ? (
-                    <CheckCircle2 className="w-3 h-3" />
+                    <CheckCircle2 className="w-3 h-3 text-sky-300" />
                   ) : (
-                    <AlertTriangle className="w-3 h-3" />
+                    <AlertTriangle className="w-3 h-3 text-sky-300" />
                   )}
                   {executionResult.status === 'success' ? 'Success' : executionResult.status.toUpperCase()}
-                  <span className="opacity-75 flex items-center gap-1 ml-1 border-l border-current pl-1.5">
+                  <span className="opacity-80 flex items-center gap-1 ml-1 border-l border-sky-400/30 pl-1.5">
                     <Clock className="w-2.5 h-2.5" /> {executionResult.execution_time_ms}ms
                   </span>
                 </span>
@@ -182,7 +182,7 @@ const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(({
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setIsTerminalOpen?.(false)}
-                className="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-slate-200 transition-colors"
+                className="p-1 hover:bg-sky-800 rounded text-sky-300 hover:text-white transition-colors"
                 title="Close Output Terminal"
               >
                 <X className="w-3.5 h-3.5" />
@@ -191,52 +191,52 @@ const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(({
           </div>
 
           {/* Terminal Body */}
-          <div className="flex-1 p-4 font-mono text-xs leading-relaxed overflow-y-auto bg-slate-950/90 select-text">
+          <div className="flex-1 p-4 font-mono text-xs leading-relaxed overflow-y-auto bg-sky-950 select-text">
             {isExecuting ? (
-              <div className="flex items-center gap-2 text-slate-400 italic">
-                <Loader2 className="w-4 h-4 animate-spin text-emerald-400" />
+              <div className="flex items-center gap-2 text-sky-300 italic">
+                <Loader2 className="w-4 h-4 animate-spin text-sky-400" />
                 Executing {language} program...
               </div>
             ) : executionResult ? (
               <div className="space-y-2">
                 {executionResult.output && (
-                  <div className="whitespace-pre-wrap text-emerald-300 font-mono">
+                  <div className="whitespace-pre-wrap text-sky-100 font-mono">
                     {executionResult.output}
                   </div>
                 )}
                 {executionResult.error && (
-                  <div className="whitespace-pre-wrap text-rose-400 font-mono bg-rose-950/30 p-2.5 rounded border border-rose-900/50">
+                  <div className="whitespace-pre-wrap text-sky-100 font-mono bg-sky-900/60 p-2.5 rounded border border-sky-700">
                     {executionResult.error}
                   </div>
                 )}
                 {!executionResult.output && !executionResult.error && (
-                  <div className="text-slate-500 italic">Program exited with code 0 (No stdout output).</div>
+                  <div className="text-sky-300 italic">Program exited cleanly (No stdout output).</div>
                 )}
               </div>
             ) : (
-              <div className="text-slate-500 italic">Press "Run Code" or Ctrl+Enter to compile and run your solution.</div>
+              <div className="text-sky-300 italic">Press "Run Code" or Ctrl+Enter to compile and run your solution.</div>
             )}
           </div>
         </div>
       )}
 
       {/* Status Bar & Controls */}
-      <div className="h-11 border-t border-subtle bg-panel-head flex items-center justify-between px-4 sm:px-6 text-xs font-semibold text-primary select-none transition-colors duration-300 shrink-0">
+      <div className="h-11 border-t border-sky-200 bg-sky-100/90 flex items-center justify-between px-4 sm:px-6 text-xs font-semibold text-sky-950 select-none transition-colors duration-300 shrink-0">
         
         {/* Left: Stats & Terminal Toggle */}
         <div className="flex items-center gap-4 tracking-wide">
-          <span className="text-secondary text-xs">UTF-8</span>
-          <span className="text-secondary text-xs">{code.length} chars</span>
+          <span className="text-sky-700 text-xs font-bold">UTF-8</span>
+          <span className="text-sky-700 text-xs font-bold">{code.length} chars</span>
           
           <button
             onClick={() => setIsTerminalOpen?.(!isTerminalOpen)}
             className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-bold transition-all border shadow-sm ${
               isTerminalOpen
-                ? 'bg-emerald-950/60 text-emerald-400 border-emerald-500/50'
-                : 'bg-slate-800 hover:bg-slate-700 text-slate-100 border-slate-700'
+                ? 'bg-sky-600 text-white border-sky-500 shadow-sky-600/20'
+                : 'bg-white hover:bg-sky-50 text-sky-900 border-sky-300'
             }`}
           >
-            <Terminal className="w-3.5 h-3.5 text-emerald-400" />
+            <Terminal className="w-3.5 h-3.5 text-current" />
             <span>Terminal {isTerminalOpen ? 'ON' : 'OFF'}</span>
           </button>
         </div>
@@ -248,7 +248,7 @@ const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(({
             <button
               onClick={onRunCode}
               disabled={isExecuting}
-              className="flex items-center gap-1.5 px-3.5 py-1 rounded-md bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md disabled:opacity-50"
+              className="flex items-center gap-1.5 px-4 py-1 rounded-md bg-sky-600 hover:bg-sky-700 active:bg-sky-800 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md border border-sky-500 disabled:opacity-50"
               title="Run Code (Ctrl + Enter)"
             >
               {isExecuting ? (
@@ -260,28 +260,16 @@ const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(({
             </button>
           )}
 
-          {/* Theme Toggle Button */}
-          <button
-            onClick={onThemeToggle}
-            className="flex items-center gap-1.5 px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700 rounded-md text-xs font-semibold shadow-sm transition-all"
-            title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-          >
-            {theme === 'dark' ? <Sun className="w-3.5 h-3.5 text-amber-400" /> : <Moon className="w-3.5 h-3.5 text-indigo-400" />}
-            <span className="hidden sm:inline">{theme === 'dark' ? 'Light' : 'Dark'}</span>
-          </button>
-
-          <div className="w-px h-4 bg-slate-700"></div>
-
           {/* Multi-Language Dropdown Selector */}
-          <div className="flex items-center gap-1.5 bg-slate-900 border border-slate-700 px-2.5 py-1 rounded-md shadow-sm">
-            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Language:</span>
+          <div className="flex items-center gap-1.5 bg-white border border-sky-300 px-2.5 py-1 rounded-md shadow-sm">
+            <span className="text-[10px] text-sky-700 font-extrabold uppercase tracking-wider">Language:</span>
             <select
               value={language}
               onChange={(e) => onLanguageChange(e.target.value as InterviewLanguage)}
-              className="bg-transparent text-slate-100 text-xs font-bold focus:outline-none cursor-pointer"
+              className="bg-transparent text-sky-950 text-xs font-bold focus:outline-none cursor-pointer"
             >
               {LANGUAGE_OPTIONS.map((opt) => (
-                <option key={opt.id} value={opt.id} className="bg-slate-900 text-slate-100">
+                <option key={opt.id} value={opt.id} className="bg-white text-sky-950 font-semibold">
                   {opt.label}
                 </option>
               ))}

@@ -148,40 +148,40 @@ interface HeaderProps {
 function Header({ currentProblem, onRandomProblem, onOpenProblemBank, live }: HeaderProps) {
   const difficultyClass =
     currentProblem.difficulty === 'Easy'
-      ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/40'
+      ? 'bg-sky-100 text-sky-800 border-sky-300'
       : currentProblem.difficulty === 'Medium'
-        ? 'bg-amber-500/15 text-amber-400 border-amber-500/40'
-        : 'bg-rose-500/15 text-rose-400 border-rose-500/40';
+        ? 'bg-sky-200 text-sky-900 border-sky-400'
+        : 'bg-sky-300 text-sky-950 border-sky-500';
 
   return (
-    <header className="relative h-16 border-b border-subtle bg-panel-head flex items-center justify-between px-4 sm:px-6 shrink-0 z-50">
+    <header className="relative h-16 border-b border-sky-200 bg-sky-100/90 backdrop-blur-md flex items-center justify-between px-4 sm:px-6 shrink-0 z-50">
       <div className="flex items-center gap-3">
-        <div className="hidden sm:flex items-center gap-2 text-primary font-bold">
-          <Terminal className="w-5 h-5 text-indigo-400" />
-          <span className="font-bold tracking-tight text-base text-primary">DevInterview AI</span>
+        <div className="hidden sm:flex items-center gap-2 text-sky-950 font-extrabold">
+          <Terminal className="w-5 h-5 text-sky-600" />
+          <span className="font-extrabold tracking-tight text-base text-sky-950">DevInterview AI</span>
         </div>
-        <div className="hidden sm:block h-5 w-px bg-subtle mx-1" />
+        <div className="hidden sm:block h-5 w-px bg-sky-300 mx-1" />
         <div className="flex items-center gap-2 sm:gap-3">
           {/* Problem Bank Picker Button */}
           <button
             onClick={onOpenProblemBank}
-            className="flex items-center gap-1.5 px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-md shadow-md transition-all border border-indigo-500"
+            className="flex items-center gap-1.5 px-3 py-1 bg-sky-600 hover:bg-sky-700 active:bg-sky-800 text-white font-bold text-xs rounded-md shadow-md transition-all border border-sky-500"
             title="Open LeetCode 1000+ Problem Bank"
           >
             <BookOpen className="w-3.5 h-3.5" />
             <span>Problem Bank (1000+)</span>
           </button>
 
-          <span className="text-xs sm:text-sm font-bold text-primary truncate max-w-[120px] sm:max-w-none">{currentProblem.title}</span>
-          <span className={`text-[10px] px-2 py-0.5 rounded-full border font-bold ${difficultyClass} uppercase tracking-wider`}>
+          <span className="text-xs sm:text-sm font-bold text-sky-950 truncate max-w-[120px] sm:max-w-none">{currentProblem.title}</span>
+          <span className={`text-[10px] px-2.5 py-0.5 rounded-full border font-bold ${difficultyClass} uppercase tracking-wider`}>
             {currentProblem.difficulty}
           </span>
           <button 
             onClick={onRandomProblem} 
-            className="flex items-center gap-1.5 px-2.5 py-1 bg-slate-800 hover:bg-slate-700 active:bg-slate-900 text-slate-100 border border-slate-700 rounded-md text-xs font-semibold shadow-sm transition-all"
+            className="flex items-center gap-1.5 px-2.5 py-1 bg-white hover:bg-sky-50 text-sky-900 border border-sky-300 rounded-md text-xs font-semibold shadow-sm transition-all"
             title="Next Random LeetCode Problem"
           >
-            <RefreshCw className="w-3.5 h-3.5 text-indigo-400" />
+            <RefreshCw className="w-3.5 h-3.5 text-sky-600" />
             <span className="hidden md:inline">Next Problem</span>
           </button>
         </div>
@@ -207,8 +207,8 @@ function Header({ currentProblem, onRandomProblem, onOpenProblemBank, live }: He
 
 function DescriptionBanner({ description }: { description: string }) {
   return (
-    <div className="px-8 py-6 border-b border-subtle bg-app transition-colors duration-300">
-      <p className="text-sm text-secondary leading-relaxed max-w-3xl">{description}</p>
+    <div className="px-8 py-4 border-b border-sky-200 bg-sky-50/70 transition-colors duration-300">
+      <p className="text-xs sm:text-sm text-sky-900 font-medium leading-relaxed max-w-4xl">{description}</p>
     </div>
   );
 }
