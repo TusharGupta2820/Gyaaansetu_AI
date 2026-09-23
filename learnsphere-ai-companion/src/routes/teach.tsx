@@ -3,7 +3,7 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { GlassCard, PageHeader, GradientCard } from "@/components/ui-kit/Card";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
-import { GraduationCap, Sparkles, Mic, Send, Loader2, Check, Award, Brain, Info, RefreshCw } from "lucide-react";
+import { GraduationCap, Sparkles, Mic, Send, Loader2, Check, Award, Brain, Info, RefreshCw, X } from "lucide-react";
 import { checkBackendHealth, API_BASE } from "@/lib/api/ai.service";
 
 export const Route = createFileRoute("/teach")({

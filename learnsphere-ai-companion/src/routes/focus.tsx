@@ -167,14 +167,14 @@ function FocusDashboard() {
       />
 
       {/* Futuristic Tabs Navigation */}
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-6 pb-2 border-b border-slate-200">
-        <div className="flex gap-2 bg-slate-200/50 p-1.5 rounded-2xl border border-slate-300/40">
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-6 pb-2 border-b border-sky-200">
+        <div className="flex gap-2 bg-sky-100/80 p-1.5 rounded-2xl border border-sky-300 shadow-sm">
           <button
             onClick={() => setActiveTab("study")}
             className={`px-5 py-2.5 rounded-xl text-xs font-bold font-display transition-all ${
               activeTab === "study"
-                ? "bg-white dark:bg-[#0b1530] text-white shadow-md"
-                : "text-slate-600 hover:text-slate-900 hover:bg-slate-300/30"
+                ? "bg-sky-600 text-white shadow-md border border-sky-500 font-extrabold"
+                : "text-sky-900 hover:text-sky-950 hover:bg-sky-200/60 font-bold"
             }`}
           >
             Study Space & Pomodoro
@@ -183,11 +183,11 @@ function FocusDashboard() {
             onClick={() => setActiveTab("interview")}
             className={`px-5 py-2.5 rounded-xl text-xs font-bold font-display transition-all flex items-center gap-2 ${
               activeTab === "interview"
-                ? "bg-white dark:bg-[#0b1530] text-white shadow-md"
-                : "text-slate-600 hover:text-slate-900 hover:bg-slate-300/30"
+                ? "bg-sky-600 text-white shadow-md border border-sky-500 font-extrabold"
+                : "text-sky-900 hover:text-sky-950 hover:bg-sky-200/60 font-bold"
             }`}
           >
-            <Sparkles className="h-3.5 w-3.5 text-blue-500" />
+            <Sparkles className="h-3.5 w-3.5 text-sky-200" />
             DevInterview AI Workspace
           </button>
         </div>
@@ -196,9 +196,9 @@ function FocusDashboard() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowPortSettings(!showPortSettings)}
-              className="text-xs text-slate-600 hover:text-slate-950 font-bold transition flex items-center gap-1.5"
+              className="text-xs text-sky-800 hover:text-sky-950 font-bold transition flex items-center gap-1.5 bg-white border border-sky-300 px-3 py-1.5 rounded-xl shadow-xs"
             >
-              <Settings className="h-4 w-4" />
+              <Settings className="h-4 w-4 text-sky-600" />
               Configure Connection
             </button>
           </div>

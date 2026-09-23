@@ -9,7 +9,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [theme, setTheme] = useState<"dark" | "light">("light");
 
   useEffect(() => {
     const user = localStorage.getItem("gyaansetu_user");
@@ -19,7 +19,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
       setAuthorized(true);
     }
 
-    const savedTheme = (localStorage.getItem("gyaansetu_theme") as "dark" | "light") || "dark";
+    const savedTheme = (localStorage.getItem("gyaansetu_theme") as "dark" | "light") || "light";
     setTheme(savedTheme);
     if (savedTheme === "light") {
       document.documentElement.classList.remove("dark");

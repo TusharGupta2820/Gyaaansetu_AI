@@ -204,7 +204,7 @@ export const AvatarInterviewer = forwardRef<AvatarInterviewerHandle, AvatarInter
       <canvas ref={canvasRef} className="hidden" />
 
       {/* Webcam preview with landmark dots so user can see live tracking */}
-      <div className="fixed top-4 right-4 z-[9999] w-48 h-auto rounded-xl border border-sky-300 shadow-lg overflow-hidden bg-sky-950">
+      <div className="absolute top-3 right-3 z-30 w-36 h-auto rounded-xl border border-sky-300 shadow-md overflow-hidden bg-white/90 backdrop-blur-md">
         <video
           ref={tracking.videoRef}
           playsInline
@@ -218,7 +218,7 @@ export const AvatarInterviewer = forwardRef<AvatarInterviewerHandle, AvatarInter
           style={{ transform: 'scaleX(-1)' }}
         />
         {!isLiveConnected && (
-          <p className="text-xs text-sky-200 animate-pulse mt-1 text-center font-bold pb-1">Connecting to Live AI...</p>
+          <p className="text-[10px] text-sky-800 animate-pulse mt-0.5 text-center font-bold pb-0.5">Connecting to Live AI...</p>
         )}
       </div>
 

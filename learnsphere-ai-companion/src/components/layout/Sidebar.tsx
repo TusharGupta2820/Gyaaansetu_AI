@@ -34,7 +34,7 @@ interface SidebarProps {
   theme?: "dark" | "light";
 }
 
-export function Sidebar({ open: mobileOpen = false, onClose, theme = "dark" }: SidebarProps) {
+export function Sidebar({ open: mobileOpen = false, onClose, theme = "light" }: SidebarProps) {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
   const [userName, setUserName] = useState("Student");
   const [streakDays, setStreakDays] = useState(0);
