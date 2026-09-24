@@ -461,7 +461,9 @@ async def transcribe_audio(
         "transcript": transcript,
         "summary": summary_text,
         "language": stt_result.get("language", language),
-        "confidence": stt_result.get("confidence", 1.0)
+        "selected_language": stt_result.get("selected_language", language),
+        "confidence": stt_result.get("confidence", 1.0),
+        "lang_mismatch": stt_result.get("lang_mismatch", False),
     }
 
 

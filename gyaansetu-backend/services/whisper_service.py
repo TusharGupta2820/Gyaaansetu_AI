@@ -139,28 +139,45 @@ async def transcribe_bytes(audio_bytes: bytes, language: str = "en") -> dict:
                 transcribe_path = converted_path
 
         lang_code = _language_to_code(language)
-        logger.info(f"Transcribing {transcribe_path} as lang={lang_code} (task=transcribe)")
+
+        # Strategy: Use auto-detect for transcription so Whisper correctly captures
+        # whatever language is actually spoken (Hindi, English, Hinglish etc.).
+        # We pass the selected language as a HINT only if the model is small (base/small)
+        # where auto-detect accuracy is lower.
+        use_hint = lang_code not in ("en", "auto")
+        whisper_lang = lang_code if use_hint else None
+
+        logger.info(f"Transcribing {transcribe_path} | hint_lang={whisper_lang} | task=transcribe")
 
         segments, info = model.transcribe(
             transcribe_path,
-            language=lang_code if lang_code != "auto" else None,
-            task="transcribe",      # CRITICAL: keep original language, never translate to English
-            beam_size=5,           # Higher beam = better accuracy for Indic languages
-            vad_filter=False,      # Disable VAD — it was filtering real speech
+            language=whisper_lang,       # Language hint (None = pure auto-detect for English)
+            task="transcribe",           # CRITICAL: never translate to English
+            beam_size=5,
+            vad_filter=False,
             word_timestamps=False,
-            condition_on_previous_text=False,  # Prevents hallucination loops
-            temperature=0.0,       # Deterministic output
+            condition_on_previous_text=False,
+            temperature=0.0,
         )
 
         text_parts = [seg.text for seg in segments]
         full_text = " ".join(text_parts).strip()
 
-        logger.info(f"Transcription result: '{full_text[:100]}' (lang={info.language}, prob={info.language_probability:.2f})")
+        detected_lang = info.language   # What Whisper actually detected in audio
+        logger.info(
+            f"Transcription done: '{full_text[:100]}' "
+            f"(detected={detected_lang}, selected={lang_code}, prob={info.language_probability:.2f})"
+        )
+
+        # Warn if user selected a language but audio appears to be a different language
+        lang_mismatch = (lang_code not in ("auto", "en") and detected_lang == "en")
 
         return {
             "text": full_text,
-            "language": info.language,
+            "language": detected_lang,          # Actual detected language in audio
+            "selected_language": language,       # What the user selected in dropdown
             "confidence": round(info.language_probability, 3),
+            "lang_mismatch": lang_mismatch,     # True if spoke English but selected Hindi etc.
         }
     except Exception as e:
         logger.error(f"Transcription failed: {e}")

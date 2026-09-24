@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import {
   Mic, Sparkles, RefreshCw, Volume2, Square, X,
-  FileAudio, FileText, Save, Trash2, ChevronDown, ChevronUp, Clock, Eye, EyeOff, Play, Pause
+  FileAudio, FileText, Save, Trash2, ChevronDown, ChevronUp, Clock, Eye, EyeOff, Play, Pause, AlertTriangle
 } from "lucide-react";
 import { API_BASE } from "@/lib/api/ai.service";
 
@@ -522,6 +522,24 @@ function VoiceNotesPage() {
                     <AudioPlayer dataUrl={URL.createObjectURL(currentAudioBlob)} />
                   )}
 
+                  {/* Language mismatch warning */}
+                  {result.lang_mismatch && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="flex items-start gap-3 bg-amber-50 border border-amber-300 rounded-2xl px-4 py-3"
+                    >
+                      <AlertTriangle className="h-4 w-4 text-amber-600 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <div className="text-xs font-extrabold text-amber-800 mb-0.5">Language Mismatch Detected</div>
+                        <div className="text-xs font-semibold text-amber-700 leading-relaxed">
+                          You selected <strong>{result.selected_language}</strong> but your recording was detected as <strong>English</strong>.
+                          To get {result.selected_language} transcription, please speak in {result.selected_language} (e.g. Hindi = speak in हिंदी).
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+
                   {/* Transcript (toggle) */}
                   <AnimatePresence>
                     {showTranscript && (
@@ -538,8 +556,14 @@ function VoiceNotesPage() {
                           <p className="text-xs text-sky-950 font-bold leading-relaxed max-h-32 overflow-y-auto">
                             "{result.transcript}"
                           </p>
-                          <div className="mt-2 text-[10px] font-mono text-sky-600 font-bold">
-                            Confidence: {Math.round((result.confidence || 1) * 100)}% · Duration: {formatTime(result.duration || 0)}
+                          <div className="mt-2 text-[10px] font-mono text-sky-600 font-bold flex items-center gap-3">
+                            <span>Confidence: {Math.round((result.confidence || 1) * 100)}%</span>
+                            <span>Duration: {formatTime(result.duration || 0)}</span>
+                            {result.language && (
+                              <span className="bg-sky-100 border border-sky-200 px-1.5 py-0.5 rounded-md">
+                                Detected: {result.language === "hi" ? "हिंदी" : result.language === "mr" ? "मराठी" : result.language === "ta" ? "Tamil" : result.language === "te" ? "Telugu" : result.language?.toUpperCase() ?? ""}
+                              </span>
+                            )}
                           </div>
                         </div>
                       </motion.div>
