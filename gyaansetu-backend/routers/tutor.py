@@ -404,32 +404,38 @@ async def transcribe_audio(
             "confidence": 0.0
         }
 
-    # Step 2: Summarize ONLY what was actually said — strict prompt
+    # Step 2: Summarize ONLY what was actually said — ultra-strict prompt
     word_count = len(transcript.split())
 
-    if word_count < 10:
-        # Very short transcript — skip LLM, return direct acknowledgement
+    if word_count < 20:
+        # Short transcript — skip LLM entirely, honest direct note
         summary_text = (
             f"### Voice Note\n"
             f"Recorded: \"{transcript}\"\n\n"
-            f"This is a short voice note. No additional summary is needed for such brief content."
+            f"This is a short voice note ({word_count} words). "
+            f"The above is the complete transcription — no additional AI summary required."
         )
     else:
+        word_list = ", ".join(f'"{w}"' for w in transcript.split()[:25])
         summary_prompt = (
-            f"You are a precise academic note-taker. Below is the EXACT transcript of a voice recording in {language}.\n"
-            f"Your task is to summarize ONLY what was actually said in this transcript.\n"
-            f"CRITICAL RULES:\n"
-            f"- Do NOT add, invent, or infer anything not explicitly mentioned in the transcript.\n"
-            f"- Write your ENTIRE response in {language} — same language as the transcript.\n"
-            f"- If the transcript is a greeting or introduction, say so directly in {language}.\n"
-            f"- If it is a lecture or study note, summarize the actual topics mentioned.\n\n"
-            f"Format your response as:\n"
+            f"STRICT TRANSCRIPT SUMMARIZER — NO HALLUCINATION ALLOWED\n\n"
+            f"ACTUAL WORDS SPOKEN (first 25): {word_list}{'...' if word_count > 25 else ''}\n"
+            f"FULL TRANSCRIPT: \"{transcript}\"\n\n"
+            f"YOUR RULES (breaking any rule = wrong answer):\n"
+            f"1. Respond ENTIRELY in {language} — do NOT write in English unless the transcript is in English.\n"
+            f"2. ONLY mention names, places, and facts that appear WORD-FOR-WORD in the transcript above.\n"
+            f"3. FORBIDDEN: career goals, study styles, aspirations, weaknesses, grades — unless explicitly stated.\n"
+            f"4. If it is an introduction, summarize only what was introduced. Nothing more.\n"
+            f"5. If it is a lecture, list only the topics explicitly spoken about.\n"
+            f"6. Maximum 3 bullet points. Only from what was actually said.\n\n"
+            f"FORMAT — respond exactly like this:\n"
             f"### Summary\n"
-            f"[2-3 sentences in {language} summarizing ONLY what was said]\n\n"
+            f"[1-2 sentences in {language} about what was actually said]\n\n"
             f"### Key Points\n"
-            f"[3-5 bullet points in {language} of ONLY what was explicitly mentioned]\n\n"
-            f"TRANSCRIPT TO SUMMARIZE:\n\"{transcript}\"\n\n"
-            f"IMPORTANT: Respond in {language}. Do NOT translate or add information not in the transcript."
+            f"- [point 1 in {language} — only from transcript]\n"
+            f"- [point 2 in {language} — only from transcript]\n"
+            f"- [point 3 in {language} — only if applicable]\n\n"
+            f"BEGIN RESPONSE:"
         )
 
         try:
