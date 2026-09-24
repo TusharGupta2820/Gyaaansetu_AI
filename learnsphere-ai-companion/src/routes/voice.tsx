@@ -181,29 +181,53 @@ function VoiceNotesPage() {
     }
   };
 
-  // ── Submit to backend ──────────────────────────────────────────────────────
-  const submitAudio = async (blob: Blob, dur: number) => {
+  // ── Submit to backend with retry ───────────────────────────────────────────
+  const submitAudio = async (blob: Blob, dur: number, retries = 3) => {
     const formData = new FormData();
     formData.append("audio", blob, "recording.webm");
     formData.append("language", language);
-    try {
-      const res = await fetch(`${API_BASE}/tutor/transcribe`, { method: "POST", body: formData });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      setResult({ ...data, duration: dur });
-      showToast("✅ Transcription complete! Save your note below.", "success");
-    } catch (err) {
-      console.error("Transcription error:", err);
-      setResult({
-        transcript: "Voice recording captured. (Backend transcription offline — fallback applied)",
-        summary: "### Summary\nAudio was captured locally.\n\n### Key Concepts\n- **Voice Note**: Recorded.\n- **Offline Mode**: Active.",
-        language: "en", confidence: 0.9, duration: dur,
-      });
-      showToast("Backend offline — fallback applied.", "info");
-    } finally {
-      setProcessing(false);
+
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      try {
+        if (attempt > 1) {
+          showToast(`Retrying... (attempt ${attempt}/${retries})`, "info");
+          await new Promise(r => setTimeout(r, 2000 * attempt));
+        }
+        const res = await fetch(`${API_BASE}/tutor/transcribe`, { method: "POST", body: formData });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        setResult({ ...data, duration: dur });
+        showToast("✅ Transcription complete! Save your note below.", "success");
+        setProcessing(false);
+        return;
+      } catch (err: any) {
+        console.error(`Transcription attempt ${attempt} failed:`, err);
+        if (attempt < retries) continue; // retry
+        // All retries exhausted — show backend-offline state (not fake fallback)
+        setResult({
+          transcript: null, // null = backend offline, not a real transcript
+          summary: null,
+          language: language,
+          confidence: 0,
+          duration: dur,
+          backendOffline: true,
+          _blob: blob, // keep blob for retry
+        });
+        showToast("⚠️ Backend unreachable. Start the backend and click Retry.", "error");
+      }
+    }
+    setProcessing(false);
+  };
+
+  // ── Retry transcription ─────────────────────────────────────────────────────
+  const handleRetry = () => {
+    if (result?._blob) {
+      setResult(null);
+      setProcessing(true);
+      submitAudio(result._blob, result.duration);
     }
   };
+
 
   // ── Sample Note ────────────────────────────────────────────────────────────
   const handleUseSample = () => {
@@ -491,7 +515,44 @@ function VoiceNotesPage() {
             </div>
 
             <AnimatePresence mode="wait">
-              {result ? (
+              {result?.backendOffline ? (
+                /* ── Backend Offline State ── */
+                <motion.div
+                  key="offline"
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="flex-1 flex flex-col items-center justify-center text-center py-12 gap-4"
+                >
+                  <div className="h-16 w-16 rounded-2xl bg-rose-50 border border-rose-200 flex items-center justify-center">
+                    <AlertTriangle className="h-8 w-8 text-rose-500" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-extrabold text-rose-700 mb-1">Backend Server Offline</p>
+                    <p className="text-xs text-rose-600/80 font-semibold max-w-xs leading-relaxed">
+                      Could not connect to the GyaanSetu AI backend at <code className="bg-rose-100 px-1 rounded">localhost:8000</code>.
+                      Your audio is saved — start the backend and click Retry.
+                    </p>
+                  </div>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={handleRetry}
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white text-xs font-extrabold shadow-md shadow-sky-200 transition"
+                    >
+                      <RefreshCw className="h-4 w-4" /> Retry Transcription
+                    </button>
+                    <button
+                      onClick={() => setResult(null)}
+                      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-sky-50 border border-sky-200 text-sky-700 text-xs font-extrabold hover:bg-sky-100 transition"
+                    >
+                      <X className="h-3.5 w-3.5" /> Dismiss
+                    </button>
+                  </div>
+                  <p className="text-[10px] text-sky-600/60 font-semibold">
+                    Start backend: run <code className="bg-sky-50 border border-sky-200 px-1 rounded">.\start-all.ps1 -BackendOnly</code>
+                  </p>
+                </motion.div>
+              ) : result ? (
                 <motion.div
                   key="result"
                   initial={{ opacity: 0, y: 8 }}
