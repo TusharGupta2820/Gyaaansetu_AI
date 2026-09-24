@@ -394,33 +394,61 @@ async def transcribe_audio(
     # Step 1: STT transcription
     stt_result = await whisper_service.transcribe_bytes(audio_bytes, language)
     transcript = stt_result.get("text", "").strip()
-    if not transcript:
-        transcript = "This is a lecture recording about quantum computing foundations, superposition states, and qubit principles."
 
-    # Step 2: Summarize and extract key points
-    summary_prompt = (
-        f"You are an academic scribe. Read the following lecture transcript and generate:\n"
-        f"1. A concise, 2-paragraph summary.\n"
-        f"2. A list of 4-5 key bullet points (definitions, formulas, or concepts).\n\n"
-        f"TRANSCRIPT:\n{transcript}"
-    )
-    
-    try:
-        summary_text = await ollama_service.complete(
-            prompt=summary_prompt,
-            task="fast",
-            mode="Quick Assist",
-            language=language,
-            user_id="system"
-        )
-    except Exception:
+    # Handle empty / very short transcript — do NOT inject fake content
+    if not transcript:
+        return {
+            "transcript": "(No speech detected — microphone may have been silent or audio quality was too low)",
+            "summary": "### No Speech Detected\nNo audio content was captured. Please try recording again in a quieter environment with the microphone closer to you.",
+            "language": language,
+            "confidence": 0.0
+        }
+
+    # Step 2: Summarize ONLY what was actually said — strict prompt
+    word_count = len(transcript.split())
+
+    if word_count < 10:
+        # Very short transcript — skip LLM, return direct acknowledgement
         summary_text = (
-            "### Lecture Summary\n"
-            "This session covers the basic principles of Quantum Computing, explaining how superposition allows qubits to represent 0 and 1 simultaneously.\n\n"
-            "### Key Points\n"
-            "- Qubit: The basic unit of quantum information.\n"
-            "- Superposition: A state where a physical system exists in multiple states simultaneously."
+            f"### Voice Note\n"
+            f"Recorded: \"{transcript}\"\n\n"
+            f"This is a short voice note. No additional summary is needed for such brief content."
         )
+    else:
+        summary_prompt = (
+            f"You are a precise academic note-taker. Below is the EXACT transcript of a voice recording.\n"
+            f"Your task is to summarize ONLY what was actually said in this transcript — do NOT add, invent, "
+            f"or infer anything that is not explicitly mentioned.\n\n"
+            f"If the transcript is a greeting or introduction, say so directly.\n"
+            f"If it is a lecture, summarize the actual topics mentioned.\n"
+            f"If it is a personal note, reflect that.\n\n"
+            f"Format your response as:\n"
+            f"### Summary\n"
+            f"[2-3 sentences summarizing ONLY what was said]\n\n"
+            f"### Key Points\n"
+            f"[3-5 bullet points of ONLY what was explicitly mentioned]\n\n"
+            f"TRANSCRIPT TO SUMMARIZE:\n\"{transcript}\"\n\n"
+            f"IMPORTANT: Do NOT add information not in the transcript above."
+        )
+
+        try:
+            summary_text = await ollama_service.complete(
+                prompt=summary_prompt,
+                task="fast",
+                mode="Quick Assist",
+                language=language,
+                user_id="system"
+            )
+        except Exception:
+            # Fallback: build a minimal summary from actual transcript content
+            summary_text = (
+                f"### Summary\n"
+                f"The recording captured the following: \"{transcript}\"\n\n"
+                f"### Key Points\n"
+                f"- **Recorded Content**: {transcript[:200]}{'...' if len(transcript) > 200 else ''}\n"
+                f"- **Language**: {language}\n"
+                f"- **Status**: Transcription complete — AI summary unavailable (Ollama offline)"
+            )
 
     return {
         "transcript": transcript,
@@ -428,6 +456,7 @@ async def transcribe_audio(
         "language": stt_result.get("language", language),
         "confidence": stt_result.get("confidence", 1.0)
     }
+
 
 
 class FocusSessionRequest(BaseModel):
