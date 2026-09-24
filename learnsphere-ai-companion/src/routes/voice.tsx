@@ -611,12 +611,24 @@ function VoiceNotesPage() {
                         className="overflow-hidden"
                       >
                         <div className="bg-sky-50/50 p-4 rounded-2xl border border-sky-200/80">
-                          <div className="text-xs text-sky-600 font-mono uppercase font-extrabold mb-1.5 flex items-center gap-1.5">
-                            <FileText className="h-4 w-4 text-sky-500" /> Transcribed Speech
+                          <div className="text-xs text-sky-600 font-mono uppercase font-extrabold mb-1.5 flex items-center justify-between">
+                            <span className="flex items-center gap-1.5">
+                              <FileText className="h-4 w-4 text-sky-500" /> Transcribed Speech ({result.selected_language || "Default"})
+                            </span>
+                            {result.original_transcript && result.original_transcript !== result.transcript && (
+                              <span className="text-[10px] bg-sky-200/60 text-sky-800 px-2 py-0.5 rounded-full font-sans font-bold">
+                                AI Tutor Translated
+                              </span>
+                            )}
                           </div>
                           <p className="text-xs text-sky-950 font-bold leading-relaxed max-h-32 overflow-y-auto">
                             "{result.transcript}"
                           </p>
+                          {result.original_transcript && result.original_transcript !== result.transcript && (
+                            <p className="text-[11px] text-sky-700/80 font-medium italic mt-1.5 border-t border-sky-200/60 pt-1.5">
+                              Original Spoken: "{result.original_transcript}"
+                            </p>
+                          )}
                           <div className="mt-2 text-[10px] font-mono text-sky-600 font-bold flex items-center gap-3">
                             <span>Confidence: {Math.round((result.confidence || 1) * 100)}%</span>
                             <span>Duration: {formatTime(result.duration || 0)}</span>

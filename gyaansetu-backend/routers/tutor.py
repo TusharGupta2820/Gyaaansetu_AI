@@ -404,23 +404,61 @@ async def transcribe_audio(
             "confidence": 0.0
         }
 
+    # Step 1.5: If target language is non-English, use the AI Tutor LLM model to translate the transcript into target language
+    original_transcript = transcript
+    translated_transcript = None
+
+    if language and language != "English" and transcript:
+        try:
+            translation_prompt = (
+                f"You are an expert educational translator.\n"
+                f"Translate the following transcribed text into {language}.\n\n"
+                f"CRITICAL REQUIREMENTS:\n"
+                f"1. Output MUST be exclusively in native {language} script (e.g. Devanagari script for Hindi, Marathi, etc.).\n"
+                f"2. Translate accurately and preserve names/places phonetically.\n"
+                f"3. Return ONLY the translated text without quotes, introductory text, markdown headers, or explanations.\n\n"
+                f"TEXT TO TRANSLATE:\n{transcript}"
+            )
+            trans_res = await ollama_service.complete(
+                prompt=translation_prompt,
+                task="tutor",
+                mode="Quick Assist",
+                language=language,
+                user_id="system"
+            )
+            clean_trans = trans_res.strip().strip('"').strip("'")
+            if clean_trans and len(clean_trans) > 0 and not clean_trans.lower().startswith("error"):
+                translated_transcript = clean_trans
+                transcript = translated_transcript
+        except Exception as e:
+            logger.warning(f"Failed to translate transcript via Tutor LLM: {e}")
+
     # Step 2: Summarize ONLY what was actually said — ultra-strict prompt
-    word_count = len(transcript.split())
+    word_count = len(original_transcript.split())
 
     if word_count < 20:
-        # Short transcript — skip LLM entirely, honest direct note
-        summary_text = (
-            f"### Voice Note\n"
-            f"Recorded: \"{transcript}\"\n\n"
-            f"This is a short voice note ({word_count} words). "
-            f"The above is the complete transcription — no additional AI summary required."
-        )
+        # Short transcript — honest direct note with translation if applicable
+        if translated_transcript and language != "English":
+            summary_text = (
+                f"### Voice Note ({language})\n"
+                f"Recorded (Original English): \"{original_transcript}\"\n"
+                f"Translated ({language}): \"{translated_transcript}\"\n\n"
+                f"This is a short voice note ({word_count} words). "
+                f"The translation was generated using the GyaanSetu AI Tutor model."
+            )
+        else:
+            summary_text = (
+                f"### Voice Note\n"
+                f"Recorded: \"{transcript}\"\n\n"
+                f"This is a short voice note ({word_count} words). "
+                f"The above is the complete transcription — no additional AI summary required."
+            )
     else:
-        word_list = ", ".join(f'"{w}"' for w in transcript.split()[:25])
+        word_list = ", ".join(f'"{w}"' for w in original_transcript.split()[:25])
         summary_prompt = (
             f"STRICT TRANSCRIPT SUMMARIZER — NO HALLUCINATION ALLOWED\n\n"
             f"ACTUAL WORDS SPOKEN (first 25): {word_list}{'...' if word_count > 25 else ''}\n"
-            f"FULL TRANSCRIPT: \"{transcript}\"\n\n"
+            f"FULL TRANSCRIPT: \"{original_transcript}\"\n\n"
             f"YOUR RULES (breaking any rule = wrong answer):\n"
             f"1. Respond ENTIRELY in {language} — do NOT write in English unless the transcript is in English.\n"
             f"2. ONLY mention names, places, and facts that appear WORD-FOR-WORD in the transcript above.\n"
@@ -459,6 +497,8 @@ async def transcribe_audio(
 
     return {
         "transcript": transcript,
+        "original_transcript": original_transcript,
+        "translated_transcript": translated_transcript,
         "summary": summary_text,
         "language": stt_result.get("language", language),
         "selected_language": stt_result.get("selected_language", language),
