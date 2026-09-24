@@ -139,14 +139,17 @@ async def transcribe_bytes(audio_bytes: bytes, language: str = "en") -> dict:
                 transcribe_path = converted_path
 
         lang_code = _language_to_code(language)
-        logger.info(f"Transcribing {transcribe_path} as lang={lang_code}")
+        logger.info(f"Transcribing {transcribe_path} as lang={lang_code} (task=transcribe)")
 
         segments, info = model.transcribe(
             transcribe_path,
             language=lang_code if lang_code != "auto" else None,
-            beam_size=3,           # Faster than 5, still accurate
+            task="transcribe",      # CRITICAL: keep original language, never translate to English
+            beam_size=5,           # Higher beam = better accuracy for Indic languages
             vad_filter=False,      # Disable VAD — it was filtering real speech
             word_timestamps=False,
+            condition_on_previous_text=False,  # Prevents hallucination loops
+            temperature=0.0,       # Deterministic output
         )
 
         text_parts = [seg.text for seg in segments]
@@ -177,11 +180,28 @@ async def transcribe_file(file_path: str, language: str = "en") -> dict:
 
 
 def _language_to_code(language: str) -> str:
-    """Map language name to ISO code."""
+    """Map language name / ISO code to Whisper-compatible ISO 639-1 code."""
     mapping = {
-        "English": "en", "Hindi": "hi", "Marathi": "mr",
-        "Tamil": "ta", "Telugu": "te", "Bengali": "bn",
-        "Gujarati": "gu", "Kannada": "kn", "Malayalam": "ml",
+        # Full names (from frontend dropdown)
+        "English": "en",
+        "Hindi": "hi",
+        "Marathi": "mr",
+        "Tamil": "ta",
+        "Telugu": "te",
+        "Bengali": "bn",
+        "Gujarati": "gu",
+        "Kannada": "kn",
+        "Malayalam": "ml",
         "Punjabi": "pa",
+        "Urdu": "ur",
+        # ISO codes (passthrough)
+        "en": "en", "hi": "hi", "mr": "mr", "ta": "ta",
+        "te": "te", "bn": "bn", "gu": "gu", "kn": "kn",
+        "ml": "ml", "pa": "pa", "ur": "ur",
     }
-    return mapping.get(language, "auto")
+    code = mapping.get(language) or mapping.get(language.capitalize())
+    if code:
+        logger.info(f"Language mapped: '{language}' → '{code}'")
+        return code
+    logger.warning(f"Unknown language '{language}' — using auto-detect")
+    return "auto"

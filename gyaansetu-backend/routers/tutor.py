@@ -416,19 +416,20 @@ async def transcribe_audio(
         )
     else:
         summary_prompt = (
-            f"You are a precise academic note-taker. Below is the EXACT transcript of a voice recording.\n"
-            f"Your task is to summarize ONLY what was actually said in this transcript — do NOT add, invent, "
-            f"or infer anything that is not explicitly mentioned.\n\n"
-            f"If the transcript is a greeting or introduction, say so directly.\n"
-            f"If it is a lecture, summarize the actual topics mentioned.\n"
-            f"If it is a personal note, reflect that.\n\n"
+            f"You are a precise academic note-taker. Below is the EXACT transcript of a voice recording in {language}.\n"
+            f"Your task is to summarize ONLY what was actually said in this transcript.\n"
+            f"CRITICAL RULES:\n"
+            f"- Do NOT add, invent, or infer anything not explicitly mentioned in the transcript.\n"
+            f"- Write your ENTIRE response in {language} — same language as the transcript.\n"
+            f"- If the transcript is a greeting or introduction, say so directly in {language}.\n"
+            f"- If it is a lecture or study note, summarize the actual topics mentioned.\n\n"
             f"Format your response as:\n"
             f"### Summary\n"
-            f"[2-3 sentences summarizing ONLY what was said]\n\n"
+            f"[2-3 sentences in {language} summarizing ONLY what was said]\n\n"
             f"### Key Points\n"
-            f"[3-5 bullet points of ONLY what was explicitly mentioned]\n\n"
+            f"[3-5 bullet points in {language} of ONLY what was explicitly mentioned]\n\n"
             f"TRANSCRIPT TO SUMMARIZE:\n\"{transcript}\"\n\n"
-            f"IMPORTANT: Do NOT add information not in the transcript above."
+            f"IMPORTANT: Respond in {language}. Do NOT translate or add information not in the transcript."
         )
 
         try:
