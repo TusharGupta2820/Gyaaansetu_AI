@@ -145,269 +145,289 @@ function StudyWarsDashboard() {
 
   return (
     <AppLayout>
-      {/* Toast Notification */}
-      <AnimatePresence>
-        {toast && (
-          <motion.div
-            initial={{ opacity: 0, y: -50, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -20, scale: 0.9 }}
-            className="fixed top-20 right-6 z-50 px-5 py-3 rounded-xl border border-[#4f46e5]/30 shadow-2xl bg-white dark:bg-[#0d1322] text-xs text-slate-900 dark:text-white font-semibold"
-          >
-            {toast}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <div className="bg-sky-50/40 -m-4 sm:-m-6 p-4 sm:p-6 rounded-3xl min-h-screen space-y-6">
+        
+        {/* Toast Notification */}
+        <AnimatePresence>
+          {toast && (
+            <motion.div
+              initial={{ opacity: 0, y: -50, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -20, scale: 0.9 }}
+              className="fixed top-20 right-6 z-50 px-5 py-3 rounded-xl border border-sky-300 shadow-xl bg-white text-xs text-sky-950 font-bold"
+            >
+              {toast}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-      <PageHeader
-        title="Study Wars"
-        subtitle="1v1 Esports study duels — battle other learners, defeat boss prompts, and dominate leaderboards."
-        icon={Swords}
-      />
+        <PageHeader
+          title="Study Wars"
+          subtitle="1v1 Esports study duels — battle other learners, defeat boss prompts, and dominate leaderboards."
+          icon={Swords}
+        />
 
-      {/* Top Banner */}
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-        <GradientCard className="overflow-hidden relative border border-pink-500/20 shadow-lg p-6">
-          <div className="grid lg:grid-cols-[1fr_auto] gap-6 items-center">
-            <div>
-              <div className="inline-flex items-center gap-1.5 bg-[#4f46e5]/10 text-[#4f46e5] border border-[#4f46e5]/20 rounded-full px-3 py-1 text-xs font-semibold">
-                <Sparkles className="h-3 w-3 text-[#4f46e5]" /> Season 4 Active
+        {/* Top Banner */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
+          <div className="bg-white border border-sky-200 rounded-3xl p-6 shadow-md shadow-sky-100/50">
+            <div className="grid lg:grid-cols-[1fr_auto] gap-6 items-center">
+              <div>
+                <div className="inline-flex items-center gap-1.5 bg-sky-100/80 text-sky-700 border border-sky-200 rounded-full px-3.5 py-1 text-xs font-bold">
+                  <Sparkles className="h-3.5 w-3.5 text-sky-600" /> Season 4 Active
+                </div>
+                <h1 className="mt-3 text-2xl lg:text-3xl font-display font-extrabold text-sky-950">Live Multiplayer Arena</h1>
+                <p className="mt-2 text-sky-700/80 max-w-xl text-xs font-semibold leading-relaxed">
+                  Test your skills in real-time. Matchmaking automatically matches you with online students at similar ELO thresholds.
+                </p>
               </div>
-              <h1 className="mt-3 text-2xl font-display font-bold text-slate-900 dark:text-white">Live Multiplayer Arena</h1>
-              <p className="mt-2 text-slate-600 dark:text-blue-200/60 max-w-xl text-xs leading-relaxed">
-                Test your skills in real-time. Matchmaking automatically matches you with online students at similar ELO thresholds.
-              </p>
-            </div>
-            <div>
-              {matchState === 'lobby' && (
-                <button
-                  onClick={() => setMatchState('searching')}
-                  className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#4f46e5] to-[#6366f1] px-6 py-3.5 text-xs font-bold text-slate-900 dark:text-white glow-pink hover:scale-[1.02] transition"
-                >
-                  <Play className="h-4 w-4 fill-current" /> Find a Match
-                </button>
-              )}
+              <div>
+                {matchState === 'lobby' && (
+                  <button
+                    onClick={() => setMatchState('searching')}
+                    className="inline-flex items-center gap-2 rounded-2xl bg-sky-500 hover:bg-sky-600 px-6 py-3.5 text-xs font-extrabold text-white shadow-md shadow-sky-200 hover:scale-[1.02] transition"
+                  >
+                    <Play className="h-4 w-4 fill-current" /> Find a Match
+                  </button>
+                )}
+              </div>
             </div>
           </div>
-        </GradientCard>
-      </motion.div>
+        </motion.div>
 
-      {/* Stats Cards Row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white dark:bg-[#0b1530] border border-sky-200/80 dark:border-blue-500/20 text-slate-900 dark:text-white p-5 rounded-3xl shadow-md text-left text-white">
-          <div className="text-[10px] text-blue-300 uppercase font-mono tracking-wider font-semibold">ELO Rating</div>
-          <div className="text-xl font-extrabold text-slate-900 dark:text-white mt-1.5 leading-none">{elo}</div>
-          <div className="text-[9px] text-[#4f46e5] mt-2 font-mono">Diamond Tier II</div>
+        {/* Stats Cards Row */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div className="bg-white border border-sky-200/80 text-sky-950 p-5 rounded-3xl shadow-sm text-left">
+            <div className="text-[10px] text-sky-600 uppercase font-mono tracking-wider font-bold">ELO Rating</div>
+            <div className="text-2xl font-extrabold text-sky-950 mt-1.5 leading-none">{elo}</div>
+            <div className="text-[9px] text-sky-600 mt-2 font-mono font-bold bg-sky-100/70 border border-sky-200 px-2 py-0.5 rounded-full inline-block">Diamond Tier II</div>
+          </div>
+
+          <div className="bg-white border border-sky-200/80 text-sky-950 p-5 rounded-3xl shadow-sm text-left">
+            <div className="text-[10px] text-sky-600 uppercase font-mono tracking-wider font-bold">Total Battles</div>
+            <div className="text-2xl font-extrabold text-sky-950 mt-1.5 leading-none">{wins} Wins</div>
+            <div className="text-[9px] text-sky-600 mt-2 font-mono font-bold bg-sky-100/70 border border-sky-200 px-2 py-0.5 rounded-full inline-block">73% win rate</div>
+          </div>
+
+          <div className="bg-white border border-sky-200/80 text-sky-950 p-5 rounded-3xl shadow-sm text-left">
+            <div className="text-[10px] text-sky-600 uppercase font-mono tracking-wider font-bold">Win Streak</div>
+            <div className="text-2xl font-extrabold text-sky-950 mt-1.5 leading-none">{streak} matches</div>
+            <div className="text-[9px] text-sky-600 mt-2 font-mono font-bold bg-sky-100/70 border border-sky-200 px-2 py-0.5 rounded-full inline-block">Unstoppable bonus active</div>
+          </div>
+
+          <div className="bg-white border border-sky-200/80 text-sky-950 p-5 rounded-3xl shadow-sm text-left">
+            <div className="text-[10px] text-sky-600 uppercase font-mono tracking-wider font-bold">Rank Reward</div>
+            <div className="text-2xl font-extrabold text-sky-950 mt-1.5 leading-none">Diamond Skin</div>
+            <div className="text-[9px] text-sky-600 mt-2 font-mono font-bold bg-sky-100/70 border border-sky-200 px-2 py-0.5 rounded-full inline-block">Unlocks at end of season</div>
+          </div>
         </div>
 
-        <div className="bg-white dark:bg-[#0b1530] border border-sky-200/80 dark:border-blue-500/20 text-slate-900 dark:text-white p-5 rounded-3xl shadow-md text-left text-white">
-          <div className="text-[10px] text-blue-300 uppercase font-mono tracking-wider font-semibold">Total Battles</div>
-          <div className="text-xl font-extrabold text-slate-900 dark:text-white mt-1.5 leading-none">{wins} Wins</div>
-          <div className="text-[9px] text-[#6366f1] mt-2 font-mono">73% win rate</div>
-        </div>
+        {/* Main Console Box */}
+        <div className="grid lg:grid-cols-12 gap-6 items-stretch mb-6">
+          {/* Battle Arena */}
+          <div className="lg:col-span-8">
+            <div className="bg-white border border-sky-200 rounded-3xl shadow-md shadow-sky-100/50 p-6 min-h-[400px] flex flex-col justify-between">
+              
+              {/* LOBBY STATE */}
+              {matchState === 'lobby' && (
+                <div className="flex-1 flex flex-col items-center justify-center text-center py-12">
+                  <Swords className="h-12 w-12 text-sky-600 mb-4 animate-bounce" />
+                  <h3 className="font-display font-extrabold text-base text-sky-950">Ready for Combat?</h3>
+                  <p className="text-[11px] text-sky-700/90 font-semibold max-w-xs leading-relaxed mt-2">
+                    Launch matchmaking to compete on live timed multi-choice syllabi. Answer faster to hit harder!
+                  </p>
+                  <button
+                    onClick={() => setMatchState('searching')}
+                    className="mt-6 inline-flex items-center gap-2 rounded-2xl bg-sky-500 hover:bg-sky-600 px-6 py-3.5 text-xs font-extrabold text-white shadow-md shadow-sky-200 transition"
+                  >
+                    <Play className="h-4 w-4 fill-current" /> Enter Matchmaking Queue
+                  </button>
+                </div>
+              )}
 
-        <div className="bg-white dark:bg-[#0b1530] border border-sky-200/80 dark:border-blue-500/20 text-slate-900 dark:text-white p-5 rounded-3xl shadow-md text-left text-white">
-          <div className="text-[10px] text-blue-300 uppercase font-mono tracking-wider font-semibold">Win Streak</div>
-          <div className="text-xl font-extrabold text-slate-900 dark:text-white mt-1.5 leading-none">{streak} matches</div>
-          <div className="text-[9px] text-emerald-400 mt-2 font-mono">Unstoppable bonus active</div>
-        </div>
+              {/* SEARCHING STATE */}
+              {matchState === 'searching' && (
+                <div className="flex-1 flex flex-col items-center justify-center text-center py-12 space-y-4">
+                  <RefreshCw className="h-10 w-10 text-sky-600 animate-spin" />
+                  <h3 className="font-display font-extrabold text-base text-sky-950 font-mono">Finding study warrior opponent...</h3>
+                  <p className="text-[11px] text-sky-700 font-mono font-bold">Average queue duration: 12 seconds</p>
+                  <button
+                    onClick={() => setMatchState('lobby')}
+                    className="px-5 py-2.5 rounded-xl bg-sky-100 border border-sky-200 text-sky-700 text-xs font-bold hover:bg-sky-200 transition"
+                  >
+                    Cancel Queue
+                  </button>
+                </div>
+              )}
 
-        <div className="bg-white dark:bg-[#0b1530] border border-sky-200/80 dark:border-blue-500/20 text-slate-900 dark:text-white p-5 rounded-3xl shadow-md text-left text-white">
-          <div className="text-[10px] text-blue-300 uppercase font-mono tracking-wider font-semibold">Rank Reward</div>
-          <div className="text-xl font-extrabold text-slate-900 dark:text-white mt-1.5 leading-none">Diamond Skin</div>
-          <div className="text-[9px] text-amber-500 mt-2 font-mono">Unlocks at end of season</div>
-        </div>
-      </div>
+              {/* OPPONENT FOUND STATE */}
+              {matchState === 'found' && (
+                <div className="flex-1 flex items-center justify-center gap-8 py-12">
+                  <div className="text-center">
+                    <div className="h-14 w-14 rounded-full bg-sky-100 border-2 border-sky-500 flex items-center justify-center font-extrabold text-sky-950 mx-auto text-sm">
+                      YOU
+                    </div>
+                    <div className="text-xs font-extrabold text-sky-950 mt-2">Your ELO: {elo}</div>
+                  </div>
 
-      {/* Main Console Box */}
-      <div className="grid lg:grid-cols-12 gap-6 items-stretch mb-6">
-        {/* Battle Arena */}
-        <div className="lg:col-span-8">
-          <GlassCard className="shadow-lg p-6 min-h-[400px] flex flex-col justify-between">
-            
-            {/* LOBBY STATE */}
-            {matchState === 'lobby' && (
-              <div className="flex-1 flex flex-col items-center justify-center text-center py-12">
-                <Swords className="h-12 w-12 text-[#4f46e5] mb-4 animate-bounce" />
-                <h3 className="font-display font-extrabold text-sm text-slate-900 dark:text-white">Ready for Combat?</h3>
-                <p className="text-[11px] text-slate-700 dark:text-slate-400 max-w-xs leading-relaxed mt-2">
-                  Launch matchmaking to compete on live timed multi-choice syllabi. Answer faster to hit harder!
+                  <div className="text-xl font-extrabold text-sky-600 font-mono animate-pulse">VS</div>
+
+                  <div className="text-center">
+                    <div className="h-14 w-14 rounded-full bg-sky-100 border-2 border-sky-500 flex items-center justify-center font-extrabold text-sky-950 mx-auto text-sm">
+                      AA
+                    </div>
+                    <div className="text-xs font-extrabold text-sky-950 mt-2">{opponentName} (1415)</div>
+                  </div>
+                </div>
+              )}
+
+              {/* BATTLE STATE */}
+              {matchState === 'battle' && (
+                <div className="flex-1 flex flex-col justify-between space-y-4">
+                  {/* Battle Headers & Health Bars */}
+                  <div className="flex justify-between items-center pb-3 border-b border-sky-100">
+                    <div className="flex-1">
+                      <span className="text-[10px] font-mono font-extrabold text-sky-700 uppercase">YOU: {userScore} pts</span>
+                      <div className="w-32 bg-sky-100 h-2 rounded-full overflow-hidden mt-1">
+                        <div className="h-full bg-sky-500" style={{ width: `${(userScore / 300) * 100}%` }} />
+                      </div>
+                    </div>
+
+                    <div className="px-3 py-1.5 rounded-xl bg-rose-50 border border-rose-200 text-xs font-mono font-extrabold text-rose-600">
+                      {battleTimer}s
+                    </div>
+
+                    <div className="flex-1 flex flex-col items-end">
+                      <span className="text-[10px] font-mono font-extrabold text-sky-700 uppercase">{opponentName.toUpperCase()}: {opponentScore} pts</span>
+                      <div className="w-32 bg-sky-100 h-2 rounded-full overflow-hidden mt-1">
+                        <div className="h-full bg-sky-400" style={{ width: `${(opponentScore / 300) * 100}%` }} />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Question */}
+                  <div className="my-2 space-y-2">
+                    <div className="text-[10px] font-mono text-sky-600 font-bold uppercase">Question {currentQIdx + 1} / {BATTLE_QUESTIONS.length}</div>
+                    <div className="text-sm font-extrabold text-sky-950 leading-relaxed">{BATTLE_QUESTIONS[currentQIdx].question}</div>
+                  </div>
+
+                  {/* Options */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                    {BATTLE_QUESTIONS[currentQIdx].options.map((opt, idx) => {
+                      const isSelected = selectedOpt === idx;
+                      return (
+                        <button
+                          key={idx}
+                          onClick={() => {
+                            setSelectedOpt(idx);
+                            handleAnswerSubmit(idx);
+                          }}
+                          className={`w-full text-left p-3.5 rounded-2xl border transition text-xs flex items-center justify-between font-bold ${
+                            isSelected
+                              ? "bg-sky-500 text-white border-sky-500 shadow-sm shadow-sky-200"
+                              : "bg-sky-50/60 border-sky-200 text-sky-950 hover:bg-sky-100"
+                          }`}
+                        >
+                          {opt}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* VICTORY STATE */}
+              {matchState === 'victory' && (
+                <div className="flex-1 flex flex-col items-center justify-center text-center py-12 space-y-4">
+                  <div className="h-16 w-16 rounded-full bg-sky-100 border border-sky-200 text-sky-600 flex items-center justify-center shadow-md">
+                    <Trophy className="h-8 w-8" />
+                  </div>
+                  <h3 className="font-display font-extrabold text-base text-sky-950">Match Won!</h3>
+                  <p className="text-[11px] text-sky-700/90 font-semibold max-w-xs leading-relaxed">
+                    Excellent reasoning speed! You correctly answered the complexity and Memo patterns.
+                  </p>
+                  <div className="text-xs font-mono font-extrabold text-sky-600">ELO updated: {elo} (+25)</div>
+                  <button
+                    onClick={() => setMatchState('lobby')}
+                    className="px-6 py-2.5 rounded-xl bg-sky-500 text-white text-xs font-bold shadow-md hover:bg-sky-600 transition"
+                  >
+                    Return to Lobby
+                  </button>
+                </div>
+              )}
+
+              {/* DEFEAT STATE */}
+              {matchState === 'defeat' && (
+                <div className="flex-1 flex flex-col items-center justify-center text-center py-12 space-y-4">
+                  <div className="h-16 w-16 rounded-full bg-rose-50 border border-rose-200 text-rose-600 flex items-center justify-center shadow-md">
+                    <Shield className="h-8 w-8" />
+                  </div>
+                  <h3 className="font-display font-extrabold text-base text-sky-950">Defeat</h3>
+                  <p className="text-[11px] text-sky-700/90 font-semibold max-w-xs leading-relaxed">
+                    Your opponent answered the database isolation level faster. Study system indices to prepare for next battle.
+                  </p>
+                  <div className="text-xs font-mono font-extrabold text-rose-600">ELO updated: {elo} (-15)</div>
+                  <button
+                    onClick={() => setMatchState('lobby')}
+                    className="px-6 py-2.5 rounded-xl bg-sky-500 text-white text-xs font-bold shadow-md hover:bg-sky-600 transition"
+                  >
+                    Return to Lobby
+                  </button>
+                </div>
+              )}
+
+            </div>
+          </div>
+
+          {/* Side Panel: Leaderboard */}
+          <div className="lg:col-span-4">
+            <div className="bg-white border border-sky-200 rounded-3xl shadow-md shadow-sky-100/50 p-6 h-full flex flex-col justify-between">
+              <div className="space-y-4">
+                <h3 className="font-display font-extrabold text-base text-sky-950 flex items-center gap-2">
+                  <Trophy className="h-5 w-5 text-sky-500 fill-sky-100" /> Season Leaderboard
+                </h3>
+                <p className="text-[11px] text-sky-700/80 font-semibold leading-relaxed">
+                  Rankings update automatically at midnight UTC:
                 </p>
-                <button
-                  onClick={() => setMatchState('searching')}
-                  className="mt-6 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#4f46e5] to-[#6366f1] px-5 py-3 text-xs font-bold text-slate-900 dark:text-white glow-pink transition"
-                >
-                  <Play className="h-4 w-4 fill-current" /> Enter Matchmaking Queue
-                </button>
-              </div>
-            )}
 
-            {/* SEARCHING STATE */}
-            {matchState === 'searching' && (
-              <div className="flex-1 flex flex-col items-center justify-center text-center py-12 space-y-4">
-                <RefreshCw className="h-10 w-10 text-[#4f46e5] animate-spin" />
-                <h3 className="font-display font-bold text-sm text-slate-900 dark:text-white font-mono">Finding study warrior opponent...</h3>
-                <p className="text-[10px] text-slate-600 dark:text-slate-500 font-mono">Average queue duration: 12 seconds</p>
-                <button
-                  onClick={() => setMatchState('lobby')}
-                  className="px-4 py-2 rounded-xl bg-white/5 border border-sky-200/80 dark:border-white/10 text-xs hover:bg-white/10 transition"
-                >
-                  Cancel Queue
-                </button>
-              </div>
-            )}
-
-            {/* OPPONENT FOUND STATE */}
-            {matchState === 'found' && (
-              <div className="flex-1 flex items-center justify-center gap-8 py-12">
-                <div className="text-center">
-                  <div className="h-14 w-14 rounded-full bg-blue-500/10 border-2 border-[#3b82f6] flex items-center justify-center font-bold text-slate-900 dark:text-white mx-auto text-sm">
-                    YOU
-                  </div>
-                  <div className="text-xs font-bold text-slate-900 dark:text-white mt-2">Your ELO: {elo}</div>
-                </div>
-
-                <div className="text-lg font-bold text-[#4f46e5] font-mono animate-pulse">VS</div>
-
-                <div className="text-center">
-                  <div className="h-14 w-14 rounded-full bg-pink-500/10 border-2 border-[#4f46e5] flex items-center justify-center font-bold text-slate-900 dark:text-white mx-auto text-sm">
-                    AA
-                  </div>
-                  <div className="text-xs font-bold text-slate-900 dark:text-white mt-2">{opponentName} (1415)</div>
-                </div>
-              </div>
-            )}
-
-            {/* BATTLE STATE */}
-            {matchState === 'battle' && (
-              <div className="flex-1 flex flex-col justify-between space-y-4">
-                {/* Battle Headers & Health Bars */}
-                <div className="flex justify-between items-center pb-3 border-b border-sky-200/60 dark:border-white/5">
-                  <div className="flex-1">
-                    <span className="text-[9px] font-mono font-bold text-[#3b82f6]">YOU: {userScore} pts</span>
-                    <div className="w-32 bg-white/5 h-1.5 rounded-full overflow-hidden mt-1">
-                      <div className="h-full bg-gradient-to-r from-[#3b82f6] to-blue-500" style={{ width: `${(userScore / 300) * 100}%` }} />
-                    </div>
-                  </div>
-
-                  <div className="px-3 py-1.5 rounded-xl bg-red-950/20 border border-red-500/20 text-xs font-mono font-bold text-red-400">
-                    {battleTimer}s
-                  </div>
-
-                  <div className="flex-1 flex flex-col items-end">
-                    <span className="text-[9px] font-mono font-bold text-[#4f46e5]">{opponentName.toUpperCase()}: {opponentScore} pts</span>
-                    <div className="w-32 bg-white/5 h-1.5 rounded-full overflow-hidden mt-1">
-                      <div className="h-full bg-gradient-to-r from-[#4f46e5] to-pink-500" style={{ width: `${(opponentScore / 300) * 100}%` }} />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Question */}
-                <div className="my-2 space-y-2">
-                  <div className="text-[9px] font-mono text-slate-700 dark:text-slate-400 uppercase">Question {currentQIdx + 1} / {BATTLE_QUESTIONS.length}</div>
-                  <div className="text-xs font-bold text-slate-900 dark:text-white leading-relaxed">{BATTLE_QUESTIONS[currentQIdx].question}</div>
-                </div>
-
-                {/* Options */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-                  {BATTLE_QUESTIONS[currentQIdx].options.map((opt, idx) => {
-                    const isSelected = selectedOpt === idx;
+                <div className="space-y-2.5">
+                  {[
+                    { name: "Aarav Sharma", score: 1650, tier: "Master" },
+                    { name: "Vikram Patel", score: 1580, tier: "Master" },
+                    { name: "You (Student)", score: elo, tier: "Diamond II" },
+                    { name: "Meera Sen", score: 1390, tier: "Diamond I" }
+                  ].map((item, idx) => {
+                    const isUser = item.name.includes("You");
                     return (
-                      <button
-                        key={idx}
-                        onClick={() => {
-                          setSelectedOpt(idx);
-                          handleAnswerSubmit(idx);
-                        }}
-                        className={`w-full text-left p-3.5 rounded-xl border transition text-xs flex items-center justify-between ${
-                          isSelected
-                            ? "bg-[#4f46e5]/10 border-[#4f46e5]/40 text-slate-900 dark:text-white font-bold"
-                            : "bg-slate-900/30 border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-800/60"
+                      <div 
+                        key={idx} 
+                        className={`flex justify-between items-center p-3 rounded-2xl border text-xs font-bold transition ${
+                          isUser
+                            ? 'bg-sky-500 text-white border-sky-500 shadow-sm shadow-sky-200'
+                            : 'bg-sky-50/60 border-sky-200/80 text-sky-950 hover:bg-sky-100/60'
                         }`}
                       >
-                        {opt}
-                      </button>
+                        <span className={`font-extrabold ${isUser ? 'text-white' : 'text-sky-950'}`}>
+                          {idx + 1}. {item.name}
+                        </span>
+                        <span className={`font-mono font-extrabold text-xs px-2 py-0.5 rounded-lg border ${
+                          isUser ? 'bg-white/20 text-white border-white/30' : 'bg-sky-100 text-sky-600 border-sky-200'
+                        }`}>
+                          {item.score} ELO
+                        </span>
+                      </div>
                     );
                   })}
                 </div>
               </div>
-            )}
 
-            {/* VICTORY STATE */}
-            {matchState === 'victory' && (
-              <div className="flex-1 flex flex-col items-center justify-center text-center py-12 space-y-4">
-                <div className="h-16 w-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shadow-lg">
-                  <Trophy className="h-8 w-8" />
-                </div>
-                <h3 className="font-display font-extrabold text-base text-slate-900 dark:text-white">Match Won!</h3>
-                <p className="text-[11px] text-slate-700 dark:text-slate-400 max-w-xs leading-relaxed">
-                  Excellent reasoning speed! You correctly answered the complexity and Memo patterns.
-                </p>
-                <div className="text-xs font-mono font-bold text-[#3b82f6]">ELO updated: {elo} (+25)</div>
-                <button
-                  onClick={() => setMatchState('lobby')}
-                  className="px-6 py-2.5 rounded-xl bg-slate-800 text-white text-xs font-bold border border-slate-700 hover:bg-slate-700 transition"
-                >
-                  Return to Lobby
-                </button>
-              </div>
-            )}
-
-            {/* DEFEAT STATE */}
-            {matchState === 'defeat' && (
-              <div className="flex-1 flex flex-col items-center justify-center text-center py-12 space-y-4">
-                <div className="h-16 w-16 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 flex items-center justify-center shadow-lg">
-                  <Shield className="h-8 w-8" />
-                </div>
-                <h3 className="font-display font-extrabold text-base text-slate-900 dark:text-white">Defeat</h3>
-                <p className="text-[11px] text-slate-700 dark:text-slate-400 max-w-xs leading-relaxed">
-                  Your opponent answered the database isolation level faster. Study system indices to prepare for next battle.
-                </p>
-                <div className="text-xs font-mono font-bold text-red-400">ELO updated: {elo} (-15)</div>
-                <button
-                  onClick={() => setMatchState('lobby')}
-                  className="px-6 py-2.5 rounded-xl bg-slate-800 text-white text-xs font-bold border border-slate-700 hover:bg-slate-700 transition"
-                >
-                  Return to Lobby
-                </button>
-              </div>
-            )}
-
-          </GlassCard>
-        </div>
-
-        {/* Side Panel: Leaderboard */}
-        <div className="lg:col-span-4">
-          <GlassCard className="shadow-lg p-6 h-full flex flex-col justify-between">
-            <div className="space-y-4">
-              <h3 className="font-display font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
-                <Trophy className="h-4.5 w-4.5 text-amber-400" /> Season Leaderboard
-              </h3>
-              <p className="text-[11px] text-slate-600 dark:text-blue-200/60 leading-relaxed">
-                Rankings update automatically at midnight UTC:
-              </p>
-
-              <div className="space-y-2.5">
-                {[
-                  { name: "Aarav Sharma", score: 1650, tier: "Master" },
-                  { name: "Vikram Patel", score: 1580, tier: "Master" },
-                  { name: "You (Student)", score: elo, tier: "Diamond II" },
-                  { name: "Meera Sen", score: 1390, tier: "Diamond I" }
-                ].map((item, idx) => (
-                  <div key={idx} className="flex justify-between items-center p-2.5 rounded-xl bg-slate-900/35 border border-slate-800 text-xs">
-                    <span className="font-semibold text-slate-200">{idx + 1}. {item.name}</span>
-                    <span className="text-[#4f46e5] font-mono font-bold">{item.score} ELO</span>
-                  </div>
-                ))}
+              <div className="mt-6 bg-sky-50 border border-sky-200/80 p-3.5 rounded-2xl text-[10px] text-sky-900 leading-relaxed font-mono font-semibold">
+                Winning streaks grant +10 bonus XP rewards. Play 3 daily matches to claim.
               </div>
             </div>
-
-            <div className="mt-6 bg-[#4f46e5]/5 border border-[#4f46e5]/10 p-3 rounded-xl text-[10px] text-slate-700 dark:text-slate-300 leading-relaxed font-mono">
-              Winning streaks grant +10 bonus XP rewards. Play 3 daily matches to claim.
-            </div>
-          </GlassCard>
+          </div>
         </div>
       </div>
     </AppLayout>
   );
 }
+
