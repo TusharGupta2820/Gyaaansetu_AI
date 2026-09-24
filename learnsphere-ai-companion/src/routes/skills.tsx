@@ -21,40 +21,66 @@ const data = [
 function Skills() {
   return (
     <AppLayout>
-      <PageHeader title="Skill Radar" subtitle="A real-time radar of your six core competencies." icon={RadarIcon} />
-      <div className="grid lg:grid-cols-[1.3fr_1fr] gap-4">
-        <GradientCard>
-          <div className="h-[420px]">
-            <ResponsiveContainer>
-              <RadarChart data={data}>
-                <PolarGrid stroke="rgba(255,255,255,0.12)" />
-                <PolarAngleAxis dataKey="skill" tick={{ fill: "#cbd5e1", fontSize: 12 }} />
-                <PolarRadiusAxis tick={false} axisLine={false} domain={[0, 100]} />
-                <Radar dataKey="value" stroke="#3b82f6" fill="url(#radarFill)" fillOpacity={0.5} strokeWidth={2.5} />
-                <defs>
-                  <linearGradient id="radarFill" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.7} />
-                    <stop offset="100%" stopColor="#6366f1" stopOpacity={0.4} />
-                  </linearGradient>
-                </defs>
-              </RadarChart>
-            </ResponsiveContainer>
+      <div className="bg-sky-50/40 -m-4 sm:-m-6 p-4 sm:p-6 rounded-3xl min-h-screen space-y-6">
+        <PageHeader 
+          title="Skill Radar" 
+          subtitle="A real-time radar of your six core competencies." 
+          icon={RadarIcon} 
+        />
+        <div className="grid lg:grid-cols-[1.3fr_1fr] gap-6 items-stretch">
+          <div className="bg-white border border-sky-200 rounded-3xl p-6 shadow-md shadow-sky-100/50 flex flex-col justify-center">
+            <div className="h-[420px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <RadarChart data={data} margin={{ top: 20, right: 30, bottom: 20, left: 30 }}>
+                  <PolarGrid stroke="#bae6fd" strokeWidth={1.5} />
+                  <PolarAngleAxis 
+                    dataKey="skill" 
+                    tick={{ fill: "#0c4a6e", fontSize: 13, fontWeight: "800" }} 
+                  />
+                  <PolarRadiusAxis tick={false} axisLine={false} domain={[0, 100]} />
+                  <Radar 
+                    dataKey="value" 
+                    stroke="#0284c7" 
+                    fill="url(#radarFill)" 
+                    fillOpacity={0.45} 
+                    strokeWidth={3.5} 
+                    dot={{ r: 5, fill: "#0ea5e9", stroke: "#ffffff", strokeWidth: 2 }}
+                  />
+                  <defs>
+                    <linearGradient id="radarFill" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stopColor="#0ea5e9" stopOpacity={0.7} />
+                      <stop offset="100%" stopColor="#38bdf8" stopOpacity={0.35} />
+                    </linearGradient>
+                  </defs>
+                </RadarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-        </GradientCard>
-        <div className="space-y-3">
-          {data.map((d) => (
-            <GlassCard key={d.skill}>
-              <div className="flex items-center justify-between mb-2">
-                <span className="font-medium">{d.skill}</span>
-                <span className="text-sm font-mono text-[#3b82f6]">{d.value}</span>
+
+          <div className="space-y-3.5 flex flex-col justify-between">
+            {data.map((d) => (
+              <div 
+                key={d.skill} 
+                className="bg-white border border-sky-200/90 rounded-2xl p-4.5 shadow-sm hover:border-sky-300 hover:shadow-md transition flex flex-col justify-center"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-extrabold text-sky-950 text-sm tracking-wide">{d.skill}</span>
+                  <span className="text-base font-extrabold font-mono text-sky-600 bg-sky-100/70 border border-sky-200 px-2.5 py-0.5 rounded-lg">
+                    {d.value}
+                  </span>
+                </div>
+                <div className="h-2.5 rounded-full bg-sky-100 overflow-hidden">
+                  <div 
+                    className="h-full rounded-full bg-sky-500 shadow-sm" 
+                    style={{ width: `${d.value}%` }} 
+                  />
+                </div>
               </div>
-              <div className="h-2 rounded-full bg-white/5 overflow-hidden">
-                <div className="h-full rounded-full bg-gradient-to-r from-[#3b82f6] to-[#6366f1]" style={{ width: `${d.value}%` }} />
-              </div>
-            </GlassCard>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </AppLayout>
   );
 }
+

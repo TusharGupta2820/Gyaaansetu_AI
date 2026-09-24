@@ -52,8 +52,8 @@ export function PageHeader({ title, subtitle, icon: Icon, accent }: { title: str
         )}
       </div>
       <div className="min-w-0">
-        <h1 className="text-2xl lg:text-3xl font-display font-bold text-slate-900 dark:text-white">{title}</h1>
-        {subtitle && <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">{subtitle}</p>}
+        <h1 className="text-2xl lg:text-3xl font-display font-extrabold text-sky-950 dark:text-white tracking-tight">{title}</h1>
+        {subtitle && <p className="text-sm font-bold text-sky-700/90 dark:text-slate-200 mt-1 leading-normal">{subtitle}</p>}
       </div>
     </div>
   );
