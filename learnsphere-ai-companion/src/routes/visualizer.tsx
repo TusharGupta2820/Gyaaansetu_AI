@@ -136,31 +136,31 @@ function VisualizerDashboard() {
       <div className="grid lg:grid-cols-12 gap-6 items-stretch mb-6">
         {/* Left Control Panel */}
         <div className="lg:col-span-4">
-          <GlassCard className="shadow-lg p-6 h-full flex flex-col justify-between">
+          <GlassCard className="shadow-md shadow-sky-100/50 border border-sky-200 bg-white p-6 h-full flex flex-col justify-between">
             <div className="space-y-4">
-              <h3 className="font-display font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
-                <Sparkles className="h-4.5 w-4.5 text-[#3b82f6]" /> AI Diagram Creator
+              <h3 className="font-display font-extrabold text-sm text-sky-950 flex items-center gap-1.5">
+                <Sparkles className="h-4.5 w-4.5 text-sky-500 fill-sky-100" /> AI Diagram Creator
               </h3>
-              <p className="text-[11px] text-slate-600 dark:text-blue-200/60 leading-relaxed">
+              <p className="text-[11px] text-sky-700/90 font-semibold leading-relaxed">
                 Enter any textbook topic, system, or programming algorithm, select a layout style, and generate an interactive concept roadmap.
               </p>
 
               <div>
-                <label className="text-[9px] font-mono text-slate-700 dark:text-slate-400 uppercase">Concept / Topic</label>
+                <label className="text-[10px] font-mono text-sky-700 font-bold uppercase">Concept / Topic</label>
                 <textarea
                   value={topic}
                   onChange={(e) => setTopic(e.target.value)}
                   placeholder="e.g., React Hydration Cycle, Blockchain consensus, Photosynthesis, or Binary Search Tree"
-                  className="w-full h-24 mt-1 bg-black/40 border border-sky-200/80 dark:border-white/10 rounded-xl p-3 text-xs text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]/40 outline-none transition"
+                  className="w-full h-28 mt-1 bg-sky-50/60 border border-sky-200 rounded-xl p-3 text-xs font-bold text-sky-950 placeholder:text-sky-700/50 focus:outline-none focus:bg-white focus:border-sky-500 transition shadow-inner"
                 />
               </div>
 
               <div>
-                <label className="text-[9px] font-mono text-slate-700 dark:text-slate-400 uppercase">Layout Style</label>
+                <label className="text-[10px] font-mono text-sky-700 font-bold uppercase">Layout Style</label>
                 <select
                   value={style}
                   onChange={(e) => setStyle(e.target.value)}
-                  className="w-full mt-1 bg-slate-100/90 dark:bg-[#050816] border border-sky-200/80 dark:border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#3b82f6]/40"
+                  className="w-full mt-1 bg-sky-50/60 border border-sky-200 rounded-lg px-2.5 py-1.5 text-xs font-bold text-sky-950 focus:outline-none focus:border-sky-500"
                 >
                   {LAYOUT_STYLES.map((st) => (
                     <option key={st} value={st}>
@@ -174,7 +174,7 @@ function VisualizerDashboard() {
             <button
               onClick={handleGenerate}
               disabled={loading || !topic.trim()}
-              className="w-full mt-6 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#3b82f6] to-[#6366f1] py-3 text-xs font-bold text-[#050816] transition hover:shadow-lg disabled:opacity-50"
+              className="w-full mt-6 inline-flex items-center justify-center gap-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white py-3 text-xs font-extrabold shadow-md shadow-sky-200 transition disabled:opacity-50"
             >
               {loading ? (
                 <>
@@ -191,25 +191,25 @@ function VisualizerDashboard() {
 
         {/* Right Interactive Canvas */}
         <div className="lg:col-span-8">
-          <GradientCard className="shadow-lg p-6 h-full flex flex-col justify-between">
-            <div className="flex justify-between items-center pb-3 border-b border-sky-200/60 dark:border-white/5 mb-4">
+          <GradientCard className="shadow-md shadow-sky-100/50 border border-sky-200 bg-white p-6 h-full flex flex-col justify-between">
+            <div className="flex justify-between items-center pb-3 border-b border-sky-200/80 mb-4">
               <div>
-                <span className="text-xs font-mono text-[#3b82f6] tracking-wider uppercase font-bold">Interactive Graph Canvas</span>
-                <span className="text-[9px] font-mono text-slate-700 dark:text-slate-400 ml-3">Style: {style}</span>
+                <span className="text-xs font-mono text-sky-600 tracking-wider uppercase font-extrabold">Interactive Graph Canvas</span>
+                <span className="text-[11px] font-mono text-sky-700 font-bold ml-3">Style: {style}</span>
               </div>
               <button 
                 onClick={() => showToast("Exporting high-resolution PNG graph...")}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-sky-200/80 dark:border-white/10 text-[10px] font-mono hover:bg-white/10 transition"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-50 border border-sky-200 text-sky-700 hover:bg-sky-100 text-xs font-extrabold shadow-sm transition"
               >
-                <Download className="h-3.5 w-3.5" /> Export SVG
+                <Download className="h-3.5 w-3.5 text-sky-500" /> Export SVG
               </button>
             </div>
 
             {/* SVG Visual Canvas */}
-            <div className="relative flex-1 bg-black/40 border border-sky-200/60 dark:border-white/5 rounded-2xl min-h-[380px] overflow-hidden flex items-center justify-center">
+            <div className="relative flex-1 bg-sky-50/50 border border-sky-200/80 rounded-2xl min-h-[380px] overflow-hidden flex items-center justify-center shadow-inner">
               {loading ? (
-                <div className="flex flex-col items-center justify-center text-slate-600 dark:text-slate-500">
-                  <RefreshCw className="h-8 w-8 text-[#3b82f6] animate-spin mb-3" />
+                <div className="flex flex-col items-center justify-center text-sky-700 font-bold">
+                  <RefreshCw className="h-8 w-8 text-sky-500 animate-spin mb-3" />
                   <p className="text-xs font-mono">Synthesizing network topology...</p>
                 </div>
               ) : (
@@ -217,7 +217,7 @@ function VisualizerDashboard() {
                   {/* Grid Lines */}
                   <defs>
                     <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
-                      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.02)" strokeWidth="1" />
+                      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(2, 132, 199, 0.08)" strokeWidth="1" />
                     </pattern>
                   </defs>
                   <rect width="100%" height="100%" fill="url(#grid)" />
@@ -234,9 +234,9 @@ function VisualizerDashboard() {
                         y1={sourceNode.y}
                         x2={targetNode.x}
                         y2={targetNode.y}
-                        stroke="#3b82f6"
-                        strokeWidth="1.5"
-                        strokeOpacity="0.4"
+                        stroke="#0284c7"
+                        strokeWidth="2"
+                        strokeOpacity="0.6"
                         strokeDasharray="4,4"
                       />
                     );
@@ -246,12 +246,12 @@ function VisualizerDashboard() {
                   {positionedNodes.map((node) => (
                     <g key={node.id} transform={`translate(${node.x}, ${node.y})`}>
                       {/* Glow ring */}
-                      <circle r="36" fill="none" stroke={node.color} strokeWidth="1.5" strokeOpacity="0.3" className="animate-pulse" />
+                      <circle r="36" fill="none" stroke={node.color} strokeWidth="2" strokeOpacity="0.4" className="animate-pulse" />
                       {/* Inner circle */}
-                      <circle r="30" fill="#0d1322" stroke={node.color} strokeWidth="2" />
+                      <circle r="30" fill="white" stroke={node.color} strokeWidth="2.5" className="shadow-md" />
                       {/* Node Label Text */}
                       <foreignObject x="-60" y="-18" width="120" height="40">
-                        <div className="text-[8px] font-mono font-bold text-slate-200 text-center flex items-center justify-center h-full px-1.5 overflow-hidden leading-tight">
+                        <div className="text-[9px] font-sans font-extrabold text-sky-950 text-center flex items-center justify-center h-full px-1.5 overflow-hidden leading-snug">
                           {node.label}
                         </div>
                       </foreignObject>
