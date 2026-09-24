@@ -3,7 +3,10 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { GlassCard, PageHeader, GradientCard } from "@/components/ui-kit/Card";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
-import { Mic, Sparkles, Send, Loader2, Check, Award, Brain, Info, RefreshCw, Volume2, Square, X, FileAudio, FileText } from "lucide-react";
+import {
+  Mic, Sparkles, Check, Info, RefreshCw, Volume2, Square, X,
+  FileAudio, FileText, Save, Trash2, ChevronDown, ChevronUp, Clock, Eye, EyeOff
+} from "lucide-react";
 import { checkBackendHealth, API_BASE } from "@/lib/api/ai.service";
 
 export const Route = createFileRoute("/voice")({
@@ -11,97 +14,128 @@ export const Route = createFileRoute("/voice")({
   component: VoiceNotesPage,
 });
 
+// ─── Types ──────────────────────────────────────────────────────────────────
+interface VoiceNote {
+  id: string;
+  title: string;
+  transcript: string;
+  summary: string;
+  language: string;
+  confidence: number;
+  duration: number;
+  createdAt: string;
+}
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+const STORAGE_KEY = "gyaansetu_voice_notes";
+
+function loadNotes(): VoiceNote[] {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function saveNotes(notes: VoiceNote[]) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+}
+
+function formatTime(secs: number) {
+  const m = Math.floor(secs / 60).toString().padStart(2, "0");
+  const s = (secs % 60).toString().padStart(2, "0");
+  return `${m}:${s}`;
+}
+
+// ─── Component ───────────────────────────────────────────────────────────────
 function VoiceNotesPage() {
-  const [backendOnline, setBackendOnline] = useState<boolean | null>(null);
   const [language, setLanguage] = useState("English");
   const [recording, setRecording] = useState(false);
   const [duration, setDuration] = useState(0);
-  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
-  const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
   const [processing, setProcessing] = useState(false);
   const [result, setResult] = useState<any>(null);
-  const [toast, setToast] = useState<{ message: string; icon: any } | null>(null);
-  
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" | "info" } | null>(null);
+  const [savedNotes, setSavedNotes] = useState<VoiceNote[]>(loadNotes);
+  const [expandedNote, setExpandedNote] = useState<string | null>(null);
+  const [showTranscript, setShowTranscript] = useState(true);
+  const [noteTitleInput, setNoteTitleInput] = useState("");
+
+  // ── Refs (fix stale closure bug) ────────────────────────────────────────
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const durationRef = useRef(0);
 
   useEffect(() => {
-    checkBackendHealth().then(setBackendOnline);
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
   }, []);
 
-  const showToast = (message: string, icon: any) => {
-    setToast({ message, icon });
+  // ── Toast ───────────────────────────────────────────────────────────────
+  const showToast = (message: string, type: "success" | "error" | "info" = "success") => {
+    setToast({ message, type });
     setTimeout(() => setToast(null), 4000);
   };
 
+  // ── Recording ───────────────────────────────────────────────────────────
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const recorder = new MediaRecorder(stream);
-      setAudioChunks([]);
-      
+      const mimeType = MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
+        ? "audio/webm;codecs=opus"
+        : MediaRecorder.isTypeSupported("audio/webm")
+        ? "audio/webm"
+        : "audio/ogg";
+
+      const recorder = new MediaRecorder(stream, { mimeType });
+      audioChunksRef.current = [];
+      durationRef.current = 0;
+
       recorder.ondataavailable = (e) => {
         if (e.data.size > 0) {
-          setAudioChunks((prev) => [...prev, e.data]);
+          audioChunksRef.current.push(e.data);
         }
       };
 
-      recorder.onstop = async () => {
-        stream.getTracks().forEach((track) => track.stop());
+      recorder.onstop = () => {
+        stream.getTracks().forEach((t) => t.stop());
+        const blob = new Blob(audioChunksRef.current, { type: mimeType });
+        submitAudio(blob, durationRef.current);
       };
 
-      recorder.start();
-      setMediaRecorder(recorder);
+      recorder.start(250); // collect chunks every 250ms
+      mediaRecorderRef.current = recorder;
       setRecording(true);
       setDuration(0);
-      
+      setResult(null);
+
       timerRef.current = setInterval(() => {
+        durationRef.current += 1;
         setDuration((prev) => prev + 1);
       }, 1000);
-      
-      showToast("Microphone recording active!", Mic);
+
+      showToast("Microphone recording active!", "info");
     } catch (err) {
       console.error("Mic access denied:", err);
-      showToast("Microphone permission required", Info);
+      showToast("Microphone permission required. Please allow microphone access.", "error");
     }
   };
 
   const stopRecording = () => {
-    if (mediaRecorder && recording) {
-      mediaRecorder.stop();
-      setRecording(false);
+    if (mediaRecorderRef.current && recording) {
       if (timerRef.current) clearInterval(timerRef.current);
-      
-      // We will trigger transcribe automatically
+      setRecording(false);
       setProcessing(true);
-      setTimeout(() => {
-        // Collect chunks
-        const audioBlob = new Blob(audioChunks, { type: "audio/wav" });
-        submitAudio(audioBlob);
-      }, 500);
+      // onstop handler fires automatically with collected chunks
+      mediaRecorderRef.current.stop();
     }
   };
 
-  const handleUseSample = () => {
-    setProcessing(true);
-    setResult(null);
-    setTimeout(() => {
-      setResult({
-        transcript: "In today's lecture on quantum superposition, we explore how subatomic particles like electrons can exist in multiple spin states simultaneously. This behaves fundamentally differently from classical bits which can only store either a one or a zero at one time. Superposition mathematically breaks down into linear state combinations.",
-        summary: "### Lecture Summary\nThis lecture introduces the core principles of Quantum Superposition, contrasting it directly with classical computing bits. It covers the mathematical linear combination of quantum states and physical spins.\n\n### Key Concepts\n- **Classical Bit**: Binary storage (0 or 1).\n- **Qubit**: Can exist in spin superposition (0 and 1 simultaneously).\n- **Linear Combination**: The mathematical description of superposition states.",
-        language: "en",
-        confidence: 0.98
-      });
-      setProcessing(false);
-      showToast("Sample transcription loaded!", Check);
-    }, 2000);
-  };
-
-  const submitAudio = async (blob: Blob) => {
+  // ── Submit audio to backend ─────────────────────────────────────────────
+  const submitAudio = async (blob: Blob, dur: number) => {
     const formData = new FormData();
-    formData.append("audio", blob, "recording.wav");
+    formData.append("audio", blob, "recording.webm");
     formData.append("language", language);
 
     try {
@@ -109,47 +143,97 @@ function VoiceNotesPage() {
         method: "POST",
         body: formData,
       });
-      if (!res.ok) throw new Error();
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
-      setResult(data);
-      showToast("Transcription and summary complete!", Check);
+      const enriched = { ...data, duration: dur };
+      setResult(enriched);
+      showToast("Transcription complete! Save your note below.", "success");
     } catch (err) {
-      console.error(err);
-      // Fallback
-      setResult({
-        transcript: "Voice recording transcribed successfully. (Microphone audio sync complete)",
-        summary: "### Summary\nThe recorded audio transcript was processed by Whisper STT. GyaanSetu parsed the contents into structured concepts.\n\n### Key Concepts\n- **Voice Note**: Synced locally.\n- **Whisper STT**: Completed transcription.",
+      console.error("Transcription error:", err);
+      // Graceful offline fallback
+      const fallback = {
+        transcript: "Voice recording captured. Backend transcription unavailable — using offline fallback.",
+        summary:
+          "### Summary\nAudio was captured and sent for transcription. Backend may be starting up.\n\n### Key Concepts\n- **Voice Note**: Recorded locally.\n- **Offline Mode**: Fallback activated.",
         language: "en",
-        confidence: 0.9
-      });
-      showToast("Voice transcribed successfully!", Check);
+        confidence: 0.9,
+        duration: dur,
+      };
+      setResult(fallback);
+      showToast("Backend offline — fallback transcription applied.", "info");
     } finally {
       setProcessing(false);
     }
   };
 
-  const formatTime = (secs: number) => {
-    const m = Math.floor(secs / 60).toString().padStart(2, "0");
-    const s = (secs % 60).toString().padStart(2, "0");
-    return `${m}:${s}`;
+  // ── Sample note ─────────────────────────────────────────────────────────
+  const handleUseSample = () => {
+    setProcessing(true);
+    setResult(null);
+    setTimeout(() => {
+      setResult({
+        transcript:
+          "In today's lecture on quantum superposition, we explore how subatomic particles like electrons can exist in multiple spin states simultaneously. This behaves fundamentally differently from classical bits which can only store either a one or a zero at one time. Superposition mathematically breaks down into linear state combinations.",
+        summary:
+          "### Lecture Summary\nThis lecture introduces the core principles of Quantum Superposition, contrasting it directly with classical computing bits. It covers the mathematical linear combination of quantum states and physical spins.\n\n### Key Concepts\n- **Classical Bit**: Binary storage (0 or 1).\n- **Qubit**: Can exist in spin superposition (0 and 1 simultaneously).\n- **Linear Combination**: The mathematical description of superposition states.",
+        language: "en",
+        confidence: 0.98,
+        duration: 45,
+      });
+      setNoteTitleInput("Quantum Superposition Lecture");
+      setProcessing(false);
+      showToast("Sample transcription loaded!", "success");
+    }, 1500);
+  };
+
+  // ── Save note ───────────────────────────────────────────────────────────
+  const handleSaveNote = () => {
+    if (!result) return;
+    const note: VoiceNote = {
+      id: Date.now().toString(),
+      title: noteTitleInput.trim() || `Voice Note — ${new Date().toLocaleDateString()}`,
+      transcript: result.transcript,
+      summary: result.summary,
+      language: result.language || language,
+      confidence: result.confidence || 1,
+      duration: result.duration || duration,
+      createdAt: new Date().toISOString(),
+    };
+    const updated = [note, ...savedNotes];
+    setSavedNotes(updated);
+    saveNotes(updated);
+    setNoteTitleInput("");
+    showToast(`Note "${note.title}" saved!`, "success");
+  };
+
+  // ── Delete note ─────────────────────────────────────────────────────────
+  const handleDeleteNote = (id: string) => {
+    const updated = savedNotes.filter((n) => n.id !== id);
+    setSavedNotes(updated);
+    saveNotes(updated);
+    if (expandedNote === id) setExpandedNote(null);
+    showToast("Note deleted.", "info");
   };
 
   return (
     <AppLayout>
-      {/* Toast Notification */}
+      {/* Toast */}
       <AnimatePresence>
         {toast && (
           <motion.div
             initial={{ opacity: 0, y: -50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.9 }}
-            className="fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border border-[#3b82f6]/30 shadow-2xl flex items-center gap-3 bg-white dark:bg-[#0d1322] max-w-sm text-white"
+            className={`fixed top-20 right-6 z-50 px-5 py-4 rounded-2xl border shadow-2xl flex items-center gap-3 max-w-sm text-sm font-bold ${
+              toast.type === "error"
+                ? "bg-rose-50 border-rose-200 text-rose-700"
+                : toast.type === "info"
+                ? "bg-sky-50 border-sky-200 text-sky-700"
+                : "bg-emerald-50 border-emerald-200 text-emerald-700"
+            }`}
           >
-            <div className="h-8 w-8 rounded-lg bg-[#3b82f6]/10 text-[#3b82f6] flex items-center justify-center shrink-0">
-              <toast.icon className="h-4.5 w-4.5" />
-            </div>
-            <div className="text-xs font-semibold text-white">{toast.message}</div>
-            <button onClick={() => setToast(null)} className="text-muted-foreground hover:text-white transition ml-auto">
+            <span className="flex-1">{toast.message}</span>
+            <button onClick={() => setToast(null)}>
               <X className="h-4 w-4" />
             </button>
           </motion.div>
@@ -162,23 +246,28 @@ function VoiceNotesPage() {
         icon={Mic}
       />
 
-      <div className="grid lg:grid-cols-12 gap-6 items-stretch mb-6">
-        {/* Left column: Recording status / Controls */}
-        <div className="lg:col-span-5 flex flex-col">
-          <GlassCard className="flex-1 flex flex-col justify-between shadow-md shadow-sky-100/50 border border-sky-200 bg-white p-6">
+      <div className="grid lg:grid-cols-12 gap-6 items-start mb-6">
+        {/* ── Left: Recording Console ── */}
+        <div className="lg:col-span-5 flex flex-col gap-4">
+          <GlassCard className="shadow-md shadow-sky-100/50 border border-sky-200 bg-white p-6">
             <div className="space-y-4">
               <div className="flex justify-between items-center pb-2 border-b border-sky-200/80">
-                <span className="text-xs font-mono text-sky-600 tracking-wider uppercase font-extrabold">Recording Console</span>
+                <span className="text-xs font-mono text-sky-600 tracking-wider uppercase font-extrabold">
+                  Recording Console
+                </span>
                 <span className="text-[11px] font-mono text-sky-700 font-bold">Whisper Local STT</span>
               </div>
 
-              {/* Language selection */}
+              {/* Language */}
               <div className="space-y-1">
-                <label className="text-[10px] text-sky-700 font-mono uppercase font-extrabold">Transcription Language</label>
+                <label className="text-[10px] text-sky-700 font-mono uppercase font-extrabold">
+                  Transcription Language
+                </label>
                 <select
                   value={language}
                   onChange={(e) => setLanguage(e.target.value)}
-                  className="w-full bg-sky-50/60 border border-sky-200 rounded-xl px-3 py-2 text-xs font-extrabold text-sky-950 outline-none focus:bg-white focus:border-sky-500 transition"
+                  disabled={recording}
+                  className="w-full bg-sky-50/60 border border-sky-200 rounded-xl px-3 py-2 text-xs font-extrabold text-sky-950 outline-none focus:bg-white focus:border-sky-500 transition disabled:opacity-50"
                 >
                   <option value="English">English</option>
                   <option value="Hindi">Hindi (हिंदी)</option>
@@ -189,22 +278,33 @@ function VoiceNotesPage() {
                 </select>
               </div>
 
-              {/* Audio Visualizer / Waveform State */}
-              <div className="h-32 bg-sky-50/50 rounded-2xl border border-sky-200/80 flex flex-col items-center justify-center relative overflow-hidden shadow-inner">
+              {/* Waveform / Idle state */}
+              <div className="h-32 bg-sky-50/50 rounded-2xl border border-sky-200/80 flex flex-col items-center justify-center overflow-hidden shadow-inner">
                 {recording ? (
                   <>
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-end gap-1 h-12">
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
                         <motion.div
                           key={i}
-                          animate={{ height: [12, 48, 12] }}
-                          transition={{ duration: 0.4 + i * 0.08, repeat: Infinity }}
+                          animate={{ height: [8, 48, 8] }}
+                          transition={{ duration: 0.4 + i * 0.07, repeat: Infinity, ease: "easeInOut" }}
                           className="w-1.5 bg-sky-500 rounded-full"
+                          style={{ height: 8 }}
                         />
                       ))}
                     </div>
-                    <span className="text-xs font-mono text-sky-600 font-extrabold mt-3">{formatTime(duration)}</span>
+                    <div className="flex items-center gap-2 mt-3">
+                      <span className="h-2 w-2 rounded-full bg-rose-500 animate-pulse" />
+                      <span className="text-xs font-mono text-sky-600 font-extrabold">
+                        {formatTime(duration)} — Recording
+                      </span>
+                    </div>
                   </>
+                ) : processing ? (
+                  <div className="text-center space-y-2">
+                    <RefreshCw className="h-8 w-8 text-sky-500 animate-spin mx-auto" />
+                    <span className="text-xs text-sky-700 font-mono font-bold block">Processing audio…</span>
+                  </div>
                 ) : (
                   <div className="text-center space-y-1.5 p-4">
                     <FileAudio className="h-8 w-8 text-sky-400 mx-auto" />
@@ -214,19 +314,20 @@ function VoiceNotesPage() {
               </div>
             </div>
 
-            <div className="space-y-2.5 mt-6 pt-4 border-t border-sky-200/80">
+            {/* Buttons */}
+            <div className="space-y-2.5 mt-4 pt-4 border-t border-sky-200/80">
               {recording ? (
                 <button
                   onClick={stopRecording}
-                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-rose-500 hover:bg-rose-600 py-3 text-xs font-extrabold text-white transition hover:shadow-lg shadow-md shadow-rose-200"
+                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-rose-500 hover:bg-rose-600 py-3 text-xs font-extrabold text-white shadow-md shadow-rose-200 transition"
                 >
-                  <Square className="h-4 w-4" /> Stop Recording & Process
+                  <Square className="h-4 w-4" /> Stop Recording & Transcribe
                 </button>
               ) : (
                 <button
                   onClick={startRecording}
                   disabled={processing}
-                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-sky-500 hover:bg-sky-600 py-3 text-xs font-extrabold text-white transition hover:shadow-lg shadow-md shadow-sky-200 disabled:opacity-50"
+                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-sky-500 hover:bg-sky-600 py-3 text-xs font-extrabold text-white shadow-md shadow-sky-200 transition disabled:opacity-50"
                 >
                   <Mic className="h-4 w-4" /> Start Live Recording
                 </button>
@@ -235,75 +336,204 @@ function VoiceNotesPage() {
               <button
                 onClick={handleUseSample}
                 disabled={recording || processing}
-                className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-sky-50 border border-sky-200 py-2.5 text-xs text-sky-700 font-extrabold hover:bg-sky-100 shadow-sm transition"
+                className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-sky-50 border border-sky-200 py-2.5 text-xs text-sky-700 font-extrabold hover:bg-sky-100 shadow-sm transition disabled:opacity-50"
               >
                 <Volume2 className="h-4 w-4 text-sky-500" /> Use Sample Lecture Note
               </button>
             </div>
           </GlassCard>
+
+          {/* ── Saved Notes List ── */}
+          {savedNotes.length > 0 && (
+            <GlassCard className="shadow-md shadow-sky-100/50 border border-sky-200 bg-white p-5">
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="text-xs font-mono text-sky-600 tracking-wider uppercase font-extrabold flex items-center gap-1.5">
+                  <Save className="h-4 w-4" /> Saved Notes ({savedNotes.length})
+                </h3>
+              </div>
+              <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
+                {savedNotes.map((note) => (
+                  <div key={note.id} className="border border-sky-200 rounded-2xl overflow-hidden bg-sky-50/40">
+                    <button
+                      onClick={() => setExpandedNote(expandedNote === note.id ? null : note.id)}
+                      className="w-full flex items-center justify-between px-4 py-3 hover:bg-sky-100/60 transition"
+                    >
+                      <div className="text-left">
+                        <div className="text-xs font-extrabold text-sky-950">{note.title}</div>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className="text-[10px] font-mono text-sky-700/70">
+                            {new Date(note.createdAt).toLocaleString()}
+                          </span>
+                          <span className="text-[10px] font-mono text-sky-600 bg-sky-100 border border-sky-200 px-1.5 py-0.5 rounded-md flex items-center gap-1">
+                            <Clock className="h-3 w-3" /> {formatTime(note.duration)}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0 ml-2">
+                        <button
+                          onClick={(e) => { e.stopPropagation(); handleDeleteNote(note.id); }}
+                          className="h-7 w-7 rounded-lg bg-rose-50 border border-rose-200 text-rose-500 hover:bg-rose-100 flex items-center justify-center transition"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                        {expandedNote === note.id ? (
+                          <ChevronUp className="h-4 w-4 text-sky-500" />
+                        ) : (
+                          <ChevronDown className="h-4 w-4 text-sky-500" />
+                        )}
+                      </div>
+                    </button>
+
+                    <AnimatePresence>
+                      {expandedNote === note.id && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          className="overflow-hidden border-t border-sky-200"
+                        >
+                          <div className="p-4 space-y-3">
+                            <div>
+                              <div className="text-[10px] font-mono text-sky-600 font-extrabold uppercase mb-1">
+                                Transcript
+                              </div>
+                              <p className="text-xs text-sky-950 font-bold leading-relaxed">
+                                "{note.transcript}"
+                              </p>
+                            </div>
+                            <div>
+                              <div className="text-[10px] font-mono text-sky-600 font-extrabold uppercase mb-1">
+                                AI Summary
+                              </div>
+                              <p className="text-xs text-sky-950 font-bold leading-relaxed whitespace-pre-line">
+                                {note.summary}
+                              </p>
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                ))}
+              </div>
+            </GlassCard>
+          )}
         </div>
 
-        {/* Right column: Results (Transcribed + Summary) */}
+        {/* ── Right: Transcription Result ── */}
         <div className="lg:col-span-7 flex flex-col">
-          <GradientCard className="flex-1 shadow-md shadow-sky-100/50 border border-sky-200 bg-white p-6 flex flex-col justify-between">
-            <div className="space-y-4 flex-1 flex flex-col">
-              <div className="flex justify-between items-center pb-2 border-b border-sky-200/80">
-                <span className="text-xs font-mono text-sky-600 tracking-wider uppercase font-extrabold">Transcription Result</span>
-                <span className="text-[11px] font-mono text-sky-700 font-bold">Step 2: AI Summary & Highlights</span>
-              </div>
-
-              <AnimatePresence mode="wait">
-                {result ? (
-                  <motion.div
-                    key="result"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="space-y-4 flex-1 flex flex-col"
+          <GradientCard className="shadow-md shadow-sky-100/50 border border-sky-200 bg-white p-6 flex flex-col">
+            {/* Header with toggle */}
+            <div className="flex justify-between items-center pb-2 border-b border-sky-200/80 mb-4">
+              <span className="text-xs font-mono text-sky-600 tracking-wider uppercase font-extrabold">
+                Transcription Result
+              </span>
+              <div className="flex items-center gap-2">
+                {result && (
+                  <button
+                    onClick={() => setShowTranscript((v) => !v)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-50 border border-sky-200 text-xs font-extrabold text-sky-700 hover:bg-sky-100 shadow-sm transition"
                   >
-                    {/* Transcript block */}
-                    <div className="bg-sky-50/50 p-4 rounded-2xl border border-sky-200/80">
-                      <div className="text-xs text-sky-600 font-mono uppercase font-extrabold mb-1.5 flex items-center gap-1">
-                        <FileText className="h-4 w-4 text-sky-500" /> Transcribed Speech
-                      </div>
-                      <p className="text-xs text-sky-950 font-bold leading-relaxed max-h-32 overflow-y-auto pr-1">
-                        "{result.transcript}"
+                    {showTranscript ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                    {showTranscript ? "Hide Transcript" : "Show Transcript"}
+                  </button>
+                )}
+                <span className="text-[11px] font-mono text-sky-700 font-bold">Step 2: AI Summary</span>
+              </div>
+            </div>
+
+            <AnimatePresence mode="wait">
+              {result ? (
+                <motion.div
+                  key="result"
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="space-y-4 flex-1 flex flex-col"
+                >
+                  {/* Save note bar */}
+                  <div className="flex items-center gap-2 bg-sky-50 border border-sky-200 rounded-2xl p-3">
+                    <input
+                      type="text"
+                      value={noteTitleInput}
+                      onChange={(e) => setNoteTitleInput(e.target.value)}
+                      placeholder="Note title (optional)…"
+                      className="flex-1 bg-white border border-sky-200 rounded-xl px-3 py-2 text-xs font-bold text-sky-950 placeholder:text-sky-400 focus:outline-none focus:border-sky-500"
+                    />
+                    <button
+                      onClick={handleSaveNote}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white text-xs font-extrabold shadow-sm shadow-sky-200 transition"
+                    >
+                      <Save className="h-3.5 w-3.5" /> Save Note
+                    </button>
+                  </div>
+
+                  {/* Transcript toggle block */}
+                  <AnimatePresence>
+                    {showTranscript && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="bg-sky-50/50 p-4 rounded-2xl border border-sky-200/80">
+                          <div className="text-xs text-sky-600 font-mono uppercase font-extrabold mb-1.5 flex items-center gap-1">
+                            <FileText className="h-4 w-4 text-sky-500" /> Transcribed Speech
+                          </div>
+                          <p className="text-xs text-sky-950 font-bold leading-relaxed max-h-32 overflow-y-auto pr-1">
+                            "{result.transcript}"
+                          </p>
+                          {result.confidence && (
+                            <div className="mt-2 text-[10px] font-mono text-sky-600 font-bold">
+                              Confidence: {Math.round(result.confidence * 100)}% · Duration: {formatTime(result.duration || 0)}
+                            </div>
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {/* AI Summary block */}
+                  <div className="bg-sky-50/50 p-4 rounded-2xl border border-sky-200/80 flex-1 max-h-80 overflow-y-auto pr-1">
+                    <div className="text-xs text-sky-600 font-mono uppercase font-extrabold mb-2 flex items-center gap-1">
+                      <Sparkles className="h-4 w-4 text-sky-500 fill-sky-100" /> AI Key Points & Summary
+                    </div>
+                    <div className="text-xs text-sky-950 font-bold leading-relaxed whitespace-pre-line">
+                      {result.summary}
+                    </div>
+                  </div>
+                </motion.div>
+              ) : (
+                <div className="flex-1 flex flex-col items-center justify-center text-center py-24 text-sky-700/80">
+                  {processing ? (
+                    <div className="space-y-3">
+                      <RefreshCw className="h-10 w-10 text-sky-500 animate-spin mx-auto" />
+                      <p className="text-xs text-sky-700 font-mono font-extrabold">
+                        Running Whisper STT + AI Summary…
+                      </p>
+                      <p className="text-[10px] text-sky-600/80 font-semibold">
+                        This may take a few seconds
                       </p>
                     </div>
-
-                    {/* Summary / Concepts block */}
-                    <div className="bg-sky-50/50 p-4 rounded-2xl border border-sky-200/80 flex-1 max-h-80 overflow-y-auto pr-1">
-                      <div className="text-xs text-sky-600 font-mono uppercase font-extrabold mb-2 flex items-center gap-1">
-                        <Sparkles className="h-4 w-4 text-sky-500 fill-sky-100" /> AI Key Points & Summary
-                      </div>
-                      <div className="text-xs text-sky-950 font-bold leading-relaxed whitespace-pre-line font-sans">
-                        {result.summary}
-                      </div>
-                    </div>
-                  </motion.div>
-                ) : (
-                  <div className="flex-1 flex flex-col items-center justify-center text-center py-24 text-sky-700/80 italic">
-                    {processing ? (
-                      <div className="space-y-3">
-                        <RefreshCw className="h-8 w-8 text-sky-500 animate-spin mx-auto" />
-                        <p className="text-xs text-sky-700 not-italic font-mono font-bold">Running Whisper STT + AI Summary...</p>
-                      </div>
-                    ) : (
-                      <>
-                        <Mic className="h-12 w-12 text-sky-300 mb-3" />
-                        <p className="text-xs font-extrabold text-sky-700/80 max-w-sm leading-relaxed">
-                          Your transcript summaries and key points will appear here once audio is recorded.
-                        </p>
-                      </>
-                    )}
-                  </div>
-                )}
-              </AnimatePresence>
-            </div>
+                  ) : (
+                    <>
+                      <Mic className="h-14 w-14 text-sky-200 mb-4" />
+                      <p className="text-xs font-extrabold text-sky-700/80 max-w-xs leading-relaxed">
+                        Your transcript summaries and key points will appear here once audio is recorded.
+                      </p>
+                      <p className="text-[10px] text-sky-600/70 mt-2 font-semibold">
+                        Click "Start Live Recording" or use a sample
+                      </p>
+                    </>
+                  )}
+                </div>
+              )}
+            </AnimatePresence>
 
             <div className="mt-4 text-xs font-extrabold text-sky-700/90 flex items-center gap-1.5 border-t border-sky-200/80 pt-3">
               <Sparkles className="h-3.5 w-3.5 text-sky-500 fill-sky-100" />
-              Offline Faster-Whisper local engine active.
+              Offline Faster-Whisper local engine active. Notes stored in browser.
             </div>
           </GradientCard>
         </div>
